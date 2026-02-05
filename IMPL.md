@@ -6,14 +6,12 @@ Rust library for email authentication: SPF, DKIM, DMARC.
 
 | Milestone | Status |
 |-----------|--------|
-| M1: Common Infrastructure | ✅ Complete |
-| M2: SPF Core | ✅ Complete |
-| M3: DKIM Verification | ✅ Complete |
-| M4: DKIM Signing | ⏸️ Deferred |
-| M5: DMARC | ✅ Complete |
-| M6: Combined API | ✅ Complete |
-
-**75 tests passing**
+| M1: Common Infrastructure | ⬚ |
+| M2: SPF Core | ⬚ |
+| M3: DKIM Verification | ⬚ |
+| M4: DKIM Signing | ⬚ |
+| M5: DMARC | ⬚ |
+| M6: Combined API | ⬚ |
 
 ## Crate Structure
 
@@ -63,49 +61,43 @@ rand = "0.9"  # For DMARC pct sampling
 
 ## Milestones
 
-### M1: Common Infrastructure ✅
-- [x] `DnsResolver` trait with `query_txt`, `query_a`, `query_mx`
-- [x] `HickoryResolver` implementation
-- [x] `MockResolver` for testing
-- [x] Domain utilities: lowercase, trailing dot handling
-- [x] PSL integration: `organizational_domain()`
+### M1: Common Infrastructure- [ ] `DnsResolver` trait with `query_txt`, `query_a`, `query_mx`
+- [ ] `HickoryResolver` implementation
+- [ ] `MockResolver` for testing
+- [ ] Domain utilities: lowercase, trailing dot handling
+- [ ] PSL integration: `organizational_domain()`
 
-### M2: SPF Core ✅
-- [x] `SpfRecord` parsing (mechanisms + modifiers)
-- [x] `Mechanism` enum with qualifiers
-- [x] Macro expansion (`%{s}`, `%{d}`, `%{i}`, etc.)
-- [x] `check_host()` recursive evaluation
-- [x] DNS lookup limits (10 total, 2 void)
-- [x] All 7 result codes
+### M2: SPF Core- [ ] `SpfRecord` parsing (mechanisms + modifiers)
+- [ ] `Mechanism` enum with qualifiers
+- [ ] Macro expansion (`%{s}`, `%{d}`, `%{i}`, etc.)
+- [ ] `check_host()` recursive evaluation
+- [ ] DNS lookup limits (10 total, 2 void)
+- [ ] All 7 result codes
 
-### M3: DKIM Verification ✅
-- [x] `DkimSignature` parsing (all tags)
-- [x] `DkimPublicKey` parsing from DNS
-- [x] Simple canonicalization (header + body)
-- [x] Relaxed canonicalization (header + body)
-- [x] Body hash computation with `l=` limit
-- [x] Header hash computation (bottom-up selection)
-- [x] RSA-SHA256 verification
-- [x] Ed25519-SHA256 verification
-- [x] RSA-SHA1 verification (for legacy)
+### M3: DKIM Verification- [ ] `DkimSignature` parsing (all tags)
+- [ ] `DkimPublicKey` parsing from DNS
+- [ ] Simple canonicalization (header + body)
+- [ ] Relaxed canonicalization (header + body)
+- [ ] Body hash computation with `l=` limit
+- [ ] Header hash computation (bottom-up selection)
+- [ ] RSA-SHA256 verification
+- [ ] Ed25519-SHA256 verification
+- [ ] RSA-SHA1 verification (for legacy)
 
-### M4: DKIM Signing ⏸️
-- [ ] Private key loading (PEM)
+### M4: DKIM Signing- [ ] Private key loading (PEM)
 - [ ] `DkimSigner` with config
 - [ ] Sign and verify round-trip
 
-### M5: DMARC ✅
-- [x] `DmarcRecord` parsing (all tags incl. `np`)
-- [x] DNS discovery with org domain fallback
-- [x] DKIM alignment check (strict/relaxed)
-- [x] SPF alignment check (strict/relaxed)
-- [x] Policy evaluation (`p`, `sp`, `np`)
-- [x] `pct` sampling
+### M5: DMARC- [ ] `DmarcRecord` parsing (all tags incl. `np`)
+- [ ] DNS discovery with org domain fallback
+- [ ] DKIM alignment check (strict/relaxed)
+- [ ] SPF alignment check (strict/relaxed)
+- [ ] Policy evaluation (`p`, `sp`, `np`)
+- [ ] `pct` sampling
 
-### M6: Combined API ✅
-- [x] `EmailAuthenticator` struct
-- [x] `authenticate()` → `AuthenticationResult`
-- [x] From header extraction
+### M6: Combined API- [ ] `EmailAuthenticator` struct
+- [ ] `authenticate()` → `AuthenticationResult`
+- [ ] From header extraction
 
 ## API Surface
 
