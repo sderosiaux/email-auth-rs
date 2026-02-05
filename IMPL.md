@@ -9,7 +9,7 @@ Rust library for email authentication: SPF, DKIM, DMARC.
 | M1: Common Infrastructure | ✓ |
 | M2: SPF Core | ✓ |
 | M3: DKIM Verification | ✓ |
-| M4: DKIM Signing | ⬚ |
+| M4: DKIM Signing | ✓ |
 | M5: DMARC | ✓ |
 | M6: Combined API | ✓ |
 
@@ -19,7 +19,7 @@ Rust library for email authentication: SPF, DKIM, DMARC.
 |-----------|------|----------|
 | M2: SPF Core | specs/01-SPF-RFC7208.md | ✓ |
 | M3: DKIM Verification | specs/02-DKIM-RFC6376.md | ✓ |
-| M4: DKIM Signing | specs/02-DKIM-RFC6376.md | ⬚ |
+| M4: DKIM Signing | specs/02-DKIM-RFC6376.md | ✓ |
 | M5: DMARC | specs/03-DMARC-RFC7489.md | ✓ |
 
 Coverage: `⬚` not started, `◐` partial (impl done, not verified), `✓` verified against spec
@@ -101,9 +101,9 @@ rand = "0.9"  # For DMARC pct sampling
 - [x] RSA-SHA1 verification (for legacy)
 
 ### M4: DKIM Signing
-- [ ] Private key loading (PEM)
-- [ ] `DkimSigner` with config
-- [ ] Sign and verify round-trip
+- [x] Private key loading (PEM, DER, PKCS8)
+- [x] `DkimSigner` with `SigningConfig`
+- [x] Sign and verify round-trip (RSA-SHA256, Ed25519)
 
 ### M5: DMARC
 - [x] `DmarcRecord` parsing (all tags incl. `np`)
@@ -179,11 +179,13 @@ impl<R: DnsResolver> EmailAuthenticator<R> {
 ## Learnings
 ### Crate/API Gotchas
 - hickory-resolver 0.25: use `Resolver::builder_with_config()`, not `Resolver::new()`
+- hickory-resolver 0.25: `TokioConnectionProvider` import from `name_server` submodule, NOT crate root
 - hickory A/AAAA: access IP via `.0` on wrapper types
 - hickory Resolver implements Clone (wrap in struct and derive Clone)
 - ring RSA: verify(message, signature) where message is raw data, not pre-hashed
 - ring signature: use `&'static dyn VerificationAlgorithm` for generic RSA verification
 - publicsuffix 2: call `list.domain()` directly, not `suffix.domain()`
+- publicsuffix 2: use `and_then()` not `map().flatten()` (clippy::map_flatten)
 - rand 0.9: use `rng.random_range(1..=100)` not `gen_range`
 
 ### Design Decisions
@@ -197,6 +199,18 @@ impl<R: DnsResolver> EmailAuthenticator<R> {
 - Header continuation: unfold before parsing
 - b= removal: careful string iteration to avoid affecting bh= tag
 - DKIM relaxed canonicalization: no space after colon per RFC 6376
+
+### Clippy Compliance (Rust)
+- Prefer `Display` trait over inherent `to_string()` methods (clippy::inherent_to_string)
+- Use `for x in iter.by_ref()` not `while let Some(x) = iter.next()` (clippy::while_let_on_iterator)
+- Use `and_then()` not `map().flatten()` (clippy::map_flatten)
+- Use `or_else()` not `map().or()` pattern (clippy::manual_map)
+- Combine identical `if/else` branches (clippy::if_same_then_else)
+
+### Test Data Validation
+- Base64 in tests must be valid (use `dGVzdA==` not `abc123==`)
+- RSA keys must be valid: generate with `openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048`
+- Ed25519 keys: generate with `openssl genpkey -algorithm Ed25519`
 
 ## Spec References
 
