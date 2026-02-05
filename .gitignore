@@ -8,3 +8,8 @@ target/
 
 # Claude state files
 .claude/states/
+
+
+# Added by cargo
+
+/target

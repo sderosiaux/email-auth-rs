@@ -6,12 +6,12 @@ Rust library for email authentication: SPF, DKIM, DMARC.
 
 | Milestone | Status |
 |-----------|--------|
-| M1: Common Infrastructure | ⬚ |
-| M2: SPF Core | ⬚ |
-| M3: DKIM Verification | ⬚ |
+| M1: Common Infrastructure | ✓ |
+| M2: SPF Core | ✓ |
+| M3: DKIM Verification | ✓ |
 | M4: DKIM Signing | ⬚ |
-| M5: DMARC | ⬚ |
-| M6: Combined API | ⬚ |
+| M5: DMARC | ✓ |
+| M6: Combined API | ✓ |
 
 ## Crate Structure
 
@@ -61,43 +61,49 @@ rand = "0.9"  # For DMARC pct sampling
 
 ## Milestones
 
-### M1: Common Infrastructure- [ ] `DnsResolver` trait with `query_txt`, `query_a`, `query_mx`
-- [ ] `HickoryResolver` implementation
-- [ ] `MockResolver` for testing
-- [ ] Domain utilities: lowercase, trailing dot handling
-- [ ] PSL integration: `organizational_domain()`
+### M1: Common Infrastructure
+- [x] `DnsResolver` trait with `query_txt`, `query_a`, `query_mx`
+- [x] `HickoryResolver` implementation
+- [x] `MockResolver` for testing
+- [x] Domain utilities: lowercase, trailing dot handling
+- [x] PSL integration: `organizational_domain()`
 
-### M2: SPF Core- [ ] `SpfRecord` parsing (mechanisms + modifiers)
-- [ ] `Mechanism` enum with qualifiers
-- [ ] Macro expansion (`%{s}`, `%{d}`, `%{i}`, etc.)
-- [ ] `check_host()` recursive evaluation
-- [ ] DNS lookup limits (10 total, 2 void)
-- [ ] All 7 result codes
+### M2: SPF Core
+- [x] `SpfRecord` parsing (mechanisms + modifiers)
+- [x] `Mechanism` enum with qualifiers
+- [x] Macro expansion (`%{s}`, `%{d}`, `%{i}`, etc.)
+- [x] `check_host()` recursive evaluation
+- [x] DNS lookup limits (10 total, 2 void)
+- [x] All 7 result codes
 
-### M3: DKIM Verification- [ ] `DkimSignature` parsing (all tags)
-- [ ] `DkimPublicKey` parsing from DNS
-- [ ] Simple canonicalization (header + body)
-- [ ] Relaxed canonicalization (header + body)
-- [ ] Body hash computation with `l=` limit
-- [ ] Header hash computation (bottom-up selection)
-- [ ] RSA-SHA256 verification
-- [ ] Ed25519-SHA256 verification
-- [ ] RSA-SHA1 verification (for legacy)
+### M3: DKIM Verification
+- [x] `DkimSignature` parsing (all tags)
+- [x] `DkimPublicKey` parsing from DNS
+- [x] Simple canonicalization (header + body)
+- [x] Relaxed canonicalization (header + body)
+- [x] Body hash computation with `l=` limit
+- [x] Header hash computation (bottom-up selection)
+- [x] RSA-SHA256 verification
+- [x] Ed25519-SHA256 verification
+- [x] RSA-SHA1 verification (for legacy)
 
-### M4: DKIM Signing- [ ] Private key loading (PEM)
+### M4: DKIM Signing
+- [ ] Private key loading (PEM)
 - [ ] `DkimSigner` with config
 - [ ] Sign and verify round-trip
 
-### M5: DMARC- [ ] `DmarcRecord` parsing (all tags incl. `np`)
-- [ ] DNS discovery with org domain fallback
-- [ ] DKIM alignment check (strict/relaxed)
-- [ ] SPF alignment check (strict/relaxed)
-- [ ] Policy evaluation (`p`, `sp`, `np`)
-- [ ] `pct` sampling
+### M5: DMARC
+- [x] `DmarcRecord` parsing (all tags incl. `np`)
+- [x] DNS discovery with org domain fallback
+- [x] DKIM alignment check (strict/relaxed)
+- [x] SPF alignment check (strict/relaxed)
+- [x] Policy evaluation (`p`, `sp`, `np`)
+- [x] `pct` sampling
 
-### M6: Combined API- [ ] `EmailAuthenticator` struct
-- [ ] `authenticate()` → `AuthenticationResult`
-- [ ] From header extraction
+### M6: Combined API
+- [x] `EmailAuthenticator` struct
+- [x] `authenticate()` → `AuthenticationResult`
+- [x] From header extraction
 
 ## API Surface
 
@@ -156,6 +162,28 @@ impl<R: DnsResolver> EmailAuthenticator<R> {
 ### Learned from M5+M6
 - From header extraction fallback to SPF domain
 - rand crate for pct sampling
+
+## Learnings
+### Crate/API Gotchas
+- hickory-resolver 0.25: use `Resolver::builder_with_config()`, not `Resolver::new()`
+- hickory A/AAAA: access IP via `.0` on wrapper types
+- hickory Resolver implements Clone (wrap in struct and derive Clone)
+- ring RSA: verify(message, signature) where message is raw data, not pre-hashed
+- ring signature: use `&'static dyn VerificationAlgorithm` for generic RSA verification
+- publicsuffix 2: call `list.domain()` directly, not `suffix.domain()`
+- rand 0.9: use `rng.random_range(1..=100)` not `gen_range`
+
+### Design Decisions
+- Use `impl Future` in traits instead of async-trait crate (Rust 1.75+)
+- NXDOMAIN → None result, SERVFAIL/timeout → TempError
+- Recursive async requires `Box::pin()` for self-referential calls
+- EmailAuthenticator requires Clone on resolver (clone for each sub-verifier)
+
+### Patterns That Worked
+- Tag-value parsing: split on `;`, then `=`, trim whitespace
+- Header continuation: unfold before parsing
+- b= removal: careful string iteration to avoid affecting bh= tag
+- DKIM relaxed canonicalization: no space after colon per RFC 6376
 
 ## Spec References
 
