@@ -1,0 +1,10 @@
+# Build
+target/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Claude state files
+.claude/states/
