@@ -13,6 +13,19 @@ Rust library for email authentication: SPF, DKIM, DMARC.
 | M5: DMARC | ✓ |
 | M6: Combined API | ✓ |
 
+## Sub-Specs
+
+| Milestone | Spec | Coverage |
+|-----------|------|----------|
+| M2: SPF Core | specs/01-SPF-RFC7208.md | ◐ |
+| M3: DKIM Verification | specs/02-DKIM-RFC6376.md | ◐ |
+| M4: DKIM Signing | specs/02-DKIM-RFC6376.md | ⬚ |
+| M5: DMARC | specs/03-DMARC-RFC7489.md | ◐ |
+
+Coverage: `⬚` not started, `◐` partial (impl done, not verified), `✓` verified against spec
+
+**Note**: M1 and M6 have no dedicated sub-spec (covered by main IMPL tasks).
+
 ## Crate Structure
 
 ```
