@@ -107,6 +107,7 @@ dependencies = [
  "base64",
  "hickory-resolver",
  "publicsuffix",
+ "rand",
  "ring",
  "thiserror",
  "tokio",
