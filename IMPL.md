@@ -62,6 +62,9 @@ email-auth/
 ## Dependencies
 
 ```toml
+[package]
+rust-version = "1.80"  # Required for LazyLock, is_some_and
+
 [dependencies]
 hickory-resolver = "0.25"  # NOTE: API changed from 0.24
 ring = "0.17"
@@ -180,16 +183,20 @@ impl<R: DnsResolver> EmailAuthenticator<R> {
 ### Crate/API Gotchas
 - hickory-resolver 0.25: use `Resolver::builder_with_config()`, not `Resolver::new()`
 - hickory-resolver 0.25: `TokioConnectionProvider` import from `name_server` submodule, NOT crate root
+- hickory-resolver 0.25: error module private—use `hickory_resolver::ResolveError` directly
+- hickory-resolver 0.25: NXDOMAIN detection via `proto_err.is_nx_domain()`, not pattern match
 - hickory A/AAAA: access IP via `.0` on wrapper types
 - hickory Resolver implements Clone (wrap in struct and derive Clone)
 - ring RSA: verify(message, signature) where message is raw data, not pre-hashed
 - ring signature: use `&'static dyn VerificationAlgorithm` for generic RSA verification
-- publicsuffix 2: call `list.domain()` directly, not `suffix.domain()`
-- publicsuffix 2: use `and_then()` not `map().flatten()` (clippy::map_flatten)
+- ring: requires `use ring::signature::KeyPair` trait for `public_key()` method
+- publicsuffix 2: use `List::new()`, NOT `List::fetch()` or `List::empty()`
+- publicsuffix 2: requires `use publicsuffix::Psl` trait import for `.domain()` method
+- publicsuffix 2: domain() returns opaque type, needs type annotation: `|d: publicsuffix::Domain<'_>|`
 - rand 0.9: use `rng.random_range(1..=100)` not `gen_range`
 
 ### Design Decisions
-- Use `impl Future` in traits instead of async-trait crate (Rust 1.75+)
+- Use `impl Future` in traits instead of async-trait crate (Rust 1.80+)
 - NXDOMAIN → None result, SERVFAIL/timeout → TempError
 - Recursive async requires `Box::pin()` for self-referential calls
 - EmailAuthenticator requires Clone on resolver (clone for each sub-verifier)
@@ -206,6 +213,9 @@ impl<R: DnsResolver> EmailAuthenticator<R> {
 - Use `and_then()` not `map().flatten()` (clippy::map_flatten)
 - Use `or_else()` not `map().or()` pattern (clippy::manual_map)
 - Combine identical `if/else` branches (clippy::if_same_then_else)
+- Rename inherent `from_str()` to `parse()` to avoid std::FromStr conflict (clippy::should_implement_trait)
+- Use `is_some_and()` not `map_or(false, ...)` (clippy::unnecessary_map_or, Rust 1.80+)
+- Use `#[derive(Default)]` with `#[default]` attribute, not manual impl (clippy::derivable_impls)
 
 ### Test Data Validation
 - Base64 in tests must be valid (use `dGVzdA==` not `abc123==`)
