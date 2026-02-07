@@ -1,0 +1,29 @@
+[package]
+name = "email-auth"
+version = "0.1.0"
+edition = "2021"
+description = "Email authentication library: SPF, DKIM, DMARC, ARC, BIMI"
+license = "MIT"
+
+[dependencies]
+# Async runtime
+tokio = { version = "1", features = ["rt", "macros"] }
+# DNS resolution
+hickory-resolver = "0.25"
+# Cryptography (RSA, Ed25519, SHA)
+ring = "0.17"
+# Base64 encoding/decoding
+base64 = "0.22"
+# Public Suffix List
+psl = "2"
+# Random (pct sampling)
+rand = "0.9"
+# Constant-time comparison
+subtle = "2"
+# XML parsing (SVG validation for BIMI)
+quick-xml = "0.37"
+# Async trait support
+async-trait = "0.1"
+
+[dev-dependencies]
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
