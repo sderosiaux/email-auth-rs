@@ -1,0 +1,192 @@
+# REFLECTION -- email-auth v2 iteration
+# Generated: 2026-02-07
+
+## Summary
+session_scope: "Full library rewrite M1-M10: SPF + DKIM + DMARC from specs"
+milestones_completed: 10/10
+files_changed: 25
+lines_added: 6596
+lines_removed: 3
+tests_passing: true
+test_count: 152
+overall_health: fragile
+
+## Shortcuts
+- location: "src/spf/eval.rs:288,299,319,366"
+  what: "void lookup limit errors silently discarded with `let _ = ctx.increment_void()`"
+  why: "eval_a_mechanism returns bool not Result — changing return type requires refactoring callers"
+  risk: high
+  fix: "change eval_a_mechanism, eval_ptr_mechanism return type to Result<bool, SpfResult>, propagate void limit errors"
+
+- location: "src/spf/eval.rs:291,302"
+  what: "DNS TempFail in A/AAAA mechanism treated as no-match (false)"
+  why: "lenient interpretation — production robustness over spec strictness"
+  risk: medium
+  fix: "return Err(SpfResult::TempError) on DNS TempFail within A mechanism"
+
+- location: "src/auth.rs:107"
+  what: "from_utf8_lossy on raw message bytes — silently replaces invalid UTF-8"
+  why: "quick path to get headers parsed"
+  risk: medium
+  fix: "handle non-UTF-8 message bodies properly — body should remain raw bytes, only headers need string parsing"
+
+- location: "src/dkim/verify.rs:78-81,src/dkim/sign.rs:131-134,src/spf/macro_exp.rs:141-144"
+  what: "SystemTime::now().unwrap_or_default() — silently uses epoch 0 if clock unavailable"
+  why: "no good alternative without injecting a clock"
+  risk: low
+  fix: "inject Clock trait for testability and panic-free clock handling"
+
+## Fragile
+- component: "DKIM SPKI stripping (src/dkim/key.rs:117-170)"
+  breaks_when: "RSA key uses non-standard SPKI encoding, or key is PKCS#1 but contains RSA OID bytes elsewhere"
+  severity: medium
+
+- component: "auth.rs message parsing"
+  breaks_when: "message has non-UTF-8 headers, bare CR line endings, or malformed MIME"
+  severity: high
+
+- component: "SPF async recursion (src/spf/eval.rs)"
+  breaks_when: "deeply nested includes — stack depth limited only by 10-DNS counter"
+  severity: low
+
+## Wrong
+- what: "DMARC reporting not implemented despite being in RFC 7489 Section 7"
+  location: "src/dmarc/"
+  spec_says: "aggregate and failure reports per Section 7"
+  code_does: "only parses rua/ruf URIs, does not generate reports"
+  fix_effort: medium
+
+- what: "SPF void lookup limit not enforced"
+  location: "src/spf/eval.rs:288"
+  spec_says: "RFC 7208 Section 4.6.4: max 2 void lookups → PermError"
+  code_does: "increments counter but discards the error"
+  fix_effort: small
+
+- what: "spec said DKIM p= is SubjectPublicKeyInfo but ring needs PKCS#1"
+  location: "specs/02-DKIM-RFC6376.md:261-264"
+  spec_says: "DER-encoded SubjectPublicKeyInfo is ~290-300 bytes"
+  code_does: "strips SPKI to PKCS#1 (now fixed) but spec didn't warn about this"
+  fix_effort: done
+
+## Unknown
+- assumption: "SPKI stripping handles all real-world RSA key encodings"
+  verification: "test against major providers: Google, Microsoft, Yahoo, Protonmail DKIM keys"
+  risk_if_wrong: "RSA verification fails for some domains"
+
+- assumption: "body canonicalization handles all line ending variants correctly"
+  verification: "test with bare LF, bare CR, CRLF, mixed, trailing whitespace combinations"
+  risk_if_wrong: "body hash mismatch on real-world messages"
+
+- assumption: "hickory-resolver TXT record handling concatenates strings correctly"
+  verification: "test with real multi-string TXT records (DKIM keys split across 255-byte chunks)"
+  risk_if_wrong: "DKIM key parsing fails for large RSA keys"
+
+- assumption: "psl crate returns correct org domains for all TLDs"
+  verification: "test against known edge cases: co.uk, com.au, pvt.k12.ma.us"
+  risk_if_wrong: "DMARC relaxed alignment gives wrong results"
+
+## Spec_Gaps
+- section: "DKIM spec 4.7 (Cryptographic Verification)"
+  gap_type: missing
+  suggestion: "Add section 10.7 documenting ring's SPKI vs PKCS#1 requirement — DONE in this session"
+  priority: must
+
+- section: "DKIM spec 10.6 (Ed25519 Key Size)"
+  gap_type: missing
+  suggestion: "Document ring 0.17 rejects openssl Ed25519 PKCS8 keys — DONE in this session"
+  priority: must
+
+- section: "SPF spec 9.4 (Void Lookup Tracking)"
+  gap_type: missing
+  suggestion: "Document that void limit errors MUST be propagated from mechanism evaluation functions — DONE in this session"
+  priority: must
+
+- section: "DMARC spec Section 7 (Reporting)"
+  gap_type: wrong
+  suggestion: "Remove OUT OF SCOPE label, add aggregate + failure report specs — DONE in this session"
+  priority: should
+
+- section: "All specs: ground-truth integration tests"
+  gap_type: missing
+  suggestion: "Add milestone for tests using real-world captured messages with known-good authentication results"
+  priority: should
+
+- section: "DKIM spec: 1024-bit RSA key"
+  gap_type: missing
+  suggestion: "Add test case for 1024-bit RSA key verification using rsa1024.pem fixture"
+  priority: nice
+
+## Debt
+- id: "D1"
+  type: technical
+  description: "SPF void lookup limit silently discarded (4 locations)"
+  location: "src/spf/eval.rs:288,299,319,366"
+  severity: high
+  suggested_fix: "change return types to Result<bool, SpfResult>, propagate errors"
+
+- id: "D2"
+  type: technical
+  description: "DMARC reporting not implemented (RFC 7489 Section 7)"
+  location: "src/dmarc/"
+  severity: medium
+  suggested_fix: "add src/dmarc/report.rs with AggregateReport and FailureReport structs + XML/AFRF serialization"
+
+- id: "D3"
+  type: technical
+  description: "auth.rs message parsing uses from_utf8_lossy — corrupts non-UTF-8 content"
+  location: "src/auth.rs:107"
+  severity: medium
+  suggested_fix: "parse headers as ASCII (find colon in bytes), keep body as raw bytes"
+
+- id: "D4"
+  type: test
+  description: "no integration tests with real-world captured messages"
+  location: "tests/"
+  severity: medium
+  suggested_fix: "capture messages from Gmail, Outlook, Protonmail; verify authentication results match expected"
+
+- id: "D5"
+  type: test
+  description: "1024-bit RSA DKIM key never tested (fixture exists but unused)"
+  location: "specs/ground-truth/rsa1024.pem"
+  severity: low
+  suggested_fix: "add sign/verify roundtrip test using rsa1024 key"
+
+- id: "D6"
+  type: technical
+  description: "no Clock abstraction — SystemTime::now() hardcoded, untestable"
+  location: "src/dkim/verify.rs:78, src/dkim/sign.rs:131, src/spf/macro_exp.rs:141"
+  severity: low
+  suggested_fix: "inject Clock trait or accept timestamp parameter"
+
+- id: "D7"
+  type: knowledge
+  description: "ring's RSA public key format requirement (PKCS#1 not SPKI) was discovered by debugging, not by reading docs"
+  location: "src/dkim/key.rs strip_rsa_spki()"
+  severity: low
+  suggested_fix: "spec updated with this learning (done)"
+
+## Next_Priorities
+- action: "Fix SPF void lookup limit propagation"
+  why: "RFC compliance bug — 4 locations silently discard errors"
+  blocks: ["spec compliance"]
+
+- action: "Implement DMARC aggregate report generation"
+  why: "RFC 7489 Section 7 — currently missing from implementation"
+  blocks: ["full RFC coverage"]
+
+- action: "Fix auth.rs UTF-8 handling"
+  why: "from_utf8_lossy corrupts non-ASCII message content"
+  blocks: ["production readiness"]
+
+- action: "Add real-world message integration tests"
+  why: "current tests only use synthetic data — no confidence on real messages"
+  blocks: ["production readiness"]
+
+- action: "Implement ARC (RFC 8617)"
+  why: "critical for mailing list and forwarder scenarios"
+  blocks: ["complete email auth stack"]
+
+- action: "Implement BIMI"
+  why: "brand logo display — requires all other protocols working"
+  blocks: ["complete email auth stack"]

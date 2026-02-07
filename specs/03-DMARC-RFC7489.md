@@ -8,7 +8,7 @@ DMARC builds on SPF and DKIM to provide domain-level policy for email authentica
 1. Declare how unauthenticated messages should be handled
 2. Ensure the RFC5322.From domain aligns with authenticated identifiers
 
-**Scope boundary**: This library implements DMARC policy evaluation (record parsing, alignment checks, policy selection). Report generation (aggregate XML, failure AFRF, compression, email sending) is OUT OF SCOPE — it belongs in an MTA or dedicated reporting crate. The rua/ruf URIs are parsed and exposed in `DmarcRecord` for callers that implement their own reporting.
+**Scope**: This library implements DMARC policy evaluation (record parsing, alignment checks, policy selection) and DMARC reporting (aggregate XML generation, failure AFRF reports). Report delivery (email sending, compression) is caller responsibility.
 
 ---
 
@@ -304,15 +304,32 @@ DmarcRecord::parse(txt: &str) -> Result<DmarcRecord, DmarcParseError>
 
 ---
 
-## 7. Reporting (OUT OF SCOPE)
+## 7. Reporting (RFC 7489 Section 7)
 
-Report generation is a separate concern. This library parses rua/ruf URIs and exposes them in `DmarcRecord` for callers that implement their own reporting.
+### 7.1 Aggregate Reports (rua)
 
-**What IS in scope**: Parsing rua/ruf URI tags with size limits and scheme validation.
+- [ ] Define `AggregateReport` struct per RFC 7489 Appendix C XML schema:
+  - [ ] Report metadata: org_name, email, report_id, date_range (begin/end timestamps)
+  - [ ] Policy published: domain, adkim, aspf, p, sp, pct
+  - [ ] Records: source_ip, count, disposition, dkim results, spf results
+- [ ] XML serialization matching the DMARC aggregate report schema
+- [ ] `AggregateReportBuilder` — accumulates authentication results, produces XML
+- [ ] External report URI verification: query `<target-domain>._report._dmarc.<sender-domain>` TXT for `v=DMARC1` authorization
 
-**What is NOT in scope**: Aggregate report XML generation, failure report AFRF generation, gzip compression, email sending, external report URI verification (`_report._dmarc` TXT check), report interval scheduling.
+### 7.2 Failure Reports (ruf)
 
-If reporting is needed, implement as a separate module or crate that consumes `DmarcRecord.rua`/`DmarcRecord.ruf`.
+- [ ] Define `FailureReport` struct per RFC 6591 (AFRF):
+  - [ ] Original headers (or relevant subset)
+  - [ ] Authentication failure details
+  - [ ] Feedback type: "auth-failure"
+- [ ] AFRF message generation (MIME multipart/report with message/feedback-report)
+- [ ] Failure option filtering: check fo= tag to determine which failures trigger reports
+
+### 7.3 Report Delivery (caller responsibility)
+
+- Report delivery (gzip compression, email sending, size limit enforcement per rua/ruf max_size) is NOT implemented — callers handle transport
+- Library provides: report struct generation and XML/AFRF serialization
+- Library exposes: `DmarcRecord.rua` / `DmarcRecord.ruf` with parsed URIs and size limits
 
 ---
 
