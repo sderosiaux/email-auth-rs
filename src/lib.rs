@@ -1,11 +1,24 @@
+pub mod auth;
 pub mod common;
-pub mod spf;
 pub mod dkim;
 pub mod dmarc;
-pub mod auth;
+pub mod spf;
 
-pub use common::{DnsResolver, HickoryResolver, MockResolver};
-pub use spf::{SpfVerifier, SpfResult, SpfRecord};
-pub use dkim::{DkimVerifier, DkimSigner, DkimResult, DkimSignature};
-pub use dmarc::{DmarcVerifier, DmarcResult, DmarcRecord};
-pub use auth::{EmailAuthenticator, AuthenticationResult};
+// ---------------------------------------------------------------------------
+// Public re-exports
+// ---------------------------------------------------------------------------
+
+// Combined API
+pub use auth::{AuthenticationResult, EmailAuthenticator};
+
+// SPF
+pub use spf::{SpfResult, SpfVerifier};
+
+// DKIM
+pub use dkim::{DkimResult, DkimSigner, DkimVerifier};
+
+// DMARC
+pub use dmarc::{Disposition, DmarcEvaluator, DmarcResult};
+
+// DNS
+pub use common::dns::{DnsResolver, HickoryResolver};

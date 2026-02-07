@@ -1,161 +1,138 @@
-mod signature;
-mod key;
-mod canon;
-mod hash;
-mod crypto;
+pub mod canon;
+pub mod key;
+pub mod sign;
+pub mod signature;
+pub mod verify;
 
-pub use signature::{DkimSignature, Algorithm, Canonicalization, CanonicalizationType};
-pub use key::DkimPublicKey;
-pub use crypto::{DkimSigner, SigningConfig};
+pub use sign::DkimSigner;
+pub use verify::DkimVerifier;
 
-use thiserror::Error;
-use crate::common::DnsResolver;
+pub use key::{DkimPublicKey, HashAlgorithm, KeyFlag, KeyParseError, KeyType};
+pub use signature::{Algorithm, CanonicalizationMethod, DkimParseError, DkimSignature};
 
-#[derive(Debug, Clone, PartialEq)]
+// ---------------------------------------------------------------------------
+// DkimResult
+// ---------------------------------------------------------------------------
+
+/// DKIM verification result (RFC 6376 Section 3.9 / RFC 8601).
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum DkimResult {
-    Pass { domain: String, selector: String },
-    Fail { domain: String, reason: String },
-    Neutral { reason: String },
-    TempError { reason: String },
-    PermError { reason: String },
+    /// Signature verified successfully.
+    Pass {
+        /// The signing domain (d= tag).
+        domain: String,
+        /// The selector used (s= tag).
+        selector: String,
+        /// Whether the key was in testing mode (t=y).
+        testing: bool,
+    },
+    /// Signature exists but verification failed.
+    Fail {
+        reason: String,
+    },
+    /// Permanent failure — signature is malformed or structurally invalid.
+    PermFail {
+        reason: String,
+    },
+    /// Temporary failure — DNS lookup failed, try again later.
+    TempFail {
+        reason: String,
+    },
+    /// No DKIM signature present.
     None,
 }
 
-#[derive(Debug, Error)]
-pub enum DkimError {
-    #[error("DNS error: {0}")]
-    Dns(String),
-    #[error("Invalid signature: {0}")]
-    InvalidSignature(String),
-    #[error("Invalid key: {0}")]
-    InvalidKey(String),
-    #[error("Verification failed: {0}")]
-    VerificationFailed(String),
-    #[error("Crypto error: {0}")]
-    Crypto(String),
+impl DkimResult {
+    /// Whether this result represents a passing verification.
+    pub fn is_pass(&self) -> bool {
+        matches!(self, Self::Pass { .. })
+    }
 }
 
-pub struct DkimVerifier<R: DnsResolver> {
-    resolver: R,
-    clock_skew: u64,
-}
-
-impl<R: DnsResolver> DkimVerifier<R> {
-    pub fn new(resolver: R) -> Self {
-        Self { resolver, clock_skew: 300 }
-    }
-
-    pub fn with_clock_skew(mut self, seconds: u64) -> Self {
-        self.clock_skew = seconds;
-        self
-    }
-
-    pub async fn verify(&self, message: &[u8]) -> Vec<DkimResult> {
-        let message_str = match std::str::from_utf8(message) {
-            Ok(s) => s,
-            Err(_) => return vec![DkimResult::PermError { reason: "Invalid UTF-8".into() }],
-        };
-
-        let (headers, body) = match split_message(message_str) {
-            Some(parts) => parts,
-            None => return vec![DkimResult::PermError { reason: "Invalid message format".into() }],
-        };
-
-        let signatures = signature::parse_signatures(&headers);
-        if signatures.is_empty() {
-            return vec![DkimResult::None];
-        }
-
-        let mut results = Vec::new();
-        for sig in signatures {
-            let result = self.verify_signature(&sig, &headers, body).await;
-            results.push(result);
-        }
-        results
-    }
-
-    async fn verify_signature(&self, sig: &DkimSignature, headers: &str, body: &str) -> DkimResult {
-        let now = std::time::SystemTime::now()
-            .duration_since(std::time::UNIX_EPOCH)
-            .map(|d| d.as_secs())
-            .unwrap_or(0);
-
-        if let Some(exp) = sig.expiration {
-            if now > exp + self.clock_skew {
-                return DkimResult::Fail {
-                    domain: sig.domain.clone(),
-                    reason: "Signature expired".into(),
-                };
-            }
-        }
-
-        if let Some(ts) = sig.timestamp {
-            if ts > now + self.clock_skew {
-                return DkimResult::Fail {
-                    domain: sig.domain.clone(),
-                    reason: "Signature from future".into(),
-                };
-            }
-        }
-
-        let key_record = format!("{}._domainkey.{}", sig.selector, sig.domain);
-        let txt_records = match self.resolver.query_txt(&key_record).await {
-            Ok(records) => records,
-            Err(e) => {
-                if e.is_nxdomain() {
-                    return DkimResult::PermError {
-                        reason: format!("No key found at {}", key_record),
-                    };
+impl std::fmt::Display for DkimResult {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Pass { domain, selector, testing } => {
+                write!(f, "pass (d={domain} s={selector}")?;
+                if *testing {
+                    write!(f, " testing")?;
                 }
-                return DkimResult::TempError {
-                    reason: format!("DNS error: {}", e),
-                };
+                write!(f, ")")
             }
-        };
-
-        let key = match key::parse_key_record(&txt_records.join("")) {
-            Ok(k) => k,
-            Err(e) => {
-                return DkimResult::PermError {
-                    reason: format!("Invalid key: {}", e),
-                };
-            }
-        };
-
-        let body_canon = canon::canonicalize_body(body, sig.canonicalization.body);
-        let body_hash = hash::compute_body_hash(&body_canon, sig.algorithm, sig.body_length);
-
-        if body_hash != sig.body_hash {
-            return DkimResult::Fail {
-                domain: sig.domain.clone(),
-                reason: "Body hash mismatch".into(),
-            };
-        }
-
-        let header_hash = hash::compute_header_hash(headers, sig);
-
-        match crypto::verify_signature(&header_hash, &sig.signature, &key, sig.algorithm) {
-            Ok(true) => DkimResult::Pass {
-                domain: sig.domain.clone(),
-                selector: sig.selector.clone(),
-            },
-            Ok(false) => DkimResult::Fail {
-                domain: sig.domain.clone(),
-                reason: "Signature verification failed".into(),
-            },
-            Err(e) => DkimResult::PermError {
-                reason: format!("Crypto error: {}", e),
-            },
+            Self::Fail { reason } => write!(f, "fail ({reason})"),
+            Self::PermFail { reason } => write!(f, "permfail ({reason})"),
+            Self::TempFail { reason } => write!(f, "tempfail ({reason})"),
+            Self::None => write!(f, "none"),
         }
     }
 }
 
-fn split_message(message: &str) -> Option<(String, &str)> {
-    if let Some(pos) = message.find("\r\n\r\n") {
-        Some((message[..pos + 2].to_string(), &message[pos + 4..]))
-    } else if let Some(pos) = message.find("\n\n") {
-        Some((message[..pos + 1].to_string(), &message[pos + 2..]))
-    } else {
-        None
+// ---------------------------------------------------------------------------
+// Tests
+// ---------------------------------------------------------------------------
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn result_pass_display() {
+        let r = DkimResult::Pass {
+            domain: "example.com".into(),
+            selector: "sel".into(),
+            testing: false,
+        };
+        assert_eq!(r.to_string(), "pass (d=example.com s=sel)");
+        assert!(r.is_pass());
+    }
+
+    #[test]
+    fn result_pass_testing_display() {
+        let r = DkimResult::Pass {
+            domain: "example.com".into(),
+            selector: "sel".into(),
+            testing: true,
+        };
+        assert_eq!(r.to_string(), "pass (d=example.com s=sel testing)");
+    }
+
+    #[test]
+    fn result_fail_display() {
+        let r = DkimResult::Fail {
+            reason: "bad sig".into(),
+        };
+        assert_eq!(r.to_string(), "fail (bad sig)");
+        assert!(!r.is_pass());
+    }
+
+    #[test]
+    fn result_permfail_display() {
+        let r = DkimResult::PermFail {
+            reason: "missing tag".into(),
+        };
+        assert_eq!(r.to_string(), "permfail (missing tag)");
+    }
+
+    #[test]
+    fn result_tempfail_display() {
+        let r = DkimResult::TempFail {
+            reason: "dns timeout".into(),
+        };
+        assert_eq!(r.to_string(), "tempfail (dns timeout)");
+    }
+
+    #[test]
+    fn result_none_display() {
+        assert_eq!(DkimResult::None.to_string(), "none");
+        assert!(!DkimResult::None.is_pass());
+    }
+
+    #[test]
+    fn reexports_accessible() {
+        // Verify re-exports compile
+        let _: Algorithm = Algorithm::RsaSha256;
+        let _: CanonicalizationMethod = CanonicalizationMethod::Simple;
+        let _: KeyType = KeyType::Rsa;
+        let _: KeyFlag = KeyFlag::Testing;
     }
 }

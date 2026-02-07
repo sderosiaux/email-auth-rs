@@ -8,10 +8,10 @@ rust-version = "1.80"
 hickory-resolver = "0.25"
 ring = "0.17"
 base64 = "0.22"
-publicsuffix = "2"
 thiserror = "2"
 tokio = { version = "1", features = ["rt-multi-thread"] }
 rand = "0.9"
+psl = "2.1.187"
 
 [dev-dependencies]
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }

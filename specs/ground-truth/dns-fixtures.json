@@ -1,0 +1,46 @@
+{
+  "_comment": "Frozen DNS responses for deterministic testing. Keys match generated PEM files.",
+  "txt": {
+    "example.com": ["v=spf1 ip4:192.0.2.0/24 ip4:198.51.100.0/24 include:_spf.example.com -all"],
+    "_spf.example.com": ["v=spf1 ip4:203.0.113.0/24 ~all"],
+    "norecord.example.com": [],
+    "multi-spf.example.com": ["v=spf1 +all", "v=spf1 -all"],
+    "redirect.example.com": ["v=spf1 redirect=example.com"],
+    "loop.example.com": ["v=spf1 include:loop2.example.com -all"],
+    "loop2.example.com": ["v=spf1 include:loop.example.com -all"],
+    "exp.example.com": ["v=spf1 -all exp=explain.example.com"],
+    "explain.example.com": ["Access denied for %{i} sending from %{d}"],
+
+    "sel1._domainkey.example.com": ["v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArUg0luedcbMuBW0FPq+t96pkNP5ZQweGKvwSb8jNSvpvtRF5DZe3v6iXW9+C0wRxvhALD77DaQ9Bl4o8G+Mib3dPsv05iQw05r5g+BVziu5Fg7xx+BvEUlsM24niyZcHNHRvvina0OcCTWxtFTLO+hiVOxJt2GouO0GQ4ZGhgCzqC/ehJWnIksE2g43AEqBtIYznkdS0avsu/IUaIY5WfyMCVcn4SCIaNDAa/U/43h6OrIiIarS8JvOZs25J+avkj2DeVCapdiWzPSwZPFAopIxj+EX/a/6tiVOOVBEeQvSr1ZI7Ncsp8XSbgK8hb48nxdHcfPg16ux2ACzFafGMJwIDAQAB"],
+    "sel-ed._domainkey.example.com": ["v=DKIM1; k=ed25519; p=hI2Zp7wVaXtPqAYZplev2cSiaQndORQIj/JQe89jb3Y="],
+    "sel-revoked._domainkey.example.com": ["v=DKIM1; k=rsa; p="],
+    "sel-sha256only._domainkey.example.com": ["v=DKIM1; k=rsa; h=sha256; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArUg0luedcbMuBW0FPq+t96pkNP5ZQweGKvwSb8jNSvpvtRF5DZe3v6iXW9+C0wRxvhALD77DaQ9Bl4o8G+Mib3dPsv05iQw05r5g+BVziu5Fg7xx+BvEUlsM24niyZcHNHRvvina0OcCTWxtFTLO+hiVOxJt2GouO0GQ4ZGhgCzqC/ehJWnIksE2g43AEqBtIYznkdS0avsu/IUaIY5WfyMCVcn4SCIaNDAa/U/43h6OrIiIarS8JvOZs25J+avkj2DeVCapdiWzPSwZPFAopIxj+EX/a/6tiVOOVBEeQvSr1ZI7Ncsp8XSbgK8hb48nxdHcfPg16ux2ACzFafGMJwIDAQAB"],
+    "sel-strict._domainkey.example.com": ["v=DKIM1; k=rsa; t=s; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArUg0luedcbMuBW0FPq+t96pkNP5ZQweGKvwSb8jNSvpvtRF5DZe3v6iXW9+C0wRxvhALD77DaQ9Bl4o8G+Mib3dPsv05iQw05r5g+BVziu5Fg7xx+BvEUlsM24niyZcHNHRvvina0OcCTWxtFTLO+hiVOxJt2GouO0GQ4ZGhgCzqC/ehJWnIksE2g43AEqBtIYznkdS0avsu/IUaIY5WfyMCVcn4SCIaNDAa/U/43h6OrIiIarS8JvOZs25J+avkj2DeVCapdiWzPSwZPFAopIxj+EX/a/6tiVOOVBEeQvSr1ZI7Ncsp8XSbgK8hb48nxdHcfPg16ux2ACzFafGMJwIDAQAB"],
+    "sel-emailonly._domainkey.example.com": ["v=DKIM1; k=rsa; s=email; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArUg0luedcbMuBW0FPq+t96pkNP5ZQweGKvwSb8jNSvpvtRF5DZe3v6iXW9+C0wRxvhALD77DaQ9Bl4o8G+Mib3dPsv05iQw05r5g+BVziu5Fg7xx+BvEUlsM24niyZcHNHRvvina0OcCTWxtFTLO+hiVOxJt2GouO0GQ4ZGhgCzqC/ehJWnIksE2g43AEqBtIYznkdS0avsu/IUaIY5WfyMCVcn4SCIaNDAa/U/43h6OrIiIarS8JvOZs25J+avkj2DeVCapdiWzPSwZPFAopIxj+EX/a/6tiVOOVBEeQvSr1ZI7Ncsp8XSbgK8hb48nxdHcfPg16ux2ACzFafGMJwIDAQAB"],
+    "sel-1024._domainkey.example.com": ["v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDjzCXJ4siMJD1LiTgXfImuJhYt45m0gC5rEfXUk4DpWUFZ21O+Vs/dBowbuIQLKtVUk5VkGPRMl6+I+uQnjjKrnKUde4Ced4V37oDq0/pWawM7Tcygd1yckNW94uQ0MnCXCerPE9b6iuRqNAsvQPLG8blHViFO5P92XlnfruJTeQIDAQAB"],
+
+    "_dmarc.example.com": ["v=DMARC1; p=reject; adkim=r; aspf=r; pct=100; rua=mailto:dmarc@example.com"],
+    "_dmarc.sub.example.com": [],
+    "_dmarc.monitoring.example.com": ["v=DMARC1; p=none; rua=mailto:dmarc@example.com"],
+    "_dmarc.subdomain-policy.example.com": ["v=DMARC1; p=reject; sp=quarantine; np=reject"],
+    "_dmarc.pct-test.example.com": ["v=DMARC1; p=quarantine; pct=50"]
+  },
+  "a": {
+    "example.com": ["192.0.2.1"],
+    "mx1.example.com": ["192.0.2.10"],
+    "mx2.example.com": ["198.51.100.10"]
+  },
+  "aaaa": {
+    "example.com": ["2001:db8::1"]
+  },
+  "mx": {
+    "example.com": [{"preference": 10, "exchange": "mx1.example.com"}, {"preference": 20, "exchange": "mx2.example.com"}]
+  },
+  "ptr": {
+    "192.0.2.1": ["mail.example.com"]
+  },
+  "nxdomain": [
+    "nonexistent.example.com",
+    "sub.example.com"
+  ]
+}
