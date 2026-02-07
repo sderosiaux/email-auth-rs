@@ -534,6 +534,24 @@ async fn discover_record(&self, from_domain: &str, org_domain: &str) -> Option<D
 - rand 0.9: `random_range` (not `gen_range` from 0.8)
 - `rand::random_range(0u8..100)` for pct sampling
 
+### 13.8 v3 Learnings
+
+#### 13.8.1 Bugs Found in v3 (MUST fix in v4)
+- **pct sampling only applied to Quarantine, not Reject**: `eval.rs` only applied pct sampling when `policy == Quarantine`. RFC 7489 §6.6.4 says pct applies to BOTH quarantine and reject. `p=reject; pct=50` always rejected instead of 50% reject / 50% monitoring. **FIX**: Apply pct sampling to any non-None policy disposition (both Quarantine and Reject).
+- **np= missing AAAA query**: Non-existent subdomain detection only checked A + MX records. RFC 9091 requires A + AAAA + MX all returning NxDomain. Missing AAAA means a subdomain with only AAAA records would be falsely treated as non-existent. **FIX**: Add `query_aaaa()` call to the `tokio::join!` triple.
+- **Multiple DMARC records → NotFound**: When multiple valid DMARC records existed at the same DNS name, v3 returned "not found". RFC 7489 §6.6.3 says to use the first valid record. **FIX**: Parse each TXT record, take first successful parse result.
+- **Non-mailto URIs accepted**: `record.rs` URI parser accepted any scheme (http, ftp, etc.) in rua/ruf. RFC 7489 §6.3 only defines mailto: scheme. **FIX**: Reject URIs with scheme != "mailto" during parsing.
+
+#### 13.8.2 Test Coverage Gaps
+- **Deterministic pct testing**: The `evaluate_with_roll()` internal method existed but pct=50 tests should cover BOTH branches (roll < pct → enforce, roll >= pct → monitoring). Add explicit tests for both.
+- **External report URI verification**: Spec §7.1 mentions querying `<target-domain>._report._dmarc.<sender-domain>` for cross-domain report authorization. Not implemented. Add to spec and implement.
+- **Multiple DMARC records test**: Add test where two valid `v=DMARC1` records exist — verify first is used, not error.
+
+#### 13.8.3 Patterns That Worked
+- `evaluate_with_roll(roll: Option<u8>)` pattern for deterministic pct testing — clean separation of randomness
+- DmarcResult as a struct (not flat enum) with disposition + alignment bools + policy + record — gives callers full context
+- TempFail propagation from DNS discovery — correctly distinguishes "no policy" from "can't determine policy"
+
 ---
 
 ## Completion Checklist

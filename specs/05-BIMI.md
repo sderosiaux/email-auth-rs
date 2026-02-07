@@ -293,7 +293,46 @@ pub fn parse_bimi_selector(header_value: &str) -> Result<BimiSelectorHeader, Str
 
 ## 11. Implementation Learnings
 
-(To be populated after implementation)
+### 11.1 v3 Bugs (MUST fix in v4)
+
+#### 11.1.1 SVG Event Handler Bypass on Self-Closing Elements (SECURITY)
+- `validate_svg_tiny_ps()` checked `on*` event handler attributes only on `Event::Start` elements
+- Self-closing elements (`<rect onclick="alert(1)"/>`) emit `Event::Empty`, not `Event::Start`
+- **FIX**: Add the same `on*` attribute check to the `Event::Empty` branch. Both Start and Empty must reject event handlers.
+
+#### 11.1.2 SVG Title Max Length Off-by-One
+- v3 used `MAX_TITLE_LENGTH = 64` (spec §4.1 says max 65 characters)
+- **FIX**: Change constant to 65.
+
+### 11.2 v3 Gaps (MUST implement in v4)
+
+#### 11.2.1 SVG Validator Not Wired Into Discovery
+- `validate_svg_tiny_ps()` exists as standalone function but is never called from `BimiVerifier::discover()`
+- Design decision: discover() returns logo_uri, caller fetches SVG, then calls validate_svg_tiny_ps() separately
+- This is correct (library doesn't do HTTP fetching), but the API should make the flow clear
+- Consider adding a `validate_logo(&self, svg: &str) -> Result<(), SvgError>` convenience method on BimiVerifier
+
+#### 11.2.2 VMC Entirely Unimplemented (~15 spec items)
+- No certificate parsing, chain validation, EKU check, SAN matching, LogoType extraction, or revocation check
+- Requires `x509-parser` or `webpki` crate
+- This is the largest gap — BIMI without VMC is limited to domains without authority evidence
+- **Recommendation**: Implement basic VMC validation (parse PEM, check EKU OID, validate chain, match SAN). CRL checking can be deferred.
+
+#### 11.2.3 BIMI-Location/Indicator Header Generation Missing
+- Spec §6 step 11 says to add `BIMI-Location` and `BIMI-Indicator` headers on pass
+- v3 returns BimiValidationResult but does not generate these headers
+- **FIX**: Add `fn format_bimi_headers(result: &BimiValidationResult) -> Option<(String, String)>` that produces the header values
+
+#### 11.2.4 pct Check in DMARC Eligibility
+- `check_dmarc_eligibility()` checks disposition and policy but does NOT check if DMARC pct=100
+- Spec §2.2 requires pct=100 (or absent, defaulting to 100) for BIMI eligibility
+- **FIX**: Access `dmarc_result.record` and check `record.percent == 100`
+
+### 11.3 Patterns That Worked
+- `quick-xml` event-based parsing for SVG validation — memory-efficient, catches prohibited elements during parse
+- Declination record detection (`v=BIMI1;` with no l= or empty l=) — clean separate result variant
+- DMARC eligibility as standalone function — reusable, easy to test independently
+- Org-domain fallback in discovery — same pattern as DMARC record discovery
 
 ---
 

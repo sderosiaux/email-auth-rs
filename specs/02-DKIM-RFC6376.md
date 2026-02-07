@@ -559,6 +559,20 @@ DkimPublicKey::parse(txt_record: &str) -> Result<DkimPublicKey, KeyParseError>
 - Header selection is bottom-up: if h= lists "to" twice and message has 3 To headers, first "to" in h= selects the last To header, second "to" selects second-to-last
 - Over-signed headers produce empty canonicalized headers, NOT silently skipped
 
+### 10.9 v3 Learnings
+
+#### 10.9.1 Missing Test Coverage (MUST add in v4)
+- **RSA-SHA1 end-to-end verification**: ring 0.17 does NOT support SHA-1 signing (`RsaKeyPair` only signs SHA-256). Cannot create RSA-SHA1 signatures in tests using ring. **FIX**: Use a pre-computed RSA-SHA1 fixture (sign once with OpenSSL, embed the signed message + public key in test). Alternatively, use the `rsa` crate just for test fixture generation.
+- **Expired signature test**: No test verifies that `x=` timestamp in the past causes PermFail(ExpiredSignature). Add test with `x=1000000` (well in the past).
+- **Tampered header test**: No test verifies that modifying a signed header (e.g., Subject) causes Fail(SignatureVerificationFailed). Add test that signs, modifies Subject, then verifies.
+- **Ground-truth tests (spec §8.5)**: Tests only use sign-then-verify round-trips. This means a bug in both signer and verifier could be self-consistent. **MUST** add tests that construct DKIM signatures manually using ring primitives (Ed25519KeyPair.sign), bypassing DkimSigner entirely, then verify through DkimVerifier.
+
+#### 10.9.2 Patterns That Worked
+- SPKI→PKCS#1 ASN.1 stripping for RSA keys — robust across 1024/2048/4096-bit keys
+- `subtle::ConstantTimeEq` for body hash comparison — clean alternative to deprecated ring constant_time
+- Canonicalization as separate testable module — allowed unit testing simple/relaxed independently from crypto
+- b= stripping via structural parsing (find `b=` not preceded by `b`) — correct and readable
+
 ---
 
 ## 11. Dependencies
