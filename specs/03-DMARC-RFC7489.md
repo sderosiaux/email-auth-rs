@@ -56,9 +56,9 @@ DMARC builds on SPF and DKIM to provide domain-level policy for email authentica
 ### 1.5 Report URI
 
 - [ ] Define `ReportUri` struct:
-  - [ ] `scheme: String` — must be "mailto" (only defined scheme)
-  - [ ] `address: String` — email address
+  - [ ] `address: String` — email address (after stripping `mailto:` prefix)
   - [ ] `max_size: Option<u64>` — size limit in bytes
+  - Note: `scheme` field omitted — only `mailto:` is accepted (validated during parsing, not stored). Non-mailto URIs are rejected at parse time.
 - [ ] Size suffix parsing: `!` followed by number + optional unit (k/m/g/t, case-insensitive)
   - k = 1024, m = 1024², g = 1024³, t = 1024⁴
   - No unit suffix → raw bytes
@@ -315,6 +315,8 @@ DmarcRecord::parse(txt: &str) -> Result<DmarcRecord, DmarcParseError>
 - [ ] XML serialization matching the DMARC aggregate report schema
 - [ ] `AggregateReportBuilder` — accumulates authentication results, produces XML
 - [ ] External report URI verification: query `<target-domain>._report._dmarc.<sender-domain>` TXT for `v=DMARC1` authorization
+  - [ ] If target domain differs from sender domain, verify authorization before including URI
+  - [ ] If `_report._dmarc` query fails or returns no `v=DMARC1` record → drop that report URI
 
 ### 7.2 Failure Reports (ruf)
 
@@ -323,7 +325,11 @@ DmarcRecord::parse(txt: &str) -> Result<DmarcRecord, DmarcParseError>
   - [ ] Authentication failure details
   - [ ] Feedback type: "auth-failure"
 - [ ] AFRF message generation (MIME multipart/report with message/feedback-report)
-- [ ] Failure option filtering: check fo= tag to determine which failures trigger reports
+- [ ] Failure option filtering: check `fo=` tag to determine which failures trigger reports
+  - [ ] `fo=0` (default): report only when ALL mechanisms fail to produce aligned pass
+  - [ ] `fo=1`: report when ANY mechanism fails to produce aligned pass
+  - [ ] `fo=d`: report when DKIM evaluation fails (regardless of SPF)
+  - [ ] `fo=s`: report when SPF evaluation fails (regardless of DKIM)
 
 ### 7.3 Report Delivery (caller responsibility)
 
@@ -431,6 +437,31 @@ fn local_part_from_email(email: &str) -> &str;       // extract local part befor
 - [ ] `mail.example.co.uk` → `example.co.uk`
 - [ ] `foo.bar.co.uk` → `bar.co.uk`
 - [ ] Deep subdomain: `a.b.c.example.com` → `example.com`
+
+### 9.5 Reporting Tests
+
+#### Aggregate Reports
+- [ ] Build aggregate report with AggregateReportBuilder → serialize to XML → verify XML structure matches RFC 7489 Appendix C schema
+- [ ] Report metadata: org_name, email, report_id, date_range present in XML
+- [ ] Policy published: domain, adkim, aspf, p, sp, pct fields in XML
+- [ ] Multiple records: add 3 auth results, verify 3 `<record>` elements in output
+- [ ] Empty report (no records): valid XML with zero records
+
+#### External Report URI Verification
+- [ ] Same domain (sender=example.com, rua=mailto:dmarc@example.com): no `_report._dmarc` query needed
+- [ ] Cross-domain (sender=example.com, rua=mailto:reports@thirdparty.com): query `example.com._report._dmarc.thirdparty.com` TXT → `v=DMARC1` → authorized
+- [ ] Cross-domain without authorization record → URI dropped
+- [ ] Cross-domain with TempFail on `_report._dmarc` query → URI dropped (safe default)
+
+#### Failure Reports
+- [ ] Failure report AFRF format: verify output contains `Feedback-Type: auth-failure`
+- [ ] fo=0 (default): both SPF and DKIM fail → generate report
+- [ ] fo=0: SPF fails but DKIM aligns → NO report (not all mechanisms failed)
+- [ ] fo=1: SPF fails but DKIM aligns → generate report (any mechanism failed)
+- [ ] fo=d: DKIM fails → generate report (regardless of SPF result)
+- [ ] fo=d: DKIM passes, SPF fails → NO report (fo=d only triggers on DKIM failure)
+- [ ] fo=s: SPF fails → generate report (regardless of DKIM result)
+- [ ] fo=s: SPF passes, DKIM fails → NO report
 
 ---
 

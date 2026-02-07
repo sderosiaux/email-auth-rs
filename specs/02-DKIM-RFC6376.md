@@ -426,6 +426,7 @@ DkimPublicKey::parse(txt_record: &str) -> Result<DkimPublicKey, KeyParseError>
 - [ ] Duplicate tag → PermFail
 - [ ] Unknown tag → ignored
 - [ ] Invalid algorithm → PermFail
+- [ ] Case-insensitive algorithm: `a=RSA-SHA256` → parsed identical to `a=rsa-sha256` (applies `.to_ascii_lowercase()` before matching)
 - [ ] h= missing "from" → PermFail
 - [ ] i= not subdomain of d= → PermFail
 - [ ] c= parsing: "relaxed/relaxed", "simple", "relaxed" (body defaults to simple)
@@ -458,8 +459,8 @@ DkimPublicKey::parse(txt_record: &str) -> Result<DkimPublicKey, KeyParseError>
 ### 8.4 Verification Tests
 
 - [ ] Valid Ed25519 signature → Pass
-- [ ] Valid RSA-SHA256 signature → Pass
-- [ ] Valid RSA-SHA1 signature → Pass (MUST test this code path)
+- [ ] Valid RSA-SHA256 signature → Pass (**pre-computed fixture**: sign with `rsa` crate or openssl, embed signed message + SPKI public key in test — cannot rely on sign→verify round-trip alone)
+- [ ] Valid RSA-SHA1 signature → Pass (**pre-computed fixture required**: ring 0.17 cannot sign SHA-1. Sign once externally, embed fixture with raw message bytes + signature + public key)
 - [ ] Tampered body → Fail (BodyHashMismatch)
 - [ ] Tampered header → Fail (SignatureVerificationFailed)
 - [ ] Expired signature → PermFail (ExpiredSignature)
@@ -473,6 +474,7 @@ DkimPublicKey::parse(txt_record: &str) -> Result<DkimPublicKey, KeyParseError>
 - [ ] No DKIM-Signature → None
 - [ ] Simple/simple canonicalization end-to-end
 - [ ] Relaxed/relaxed canonicalization end-to-end
+- [ ] Over-signed header verification: signature with "from" listed twice in h=, message has one From → verify Pass (empty header contributes to hash, not skipped)
 
 ### 8.5 Ground-Truth Verification Tests
 
@@ -484,11 +486,13 @@ DkimPublicKey::parse(txt_record: &str) -> Result<DkimPublicKey, KeyParseError>
 ### 8.6 Signing Tests
 
 - [ ] Sign and verify round-trip (Ed25519)
-- [ ] Sign and verify round-trip (RSA-SHA256)
+- [ ] Sign and verify round-trip (RSA-SHA256) — generate RSA 2048 key, sign message, verify through DkimVerifier with MockResolver serving the public key
 - [ ] Different canonicalization modes
 - [ ] From header enforced in signed headers
 - [ ] Timestamp and expiration set correctly
 - [ ] PEM key loading: RSA 2048, Ed25519
+- [ ] RSA-SHA1 signing prevention: `DkimSigner` API MUST NOT allow constructing a signer with `Algorithm::RsaSha1`. Either no constructor exists, or `sign_message()` returns error. Test that no code path produces an `a=rsa-sha1` signature.
+- [ ] Over-sign round-trip: sign with "from" in h= twice (over-sign), verify through DkimVerifier → Pass. This validates signer and verifier agree on empty-header hash contribution. A bug where signer skips the empty header but verifier includes it (or vice versa) causes Fail.
 
 ---
 

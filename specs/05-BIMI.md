@@ -75,25 +75,20 @@ pub struct BimiValidationResult {
 - [ ] Custom selector: from BIMI-Selector header s= tag
 - [ ] If no record at author domain → fallback to `<selector>._bimi.<organizational-domain>`
 - [ ] Filter: records starting with `v=`
-- [ ] Exactly one valid record required (multiple → error)
+- [ ] Exactly one valid record required: parse ALL TXT records, count valid BIMI records, multiple valid → Fail (do NOT silently pick first)
 
 ### 2.2 DMARC Eligibility (MUST check before BIMI lookup)
 
-- [ ] DMARC result MUST be Pass
+- [ ] DMARC result MUST be Pass (disposition == Pass)
 - [ ] DMARC policy MUST be `quarantine` or `reject` (NOT `none`)
-- [ ] DMARC pct MUST be 100 (or omitted, defaults to 100)
-- [ ] Either SPF or DKIM must align (DKIM preferred)
+- [ ] DMARC pct MUST be 100: access `dmarc_result.record` and verify `record.percent == 100`. pct < 100 → NOT eligible.
+- [ ] SPF or DKIM alignment: `dmarc_result.dkim_aligned || dmarc_result.spf_aligned` (redundant with Pass disposition but spec-mandated — check explicitly)
 
-```rust
-pub fn check_dmarc_eligibility(dmarc_result: &DmarcResult) -> bool {
-    matches!(dmarc_result.disposition, Disposition::Pass)
-        && matches!(
-            dmarc_result.applied_policy,
-            Some(Policy::Quarantine) | Some(Policy::Reject)
-        )
-    // pct check: if record available, verify pct == 100
-}
-```
+### 2.3 Sender-Inserted Header Removal
+
+- [ ] Before BIMI processing, strip any pre-existing `BIMI-Location` and `BIMI-Indicator` headers from the message
+- [ ] These headers are receiver-only; senders MUST NOT insert them
+- [ ] If present, treat as potentially malicious and remove before evaluation
 
 ---
 
@@ -249,7 +244,10 @@ pub fn parse_bimi_selector(header_value: &str) -> Result<BimiSelectorHeader, Str
 - [ ] DMARC pass + reject → eligible
 - [ ] DMARC pass + none → NOT eligible
 - [ ] DMARC fail → NOT eligible
-- [ ] pct < 100 → NOT eligible
+- [ ] pct < 100 → NOT eligible (construct DmarcResult with record.percent=50, verify rejection)
+- [ ] pct=100 explicit → eligible
+- [ ] Alignment check: dkim_aligned=true → eligible
+- [ ] Alignment check: both dkim_aligned=false and spf_aligned=false → NOT eligible (even if disposition=Pass, which shouldn't normally happen, but defensive)
 
 ### 8.3 Discovery
 
@@ -258,6 +256,8 @@ pub fn parse_bimi_selector(header_value: &str) -> Result<BimiSelectorHeader, Str
 - [ ] No record anywhere → None
 - [ ] DNS TempFail → TempError
 - [ ] Custom selector via BIMI-Selector header
+- [ ] Multiple valid BIMI records at same DNS name → Fail (not first-wins)
+- [ ] One valid + one invalid record → use the valid one (invalid silently skipped)
 
 ### 8.4 SVG Validation
 
@@ -267,6 +267,40 @@ pub fn parse_bimi_selector(header_value: &str) -> Result<BimiSelectorHeader, Str
 - [ ] Exceeds 32KB → fail
 - [ ] Missing `<title>` → fail
 - [ ] Comma-delimited viewBox → fail
+- [ ] Event handler on self-closing element: `<rect onclick="x"/>` → fail (Event::Empty, not just Event::Start)
+- [ ] `javascript:` URI in href → fail
+- [ ] `<animate>` element → fail
+- [ ] `<image>` element → fail
+- [ ] `<foreignObject>` element → fail
+- [ ] Title exceeding 65 characters → fail
+- [ ] Entity declaration (`<!ENTITY`) → fail (XXE prevention)
+
+### 8.5 VMC Validation
+
+- [ ] Valid VMC: PEM cert with BIMI EKU OID `1.3.6.1.5.5.7.3.31` → pass
+- [ ] Missing BIMI EKU OID → fail
+- [ ] SAN matches `<selector>._bimi.<domain>` → pass
+- [ ] SAN mismatch → fail
+- [ ] Expired certificate → fail
+- [ ] Not-yet-valid certificate → fail
+- [ ] Extract SVG from LogoType extension (RFC 3709) → validate as SVG Tiny PS
+- [ ] Logo hash comparison: DNS-fetched logo matches VMC-embedded logo → pass
+- [ ] Logo hash comparison: mismatch → fail
+- [ ] PEM chain: VMC → Intermediate → Root, validate chain
+- [ ] Out-of-order PEM chain → reject
+- [ ] Multiple VMC certificates in chain → reject
+
+### 8.6 Header Generation
+
+- [ ] BIMI pass → `format_bimi_headers()` produces `BIMI-Location` header with logo URI
+- [ ] BIMI pass with VMC → `BIMI-Indicator` header with base64-encoded SVG
+- [ ] BIMI fail/none/declined → `format_bimi_headers()` returns None
+
+### 8.7 Sender-Inserted Header Removal
+
+- [ ] Message with pre-existing `BIMI-Location` header → header stripped before evaluation
+- [ ] Message with pre-existing `BIMI-Indicator` header → header stripped before evaluation
+- [ ] Message with no BIMI headers → no-op
 
 ---
 
@@ -341,8 +375,11 @@ pub fn parse_bimi_selector(header_value: &str) -> Result<BimiSelectorHeader, Str
 - [ ] BIMI DNS record parsing (v=, l=, a= tags)
 - [ ] BIMI-Selector header parsing
 - [ ] Record discovery with org-domain fallback
-- [ ] DMARC eligibility check
-- [ ] SVG Tiny PS validation (size, baseProfile, prohibited elements)
-- [ ] VMC structure validation (EKU, SAN, LogoType extension)
+- [ ] Multiple valid records → Fail (not first-wins)
+- [ ] DMARC eligibility check (disposition + policy + pct=100 + alignment)
+- [ ] SVG Tiny PS validation (size, baseProfile, prohibited elements, Event::Start AND Event::Empty)
+- [ ] VMC validation (EKU OID, SAN matching, chain validation, LogoType SVG extraction, logo hash comparison)
 - [ ] Declination record handling
-- [ ] Unit tests for parsing, discovery, SVG validation, DMARC eligibility
+- [ ] BIMI-Location and BIMI-Indicator header generation (`format_bimi_headers()`)
+- [ ] Sender-inserted BIMI header removal
+- [ ] Unit tests for: parsing, discovery (incl. multiple records), SVG validation, DMARC eligibility, VMC, header generation, header removal

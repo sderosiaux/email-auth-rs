@@ -4,19 +4,3 @@ version = "0.1.0"
 edition = "2021"
 description = "Email authentication library: SPF, DKIM, DMARC, ARC, BIMI"
 license = "MIT"
-
-[dependencies]
-async-trait = "0.1"
-base64 = "0.22"
-quick-xml = "0.37"
-rand = "0.9"
-ring = "0.17"
-subtle = "2.6"
-tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
-x509-parser = "0.16"
-
-[dependencies.psl]
-version = "2"
-
-[dev-dependencies]
-tokio = { version = "1", features = ["macros", "rt-multi-thread", "test-util"] }
