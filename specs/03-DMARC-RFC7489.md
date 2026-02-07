@@ -6,8 +6,9 @@
 
 DMARC builds on SPF and DKIM to provide domain-level policy for email authentication. It enables domain owners to:
 1. Declare how unauthenticated messages should be handled
-2. Receive reports about authentication results
-3. Ensure the RFC5322.From domain aligns with authenticated identifiers
+2. Ensure the RFC5322.From domain aligns with authenticated identifiers
+
+**Scope boundary**: This library implements DMARC policy evaluation (record parsing, alignment checks, policy selection). Report generation (aggregate XML, failure AFRF, compression, email sending) is OUT OF SCOPE — it belongs in an MTA or dedicated reporting crate. The rua/ruf URIs are parsed and exposed in `DmarcRecord` for callers that implement their own reporting.
 
 ---
 
@@ -16,18 +17,17 @@ DMARC builds on SPF and DKIM to provide domain-level policy for email authentica
 ### 1.1 DMARC Record Structure
 
 - [ ] Define `DmarcRecord` struct:
-  - [ ] `v: String` — version (must be "DMARC1")
-  - [ ] `p: Policy` — policy for domain
-  - [ ] `sp: Option<Policy>` — subdomain policy (defaults to p)
-  - [ ] `adkim: AlignmentMode` — DKIM alignment mode (default: relaxed)
-  - [ ] `aspf: AlignmentMode` — SPF alignment mode (default: relaxed)
-  - [ ] `np: Option<Policy>` — non-existent subdomain policy (RFC 9091)
-  - [ ] `pct: u8` — percentage of messages to apply policy (default: 100)
-  - [ ] `fo: Vec<FailureOption>` — failure reporting options
-  - [ ] `rf: ReportFormat` — report format (default: AFRF)
-  - [ ] `ri: u32` — aggregate report interval in seconds (default: 86400)
-  - [ ] `rua: Vec<Uri>` — aggregate report URIs
-  - [ ] `ruf: Vec<Uri>` — failure report URIs
+  - [ ] `policy: Policy` — policy for organizational domain (p= tag)
+  - [ ] `subdomain_policy: Policy` — subdomain policy (sp= tag, defaults to p)
+  - [ ] `non_existent_subdomain_policy: Option<Policy>` — np= tag (RFC 9091)
+  - [ ] `dkim_alignment: AlignmentMode` — DKIM alignment mode (adkim= tag, default: relaxed)
+  - [ ] `spf_alignment: AlignmentMode` — SPF alignment mode (aspf= tag, default: relaxed)
+  - [ ] `percent: u8` — percentage of messages to apply policy (pct= tag, default: 100)
+  - [ ] `failure_options: Vec<FailureOption>` — failure reporting options (fo= tag)
+  - [ ] `report_format: ReportFormat` — report format (rf= tag, default: AFRF)
+  - [ ] `report_interval: u32` — aggregate report interval seconds (ri= tag, default: 86400)
+  - [ ] `rua: Vec<ReportUri>` — aggregate report URIs (rua= tag)
+  - [ ] `ruf: Vec<ReportUri>` — failure report URIs (ruf= tag)
 
 ### 1.2 Policy
 
@@ -35,45 +35,49 @@ DMARC builds on SPF and DKIM to provide domain-level policy for email authentica
   - [ ] `None` — no action, monitoring only
   - [ ] `Quarantine` — treat as suspicious (spam folder)
   - [ ] `Reject` — reject the message
+- [ ] Parsing: case-insensitive ("none", "quarantine", "reject")
 
 ### 1.3 Alignment Mode
 
 - [ ] Define `AlignmentMode` enum:
   - [ ] `Relaxed` — organizational domain match (default)
   - [ ] `Strict` — exact domain match
+- [ ] Parsing: "r" → Relaxed, "s" → Strict
 
 ### 1.4 Failure Reporting Options
 
 - [ ] Define `FailureOption` enum:
-  - [ ] `Zero` — `0`: Generate report if all mechanisms fail (default)
-  - [ ] `One` — `1`: Generate report if any mechanism fails
-  - [ ] `D` — `d`: Generate report if DKIM fails
-  - [ ] `S` — `s`: Generate report if SPF fails
+  - [ ] `Zero` — `0`: generate report if all mechanisms fail (default)
+  - [ ] `One` — `1`: generate report if any mechanism fails
+  - [ ] `D` — `d`: generate report if DKIM fails
+  - [ ] `S` — `s`: generate report if SPF fails
+- [ ] Parsing: colon-separated, case-insensitive. Unknown options ignored.
 
-### 1.5 DMARC Result
+### 1.5 Report URI
 
-- [ ] Define `DmarcResult` struct:
+- [ ] Define `ReportUri` struct:
+  - [ ] `scheme: String` — must be "mailto" (only defined scheme)
+  - [ ] `address: String` — email address
+  - [ ] `max_size: Option<u64>` — size limit in bytes
+- [ ] Size suffix parsing: `!` followed by number + optional unit (k/m/g/t, case-insensitive)
+  - k = 1024, m = 1024², g = 1024³, t = 1024⁴
+  - No unit suffix → raw bytes
+
+### 1.6 DMARC Result
+
+- [ ] Define `DmarcResult` struct (NOT a flat enum — structured with evaluation details):
   - [ ] `disposition: Disposition` — what to do with message
-  - [ ] `dkim_result: DkimAlignment` — DKIM alignment result
-  - [ ] `spf_result: SpfAlignment` — SPF alignment result
-  - [ ] `policy: Policy` — policy that was applied
-  - [ ] `record: Option<DmarcRecord>` — the DMARC record found
+  - [ ] `dkim_aligned: bool` — whether any DKIM signature aligned
+  - [ ] `spf_aligned: bool` — whether SPF passed and aligned
+  - [ ] `applied_policy: Option<Policy>` — the policy that was applied
+  - [ ] `record: Option<DmarcRecord>` — the DMARC record found (if any)
 
 - [ ] Define `Disposition` enum:
   - [ ] `Pass` — message passed DMARC
   - [ ] `Quarantine` — quarantine per policy
   - [ ] `Reject` — reject per policy
-  - [ ] `None` — no policy (monitoring mode or no record)
-
-- [ ] Define `DkimAlignment` enum:
-  - [ ] `Pass` — aligned DKIM signature found
-  - [ ] `Fail` — no aligned DKIM signature
-  - [ ] `None` — no DKIM signatures present
-
-- [ ] Define `SpfAlignment` enum:
-  - [ ] `Pass` — SPF passed and aligned
-  - [ ] `Fail` — SPF failed or not aligned
-  - [ ] `None` — SPF not evaluated
+  - [ ] `None` — no policy (monitoring mode, pct sampling excluded, or no record)
+  - [ ] `TempFail` — DNS temporary failure during record discovery
 
 ---
 
@@ -86,22 +90,28 @@ DMARC builds on SPF and DKIM to provide domain-level policy for email authentica
 - [ ] If no record found and domain is not organizational domain:
   - [ ] Determine organizational domain (public suffix + 1 label)
   - [ ] Query: `_dmarc.<organizational-domain>`
-- [ ] Handle multiple TXT records: use first valid DMARC record
-- [ ] No record found: return `None` (no DMARC policy)
+- [ ] Multiple TXT records at same name: use first valid DMARC record (parse each, take first success)
+- [ ] No record found (NXDOMAIN or no valid DMARC records): DmarcResult with disposition=None, no policy
 
-### 2.2 Organizational Domain Determination
+### 2.2 DNS TempFail During Discovery
 
-- [ ] Implement Public Suffix List lookup
+- [ ] **CRITICAL**: DNS TempFail during record discovery MUST NOT be treated as "no record"
+- [ ] If TXT query returns TempFail: return DmarcResult with `disposition: Disposition::TempFail`
+- [ ] Rationale: treating DNS outage as "no policy" means messages bypass DMARC during DNS failures — this is a security violation
+
+### 2.3 Organizational Domain Determination
+
+- [ ] Use Public Suffix List (PSL) to determine organizational domain
 - [ ] Organizational domain = public suffix + one label
 - [ ] Example: `mail.example.com` → `example.com`
 - [ ] Example: `foo.bar.co.uk` → `bar.co.uk`
-- [ ] Handle edge cases (TLDs, private suffixes)
+- [ ] Use `psl` crate v2: `psl::domain_str(&normalized)` returns the registrable domain
+- [ ] The psl crate embeds a snapshot of the PSL — no runtime fetch needed
 
-### 2.3 Record Caching
+### 2.4 DNS Caching
 
-- [ ] Cache DMARC records (respect DNS TTL)
-- [ ] Cache organizational domain mappings
-- [ ] Negative caching for missing records
+- [ ] DNS caching: CALLER responsibility (resolver layer), not library scope
+- [ ] Document this clearly — callers implement caching in their DnsResolver wrapper
 
 ---
 
@@ -111,42 +121,44 @@ DMARC builds on SPF and DKIM to provide domain-level policy for email authentica
 
 - [ ] Parse as tag=value pairs, separated by semicolons
 - [ ] Tags are case-insensitive
-- [ ] Values may be case-sensitive (URIs, domain names)
+- [ ] Values may be case-sensitive (URIs) or case-insensitive (policies)
 - [ ] Whitespace around tags/values is ignored
+- [ ] Trailing semicolons allowed
 
 ### 3.2 Required Tags
 
 - [ ] `v=` — version, MUST be "DMARC1", MUST be first tag
-- [ ] `p=` — policy: "none", "quarantine", "reject"
+- [ ] `p=` — policy: "none", "quarantine", "reject" (case-insensitive)
+- [ ] Missing v= or p= → parse error
+- [ ] v= not first → parse error
+- [ ] Invalid p= value → parse error
 
 ### 3.3 Optional Tags
 
-- [ ] `sp=` — subdomain policy (defaults to `p` value)
+- [ ] `sp=` — subdomain policy (defaults to `p` value if absent)
+- [ ] `np=` — non-existent subdomain policy (RFC 9091). Optional field, no default.
 - [ ] `adkim=` — DKIM alignment: "r" (relaxed, default) or "s" (strict)
 - [ ] `aspf=` — SPF alignment: "r" (relaxed, default) or "s" (strict)
-- [ ] `np=` — non-existent subdomain policy (RFC 9091): applies when From domain is subdomain that doesn't exist in DNS
-- [ ] `pct=` — percentage 0-100 (default: 100)
-- [ ] `fo=` — failure options, colon-separated (default: "0")
-- [ ] `rf=` — report format (default: "afrf")
-- [ ] `ri=` — report interval in seconds (default: 86400)
-- [ ] `rua=` — aggregate report URIs, comma-separated
-- [ ] `ruf=` — failure report URIs, comma-separated
+- [ ] `pct=` — percentage 0-100, default 100. Values >100 clamped to 100, <0 clamped to 0. Non-numeric → use default.
+- [ ] `fo=` — failure options, colon-separated. Default: "0". Parse into `Vec<FailureOption>`, unknown options ignored.
+- [ ] `rf=` — report format. Default: "afrf". Parse into enum.
+- [ ] `ri=` — report interval in seconds. Default: 86400. Non-numeric → use default.
+- [ ] `rua=` — aggregate report URIs, comma-separated. Parse into `Vec<ReportUri>`.
+- [ ] `ruf=` — failure report URIs, comma-separated. Parse into `Vec<ReportUri>`.
+- [ ] Unknown tags: ignore (forward compatibility)
 
 ### 3.4 URI Parsing
 
-- [ ] Format: `mailto:address` or `mailto:address!size`
-- [ ] Size suffix: `k` (kilobytes), `m` (megabytes), `g` (gigabytes), `t` (terabytes)
-- [ ] External reporting requires verification (see Section 7.1)
-- [ ] Validate URI syntax
+- [ ] Format: `mailto:address` or `mailto:address!size` or `mailto:address!size_unit`
+- [ ] Only "mailto:" scheme accepted. Non-mailto URIs → parse error.
+- [ ] Size suffix: `!` followed by decimal number + optional unit (k/m/g/t, case-insensitive)
+- [ ] No unit → raw bytes
+- [ ] Multiple URIs: comma-separated
 
-### 3.5 Validation Rules
+### 3.5 Duplicate Tag Handling
 
-- [ ] `v=` must be first tag
-- [ ] `v=` must be "DMARC1"
-- [ ] Unknown tags: ignore (forward compatibility)
-- [ ] Invalid `p=` value: record is invalid
-- [ ] `pct=` > 100: treat as 100
-- [ ] `pct=` < 0: treat as 0
+- [ ] Duplicate p= → use first value (per RFC 7489 §6.3)
+- [ ] Other duplicate tags: implementation may use first or last. Be consistent.
 
 ---
 
@@ -154,32 +166,32 @@ DMARC builds on SPF and DKIM to provide domain-level policy for email authentica
 
 ### 4.1 DKIM Alignment Check
 
-- [ ] For each DKIM signature that passed verification:
-  - [ ] Get the `d=` domain from signature
+- [ ] For each DKIM result that is `Pass`:
+  - [ ] Get the `d=` domain from the DKIM signature
   - [ ] Compare with RFC5322.From domain
-  - [ ] Strict mode: exact match required
-  - [ ] Relaxed mode: organizational domain match
-- [ ] If ANY signature aligns: DKIM alignment passes
+  - [ ] Strict mode: exact match required (case-insensitive, normalize trailing dots)
+  - [ ] Relaxed mode: `organizational_domain(dkim_d)` == `organizational_domain(from_domain)`
+- [ ] If ANY DKIM signature both passes AND aligns: DKIM alignment passes
 
 ### 4.2 SPF Alignment Check
 
-- [ ] Get SPF result and authenticated domain
-- [ ] SPF authenticated domain = RFC5321.MailFrom domain (or HELO if MAIL FROM empty)
-- [ ] Compare with RFC5322.From domain
+- [ ] SPF must have resulted in `Pass` (not SoftFail, not Neutral)
+- [ ] SPF authenticated domain = MAIL FROM domain (or HELO if MAIL FROM empty)
+- [ ] Compare authenticated domain with RFC5322.From domain
 - [ ] Strict mode: exact match required
 - [ ] Relaxed mode: organizational domain match
 - [ ] SPF must pass AND align for SPF alignment to pass
 
-### 4.3 Alignment Comparison
+### 4.3 Alignment Comparison Functions
 
+```rust
+fn domains_aligned(d1: &str, d2: &str, mode: AlignmentMode) -> bool {
+    match mode {
+        Strict  => domains_equal(d1, d2),  // case-insensitive, ignore trailing dots
+        Relaxed => organizational_domain(d1) == organizational_domain(d2),
+    }
+}
 ```
-Relaxed: org_domain(authenticated) == org_domain(from_header)
-Strict:  authenticated == from_header
-```
-
-- [ ] Implement `domains_aligned(d1: &str, d2: &str, mode: AlignmentMode) -> bool`
-- [ ] Handle case-insensitive comparison
-- [ ] Handle trailing dots in domain names
 
 ---
 
@@ -189,13 +201,14 @@ Strict:  authenticated == from_header
 
 ```
 1. Extract RFC5322.From domain
-2. Query DMARC record
-3. If no record: disposition = None, done
-4. Check DKIM alignment
-5. Check SPF alignment
-6. If DKIM OR SPF aligns: disposition = Pass
-7. Else: apply policy (none/quarantine/reject)
-8. Apply pct sampling
+2. Determine organizational domain via PSL
+3. Query DMARC record (with org-domain fallback)
+4. If DNS TempFail: return disposition TempFail (NOT "no record")
+5. If no record: return disposition None, done
+6. Check DKIM alignment
+7. Check SPF alignment
+8. If DKIM OR SPF aligns: disposition = Pass
+9. Else: select applicable policy, apply pct sampling
 ```
 
 ### 5.2 DMARC Pass Condition
@@ -204,45 +217,51 @@ Strict:  authenticated == from_header
 - [ ] SPF alignment passes
 - [ ] Only ONE needs to pass (OR logic)
 
-### 5.3 Policy Application (RFC 7489 Section 6.3 + RFC 9091)
+### 5.3 Policy Selection on Failure (RFC 7489 + RFC 9091)
 
-- [ ] If DMARC passes: disposition = Pass
-- [ ] If DMARC fails:
-  - [ ] Use `p=` for organizational domain itself
-  - [ ] Use `sp=` (or `p=` if no `sp=`) for existing subdomains
-  - [ ] Use `np=` (or `sp=` or `p=`) for non-existent subdomains (RFC 9091)
-- [ ] Non-existent subdomain detection (RFC 9091): query DNS for From domain A, AAAA, and MX records; non-existent if NXDOMAIN or NODATA for all three
+- [ ] If From domain equals organizational domain: use `p=` (organizational domain policy)
+- [ ] If From domain is a subdomain:
+  - [ ] Check if subdomain is non-existent (see §5.4)
+  - [ ] If non-existent: use `np=` if present, else fall back to `sp=`, else fall back to `p=`
+  - [ ] If existing subdomain: use `sp=` (which defaults to `p=` if absent in record)
+- [ ] Fallback chain: `np=` → `sp=` → `p=`
 
-### 5.4 Percentage Sampling (pct)
+### 5.4 Non-Existent Subdomain Detection (RFC 9091)
+
+- [ ] Query DNS for the From domain: A, AAAA, and MX records
+- [ ] If ALL THREE return NxDomain → domain is non-existent
+- [ ] Any other result (even empty records) → domain exists
+- [ ] **Performance**: parallelize these 3 DNS queries with `tokio::join!` — they are independent
+
+### 5.5 Percentage Sampling (pct)
 
 - [ ] If `pct` < 100:
-  - [ ] Randomly sample messages
-  - [ ] Non-sampled failures: treat as policy=none
-- [ ] Example: pct=50 means 50% get policy, 50% get none
-
-### 5.5 Subdomain vs Organizational Domain
-
-- [ ] If From domain == queried domain: use `p=`
-- [ ] If From domain is subdomain of queried domain: use `sp=`
-- [ ] Determine using organizational domain hierarchy
+  - [ ] Generate random value 0-99
+  - [ ] If value < pct: apply the policy (quarantine/reject)
+  - [ ] If value >= pct: disposition = None (monitoring mode, policy not enforced)
+- [ ] pct=100: always apply policy (no sampling)
+- [ ] pct=0: never apply policy (all monitoring)
+- [ ] Use `rand` crate for randomness
+- [ ] For testing: provide internal method that accepts deterministic roll value
 
 ---
 
 ## 6. API Design
 
-### 6.1 Core Verification Function
+### 6.1 Evaluator
 
 ```rust
-pub struct DmarcVerifier {
-    dns_resolver: Box<dyn DnsResolver>,
-    psl: PublicSuffixList,
+pub struct DmarcEvaluator<R: DnsResolver> {
+    resolver: R,
 }
 
-impl DmarcVerifier {
-    pub async fn verify(
+impl<R: DnsResolver> DmarcEvaluator<R> {
+    pub fn new(resolver: R) -> Self;
+
+    pub async fn evaluate(
         &self,
-        from_header: &str,
-        spf_result: SpfResult,
+        from_domain: &str,
+        spf_result: &SpfResult,
         spf_domain: &str,
         dkim_results: &[DkimResult],
     ) -> DmarcResult;
@@ -252,16 +271,16 @@ impl DmarcVerifier {
 ### 6.2 Combined Authentication Function
 
 ```rust
-pub struct EmailAuthenticator {
-    spf: SpfVerifier,
-    dkim: DkimVerifier,
-    dmarc: DmarcVerifier,
+pub struct EmailAuthenticator<R: DnsResolver> {
+    resolver: R,
+    clock_skew: u64,
+    receiver: String,
 }
 
-impl EmailAuthenticator {
+impl<R: DnsResolver> EmailAuthenticator<R> {
     pub async fn authenticate(
         &self,
-        message: &Message,
+        message: &[u8],    // raw RFC 5322 bytes
         client_ip: IpAddr,
         helo: &str,
         mail_from: &str,
@@ -272,83 +291,61 @@ pub struct AuthenticationResult {
     pub spf: SpfResult,
     pub dkim: Vec<DkimResult>,
     pub dmarc: DmarcResult,
-    pub disposition: Disposition,
+    pub from_domain: String,
+    pub spf_domain: String,
 }
 ```
 
 ### 6.3 Record Parsing API
 
-- [ ] `DmarcRecord::parse(txt: &str) -> Result<DmarcRecord, ParseError>`
-- [ ] `DmarcRecord::lookup(domain: &str, resolver: &dyn DnsResolver) -> Result<Option<DmarcRecord>, DnsError>`
+```rust
+DmarcRecord::parse(txt: &str) -> Result<DmarcRecord, DmarcParseError>
+```
 
 ---
 
-## 7. Reporting (RFC 7489 Section 7)
+## 7. Reporting (OUT OF SCOPE)
 
-### 7.1 Aggregate Reports (rua)
+Report generation is a separate concern. This library parses rua/ruf URIs and exposes them in `DmarcRecord` for callers that implement their own reporting.
 
-- [ ] Define `AggregateReport` struct:
-  - [ ] Report metadata (org name, report ID, date range)
-  - [ ] Policy published
-  - [ ] Records: source IP, count, disposition, SPF/DKIM results
-- [ ] Generate XML format (RFC 7489 Appendix C)
-- [ ] Send via email to `rua` addresses
-- [ ] Gzip compress reports
+**What IS in scope**: Parsing rua/ruf URI tags with size limits and scheme validation.
 
-### 7.2 Failure Reports (ruf)
+**What is NOT in scope**: Aggregate report XML generation, failure report AFRF generation, gzip compression, email sending, external report URI verification (`_report._dmarc` TXT check), report interval scheduling.
 
-- [ ] Define `FailureReport` struct (AFRF format)
-- [ ] Include original headers
-- [ ] Include authentication results
-- [ ] Send when `fo` conditions met
-- [ ] Respect size limits in URI
-
-### 7.3 External Reporting Verification
-
-- [ ] If report URI domain != organizational domain of DMARC record:
-  - [ ] Query TXT record at `<dmarc-domain>._report._dmarc.<uri-domain>`
-  - [ ] Example: DMARC at example.com, rua=mailto:reports@external.com → query `example.com._report._dmarc.external.com`
-  - [ ] TXT record must contain "v=DMARC1" to authorize
-  - [ ] If not present or invalid: don't send reports to that URI
-- [ ] This prevents using DMARC for spam/DoS against third parties
-
-### 7.4 Report Generation API
-
-- [ ] `AggregateReportBuilder` — collect data over reporting interval
-- [ ] `generate_aggregate_report() -> AggregateReport`
-- [ ] `serialize_report(report: &AggregateReport) -> Vec<u8>` (XML + gzip)
-- [ ] `FailureReportBuilder` — for individual failures
+If reporting is needed, implement as a separate module or crate that consumes `DmarcRecord.rua`/`DmarcRecord.ruf`.
 
 ---
 
 ## 8. Public Suffix List Integration
 
-### 8.1 PSL Requirements
+### 8.1 PSL Implementation
 
-- [ ] Load Public Suffix List (publicsuffix.org)
-- [ ] Support ICANN suffixes (required)
-- [ ] Support private suffixes (optional, recommended)
-- [ ] Update mechanism (PSL changes over time)
+- [ ] Use `psl` crate v2 (v2.1+)
+- [ ] `psl::domain_str(&normalized_domain)` → returns registrable domain (org domain)
+- [ ] The crate embeds a PSL snapshot — no runtime download needed
+- [ ] PSL data freshness: tied to crate publish date. For production, consider periodic crate updates.
+- [ ] Normalize domain before PSL lookup: lowercase, strip trailing dot
 
-### 8.2 Organizational Domain Algorithm
+### 8.2 Organizational Domain Function
 
-```
-org_domain(domain):
-  suffix = find_public_suffix(domain)
-  if domain == suffix:
-    return domain  # TLD itself
-  labels = domain.split('.')
-  suffix_labels = suffix.split('.')
-  # org domain = suffix + one label
-  org_label_count = suffix_labels.len() + 1
-  return labels[-org_label_count:].join('.')
+```rust
+pub fn organizational_domain(domain: &str) -> String {
+    let normalized = domain::normalize(domain);  // lowercase + strip trailing dot
+    psl::domain_str(&normalized)
+        .unwrap_or(&normalized)
+        .to_string()
+}
 ```
 
-### 8.3 API
+### 8.3 Domain Utilities
 
-- [ ] `PublicSuffixList::load(data: &str) -> Result<Self, Error>`
-- [ ] `psl.organizational_domain(domain: &str) -> String`
-- [ ] `psl.is_public_suffix(domain: &str) -> bool`
+```rust
+fn normalize(domain: &str) -> String;           // lowercase + strip trailing dot
+fn domains_equal(a: &str, b: &str) -> bool;     // normalized comparison
+fn is_subdomain_of(child: &str, parent: &str) -> bool;
+fn domain_from_email(email: &str) -> Option<&str>;  // extract domain after @
+fn local_part_from_email(email: &str) -> &str;       // extract local part before @
+```
 
 ---
 
@@ -358,24 +355,42 @@ org_domain(domain):
 
 - [ ] Minimal valid: `v=DMARC1; p=none`
 - [ ] Full record with all tags
-- [ ] Missing `v=` first: invalid
-- [ ] Invalid `p=` value: invalid
-- [ ] Unknown tags: ignored
-- [ ] URI parsing with size limits
-- [ ] Multiple URIs
+- [ ] Missing `v=` → error
+- [ ] `v=` not first tag → error
+- [ ] Invalid `p=` value → error
+- [ ] Unknown tags → ignored
+- [ ] Case insensitivity: `v=dmarc1; p=Quarantine` → valid
+- [ ] URI parsing with size limits (k, m, g, t units, bare bytes)
+- [ ] Multiple URIs in rua
+- [ ] Non-mailto URI → error
+- [ ] Trailing semicolons → valid
+- [ ] Whitespace variations → valid
+- [ ] No semicolons: `v=DMARC1;p=none;pct=75` → valid
+- [ ] Duplicate p= → first wins
+- [ ] pct > 100 → clamped to 100
+- [ ] pct < 0 → clamped to 0
+- [ ] pct non-numeric → default 100
+- [ ] fo= with multiple options: `fo=0:1:d:s`
+- [ ] fo= with unknown options → unknown ignored
+- [ ] np= parsing (RFC 9091)
+- [ ] sp= defaults to p= when absent
+- [ ] ri= parsing, non-numeric → default
 
 ### 9.2 Alignment Tests
 
 - [ ] Strict DKIM alignment: exact match passes
 - [ ] Strict DKIM alignment: subdomain fails
-- [ ] Relaxed DKIM alignment: subdomain passes
+- [ ] Relaxed DKIM alignment: subdomain passes (org domain matches)
+- [ ] Relaxed DKIM alignment: different org domain fails
 - [ ] Strict SPF alignment: exact match passes
 - [ ] Relaxed SPF alignment: subdomain passes
-- [ ] Misaligned both: fails
+- [ ] SPF SoftFail does NOT produce alignment (must be Pass)
+- [ ] Misaligned both → DMARC fails
 
 ### 9.3 Policy Evaluation Tests
 
 - [ ] No DMARC record: disposition=None
+- [ ] DNS TempFail during discovery: disposition=TempFail (NOT None)
 - [ ] DKIM passes and aligns: Pass
 - [ ] SPF passes and aligns: Pass
 - [ ] Both pass and align: Pass
@@ -383,10 +398,12 @@ org_domain(domain):
 - [ ] Policy=none: disposition=None (monitoring)
 - [ ] Policy=quarantine: disposition=Quarantine
 - [ ] Policy=reject: disposition=Reject
-- [ ] Subdomain policy different from parent
+- [ ] Subdomain policy different from parent (sp= test)
 - [ ] np= tag: non-existent subdomain uses np policy
-- [ ] np= fallback: absent np falls back to sp, then p
-- [ ] pct=50: 50% get policy, 50% get none
+- [ ] np= absent, non-existent subdomain: fall back to sp=, then p=
+- [ ] pct=50: test with deterministic roll — verify both branches
+- [ ] pct=0: always monitoring
+- [ ] pct=100: always apply
 
 ### 9.4 Organizational Domain Tests
 
@@ -396,24 +413,17 @@ org_domain(domain):
 - [ ] `example.co.uk` → `example.co.uk`
 - [ ] `mail.example.co.uk` → `example.co.uk`
 - [ ] `foo.bar.co.uk` → `bar.co.uk`
-
-### 9.5 Integration Tests
-
-- [ ] Gmail message: full SPF+DKIM+DMARC chain
-- [ ] Microsoft message: full chain
-- [ ] Spoofed From header: DMARC fails
-- [ ] Forwarded message: DKIM may pass, SPF may fail
+- [ ] Deep subdomain: `a.b.c.example.com` → `example.com`
 
 ---
 
 ## 10. Security Considerations
 
-- [ ] Validate all DNS responses
-- [ ] Don't trust external report URIs without verification
-- [ ] Rate limit report generation
-- [ ] Handle oversized records gracefully
-- [ ] Protect against DNS amplification
-- [ ] Log authentication decisions for audit
+- [ ] DMARC DNS TempFail → TempFail disposition (NEVER treat as "no policy")
+- [ ] Validate all DNS responses — handle NxDomain vs empty vs TempFail distinctly
+- [ ] Handle oversized records gracefully (truncate parsing, don't crash)
+- [ ] l= body length in DKIM: accept but note security concern (body truncation attacks)
+- [ ] Rate limiting DNS queries: caller responsibility (document this)
 
 ---
 
@@ -421,10 +431,9 @@ org_domain(domain):
 
 - [ ] SPF module (from this crate)
 - [ ] DKIM module (from this crate)
-- [ ] Public Suffix List: `psl` crate or custom
-- [ ] DNS resolver: shared with SPF/DKIM
-- [ ] XML generation: `quick-xml` for reports
-- [ ] Compression: `flate2` for gzip
+- [ ] Public Suffix List: `psl` crate v2
+- [ ] DNS resolver: shared with SPF/DKIM via DnsResolver trait
+- [ ] Random: `rand` crate for pct sampling
 
 ---
 
@@ -435,48 +444,94 @@ email-auth/
 ├── Cargo.toml
 ├── src/
 │   ├── lib.rs              # Re-exports, combined API
+│   ├── auth.rs             # EmailAuthenticator, message parsing, From extraction
 │   ├── common/
 │   │   ├── mod.rs
-│   │   ├── dns.rs          # Shared DNS resolver trait
-│   │   ├── domain.rs       # Domain utilities
-│   │   └── psl.rs          # Public suffix list
+│   │   ├── dns.rs          # DnsResolver trait, HickoryResolver, MockResolver
+│   │   ├── domain.rs       # Domain utilities (normalize, equals, subdomain, email parse)
+│   │   └── psl.rs          # organizational_domain() via psl crate
 │   ├── spf/
-│   │   ├── mod.rs          # SPF public API
-│   │   ├── record.rs       # Record parsing
-│   │   ├── macros.rs       # Macro expansion
-│   │   └── eval.rs         # check_host()
+│   │   ├── mod.rs          # SpfResult, SpfVerifier (thin wrapper)
+│   │   ├── record.rs       # SpfRecord::parse()
+│   │   ├── mechanism.rs    # Mechanism enum, parsing
+│   │   ├── macro_exp.rs    # Macro expansion engine
+│   │   └── eval.rs         # check_host() algorithm
 │   ├── dkim/
-│   │   ├── mod.rs          # DKIM public API
-│   │   ├── signature.rs    # Signature parsing
-│   │   ├── key.rs          # DNS key parsing
-│   │   ├── canon.rs        # Canonicalization
-│   │   ├── verify.rs       # Verification
-│   │   └── sign.rs         # Signing
-│   ├── dmarc/
-│   │   ├── mod.rs          # DMARC public API
-│   │   ├── record.rs       # Record parsing
-│   │   ├── alignment.rs    # Alignment checks
-│   │   ├── policy.rs       # Policy evaluation
-│   │   └── report.rs       # Reporting
-│   └── auth.rs             # Combined authenticator
+│   │   ├── mod.rs          # DkimResult, re-exports
+│   │   ├── signature.rs    # DkimSignature parsing
+│   │   ├── key.rs          # DkimPublicKey parsing
+│   │   ├── canon.rs        # Canonicalization + header selection
+│   │   ├── verify.rs       # DkimVerifier
+│   │   └── sign.rs         # DkimSigner
+│   └── dmarc/
+│       ├── mod.rs          # Re-exports
+│       ├── record.rs       # DmarcRecord parsing
+│       └── eval.rs         # DmarcEvaluator (alignment, policy, discovery)
 ```
 
 ---
 
-## 13. Completion Checklist
+## 13. Implementation Learnings (from v1)
 
-- [ ] DMARC record parsing complete
-- [ ] DNS discovery with fallback to org domain
-- [ ] Public Suffix List integration
-- [ ] DKIM alignment implemented
-- [ ] SPF alignment implemented
-- [ ] Policy evaluation logic complete
-- [ ] Subdomain policy handling
-- [ ] Percentage sampling
-- [ ] Aggregate report generation (optional)
-- [ ] Failure report generation (optional)
-- [ ] External report verification
-- [ ] Unit tests passing
-- [ ] Integration tests with SPF+DKIM
-- [ ] Real-world message tests
-- [ ] Documentation complete
+### 13.1 DnsResolver Sharing
+- `EmailAuthenticator` holds `R: DnsResolver` and needs to pass it to sub-verifiers
+- Add `impl<R: DnsResolver> DnsResolver for &R` blanket impl to allow passing `&self.resolver`
+- Use UFCS to avoid infinite recursion: `<R as DnsResolver>::query_txt(self, name).await`
+
+### 13.2 psl Crate Usage
+- `psl::domain_str(&str)` returns `Option<&str>` — the registrable domain
+- Input must be normalized (lowercase, no trailing dot)
+- `psl` crate uses `Psl` trait — import it for the `domain_str` function
+
+### 13.3 DMARC Record Discovery Pattern
+```rust
+async fn discover_record(&self, from_domain: &str, org_domain: &str) -> Option<DmarcRecord> {
+    if let Some(rec) = self.query_dmarc(from_domain).await { return Some(rec); }
+    if !domains_equal(from_domain, org_domain) {
+        if let Some(rec) = self.query_dmarc(org_domain).await { return Some(rec); }
+    }
+    None
+}
+```
+**NOTE**: Must handle TempFail explicitly — DO NOT use `Err(_) => return None`.
+
+### 13.4 Message Parsing (auth.rs)
+- Split raw bytes at `\r\n\r\n` (with `\n\n` fallback) into headers + body
+- Parse headers: `name:value` pairs, folded lines (start with SP/HTAB) appended to previous
+- Use `.lines()` with CRLF rejoining for folded headers
+- From header extraction: check angle brackets BEFORE comma-splitting (handles `"Smith, John" <j@example.com>`)
+- Strip RFC 5322 comments (parenthesized text with nesting) before extracting domain
+- Unfold `\r\n ` and `\r\n\t` to single space
+
+### 13.5 Deterministic pct Testing
+- Provide internal `evaluate_with_roll(... roll: Option<u8>)` method
+- Public `evaluate()` calls it with `None` (random)
+- Tests call it with `Some(value)` for deterministic results
+
+### 13.6 Non-Existent Subdomain Detection
+- 3 DNS queries (A, AAAA, MX) — parallelize with `tokio::join!` for performance
+- All three must return NxDomain → non-existent
+- Any other result (even NoRecords/empty) → exists
+
+### 13.7 rand Crate
+- rand 0.9: `random_range` (not `gen_range` from 0.8)
+- `rand::random_range(0u8..100)` for pct sampling
+
+---
+
+## Completion Checklist
+
+- [ ] DMARC record parsing complete with all tags (including np= from RFC 9091)
+- [ ] All parsed fields are structured types (enums, not raw strings)
+- [ ] DNS discovery with fallback to organizational domain
+- [ ] DNS TempFail during discovery → TempFail disposition (NOT None)
+- [ ] Public Suffix List integration via psl crate
+- [ ] DKIM alignment implemented (strict and relaxed)
+- [ ] SPF alignment implemented (strict and relaxed, requires SPF Pass)
+- [ ] Policy selection logic: p= / sp= / np= with fallback chain
+- [ ] Non-existent subdomain detection (A + AAAA + MX queries, parallelized)
+- [ ] Percentage sampling with deterministic testing support
+- [ ] DmarcResult is structured (disposition, alignment bools, policy, record)
+- [ ] Combined EmailAuthenticator with From extraction
+- [ ] Unit tests cover: parsing, alignment, policy, org domain, discovery, TempFail
+- [ ] No unwrap/expect in library code (tests only)
