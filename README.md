@@ -2,20 +2,6 @@
 
 A Rust email authentication library implementing SPF, DKIM, DMARC, ARC, and BIMI.
 
-## Current Status
-
-**Cycle 1 — Lane 17: Email Authenticator Integration Complete**
-
-| Component | Status |
-|-----------|--------|
-| **Common** | ✅ DNS resolver trait, domain utilities (PSL integration), CIDR matching |
-| **SPF** | ✅ Complete: types, parsing, macros, evaluation algorithm |
-| **DKIM** | ✅ Complete: types, parsing, canonicalization, verification, signing |
-| **DMARC** | ✅ Complete: evaluation, policy selection, alignment checks, sampling, aggregate/failure reporting |
-| **ARC** | ✅ Complete: types, parsing, validation, sealing with cv= logic, multi-hop roundtrips |
-| **BIMI** | ✅ Complete: types, record parsing, DNS discovery, DMARC eligibility, SVG Tiny PS validation, VMC certificate chain validation |
-| **EmailAuthenticator** | ✅ Complete: message parsing, combined SPF+DKIM+DMARC pipeline |
-
 ## Installation
 
 ```toml
