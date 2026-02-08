@@ -4,7 +4,7 @@ A Rust email authentication library implementing SPF, DKIM, DMARC, ARC, and BIMI
 
 ## Current Status
 
-**Cycle 1 — Lane 11: DMARC Reporting Complete**
+**Cycle 1 — Lane 12: ARC Parsing & Validation Complete**
 
 | Component | Status |
 |-----------|--------|
@@ -12,7 +12,7 @@ A Rust email authentication library implementing SPF, DKIM, DMARC, ARC, and BIMI
 | **SPF** | ✅ Complete: types, parsing, macros, evaluation algorithm |
 | **DKIM** | ✅ Complete: types, parsing, canonicalization, verification, signing |
 | **DMARC** | ✅ Complete: evaluation, policy selection, alignment checks, sampling, aggregate/failure reporting |
-| **ARC** | ⏳ Pending |
+| **ARC** | ✅ Complete: types, parsing, validation (ARC-Seal, ARC-Message-Signature, ARC-Authentication-Results) |
 | **BIMI** | ⏳ Pending |
 
 ## Getting Started
@@ -87,6 +87,18 @@ email-auth = "0.1.0"
   - `fo=` filtering: 0 (all fail), 1 (any fail), d (DKIM fail), s (SPF fail)
   - Multipart MIME assembly for failure reports
 
+### `arc`
+
+- Types: `ArcSet`, `ArcSeal`, `ArcMessageSignature`, `ArcAuthenticationResults`, `ArcResult`
+- **Parsing**: ARC-Seal, ARC-Message-Signature, ARC-Authentication-Results header parsing (tag=value format)
+- **Validation**: Instance validation (monotonically increasing CV chain), header tag requirements
+  - ARC-Seal: b= tag stripped for signature verification, no h= or body hash (unlike DKIM)
+  - ARC-Message-Signature: DKIM-compatible signature format with d=, s=, and required tags
+  - ARC-Authentication-Results: structured header parsing with auth method results
+- **Chain Verification**: Sequential ARC-Set chain validation with instance counter checks
+- Relaxed header canonicalization for ARC seals (only method supported)
+- Signature verification integrated with `ring` crypto library
+
 ## Development
 
 ### Running Tests
@@ -105,6 +117,7 @@ src/
   spf/             # SPF module
   dkim/            # DKIM module
   dmarc/           # DMARC module
+  arc/             # ARC module
 .forge/
   state.yaml       # Forge build state
   lanes.yaml       # Work lane definitions
