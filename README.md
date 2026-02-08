@@ -4,7 +4,7 @@ A Rust email authentication library implementing SPF, DKIM, DMARC, ARC, and BIMI
 
 ## Current Status
 
-**Cycle 1 — Lane 16: VMC Validation Complete**
+**Cycle 1 — Lane 17: Email Authenticator Integration Complete**
 
 | Component | Status |
 |-----------|--------|
@@ -14,6 +14,7 @@ A Rust email authentication library implementing SPF, DKIM, DMARC, ARC, and BIMI
 | **DMARC** | ✅ Complete: evaluation, policy selection, alignment checks, sampling, aggregate/failure reporting |
 | **ARC** | ✅ Complete: types, parsing, validation, sealing with cv= logic, multi-hop roundtrips |
 | **BIMI** | ✅ Complete: types, record parsing, DNS discovery, DMARC eligibility, SVG Tiny PS validation, VMC certificate chain validation |
+| **EmailAuthenticator** | ✅ Complete: message parsing, combined SPF+DKIM+DMARC pipeline |
 
 ## Getting Started
 
@@ -113,6 +114,14 @@ email-auth = "0.1.0"
 - **Result Reporting**: Structured result types (Pass/None/Fail/TempError/Skipped/Declined)
 - **Future**: Logo fetching (caller responsibility via HTTPS client)
 
+### `EmailAuthenticator`
+
+- **Message Parsing**: Header/body split, RFC 5322 comment stripping, folded header unfolding, bare LF handling
+- **From Extraction**: RFC 5322 address parsing with angle brackets, display names, comment stripping
+- **Combined Pipeline**: Orchestrates SPF check → DKIM verification → DMARC evaluation
+- **Authentication Result**: Structured `AuthenticationResult` with individual SPF/DKIM/DMARC results, extracted From domain, SPF domain, and disposition
+- **Error Handling**: Explicit error types (malformed message, missing From header, DNS failures)
+
 ## Development
 
 ### Running Tests
@@ -127,11 +136,13 @@ cargo test
 specs/              # RFC specifications (source of truth)
 src/
   lib.rs           # Library root
+  auth.rs          # EmailAuthenticator integration
   common/          # Shared utilities
   spf/             # SPF module
   dkim/            # DKIM module
   dmarc/           # DMARC module
   arc/             # ARC module
+  bimi/            # BIMI module
 .forge/
   state.yaml       # Forge build state
   lanes.yaml       # Work lane definitions
