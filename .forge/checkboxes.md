@@ -537,49 +537,49 @@
 | CHK-532 | 02-DKIM-RFC6376.md:603 | checkbox | RSA-SHA1 verification tested | 7 | src/dkim/verify.rs:1184 | a390668 | DONE |
 | CHK-533 | 02-DKIM-RFC6376.md:604 | checkbox | DNS key lookup working with TXT string concatenation | 7 | src/dkim/verify.rs:149 | b1f9430 | DONE |
 | CHK-534 | 02-DKIM-RFC6376.md:605 | checkbox | No unwrap/expect in library code (tests only) | 7 | src/dkim/verify.rs:1157 | b1f9430 | DONE |
-| CHK-535 | 03-DMARC-RFC7489.md:19 | checkbox | Define `DmarcRecord` struct: | 9 | - | - | PENDING |
-| CHK-536 | 03-DMARC-RFC7489.md:20 | checkbox | `policy: Policy` — policy for organizational domain (p= tag) | 9 | - | - | PENDING |
-| CHK-537 | 03-DMARC-RFC7489.md:21 | checkbox | `subdomain_policy: Policy` — subdomain policy (sp= tag, defaults to p) | 9 | - | - | PENDING |
-| CHK-538 | 03-DMARC-RFC7489.md:22 | checkbox | `non_existent_subdomain_policy: Option<Policy>` — np= tag (RFC 9091) | 9 | - | - | PENDING |
-| CHK-539 | 03-DMARC-RFC7489.md:23 | checkbox | `dkim_alignment: AlignmentMode` — DKIM alignment mode (adkim= tag, default: relaxed) | 9 | - | - | PENDING |
-| CHK-540 | 03-DMARC-RFC7489.md:24 | checkbox | `spf_alignment: AlignmentMode` — SPF alignment mode (aspf= tag, default: relaxed) | 9 | - | - | PENDING |
-| CHK-541 | 03-DMARC-RFC7489.md:25 | checkbox | `percent: u8` — percentage of messages to apply policy (pct= tag, default: 100) | 9 | - | - | PENDING |
-| CHK-542 | 03-DMARC-RFC7489.md:26 | checkbox | `failure_options: Vec<FailureOption>` — failure reporting options (fo= tag) | 9 | - | - | PENDING |
-| CHK-543 | 03-DMARC-RFC7489.md:27 | checkbox | `report_format: ReportFormat` — report format (rf= tag, default: AFRF) | 9 | - | - | PENDING |
-| CHK-544 | 03-DMARC-RFC7489.md:28 | checkbox | `report_interval: u32` — aggregate report interval seconds (ri= tag, default: 86400) | 9 | - | - | PENDING |
-| CHK-545 | 03-DMARC-RFC7489.md:29 | checkbox | `rua: Vec<ReportUri>` — aggregate report URIs (rua= tag) | 9 | - | - | PENDING |
-| CHK-546 | 03-DMARC-RFC7489.md:30 | checkbox | `ruf: Vec<ReportUri>` — failure report URIs (ruf= tag) | 9 | - | - | PENDING |
-| CHK-547 | 03-DMARC-RFC7489.md:34 | checkbox | Define `Policy` enum: | 9 | - | - | PENDING |
-| CHK-548 | 03-DMARC-RFC7489.md:35 | checkbox | `None` — no action, monitoring only | 9 | - | - | PENDING |
-| CHK-549 | 03-DMARC-RFC7489.md:36 | checkbox | `Quarantine` — treat as suspicious (spam folder) | 9 | - | - | PENDING |
-| CHK-550 | 03-DMARC-RFC7489.md:37 | checkbox | `Reject` — reject the message | 9 | - | - | PENDING |
-| CHK-551 | 03-DMARC-RFC7489.md:38 | checkbox | Parsing: case-insensitive ("none", "quarantine", "reject") | 9 | - | - | PENDING |
-| CHK-552 | 03-DMARC-RFC7489.md:42 | checkbox | Define `AlignmentMode` enum: | 9 | - | - | PENDING |
-| CHK-553 | 03-DMARC-RFC7489.md:43 | checkbox | `Relaxed` — organizational domain match (default) | 9 | - | - | PENDING |
-| CHK-554 | 03-DMARC-RFC7489.md:44 | checkbox | `Strict` — exact domain match | 9 | - | - | PENDING |
-| CHK-555 | 03-DMARC-RFC7489.md:45 | checkbox | Parsing: "r" → Relaxed, "s" → Strict | 9 | - | - | PENDING |
-| CHK-556 | 03-DMARC-RFC7489.md:49 | checkbox | Define `FailureOption` enum: | 9 | - | - | PENDING |
-| CHK-557 | 03-DMARC-RFC7489.md:50 | checkbox | `Zero` — `0`: generate report if all mechanisms fail (default) | 9 | - | - | PENDING |
-| CHK-558 | 03-DMARC-RFC7489.md:51 | checkbox | `One` — `1`: generate report if any mechanism fails | 9 | - | - | PENDING |
-| CHK-559 | 03-DMARC-RFC7489.md:52 | checkbox | `D` — `d`: generate report if DKIM fails | 9 | - | - | PENDING |
-| CHK-560 | 03-DMARC-RFC7489.md:53 | checkbox | `S` — `s`: generate report if SPF fails | 9 | - | - | PENDING |
-| CHK-561 | 03-DMARC-RFC7489.md:54 | checkbox | Parsing: colon-separated, case-insensitive. Unknown options ignored. | 9 | - | - | PENDING |
-| CHK-562 | 03-DMARC-RFC7489.md:58 | checkbox | Define `ReportUri` struct: | 9 | - | - | PENDING |
-| CHK-563 | 03-DMARC-RFC7489.md:59 | checkbox | `address: String` — email address (after stripping `mailto:` prefix) | 9 | - | - | PENDING |
-| CHK-564 | 03-DMARC-RFC7489.md:60 | checkbox | `max_size: Option<u64>` — size limit in bytes | 9 | - | - | PENDING |
-| CHK-565 | 03-DMARC-RFC7489.md:62 | checkbox | Size suffix parsing: `!` followed by number + optional unit (k/m/g/t, case-insensitive) | 9 | - | - | PENDING |
-| CHK-566 | 03-DMARC-RFC7489.md:68 | checkbox | Define `DmarcResult` struct (NOT a flat enum — structured with evaluation details): | 9 | - | - | PENDING |
-| CHK-567 | 03-DMARC-RFC7489.md:69 | checkbox | `disposition: Disposition` — what to do with message | 9 | - | - | PENDING |
-| CHK-568 | 03-DMARC-RFC7489.md:70 | checkbox | `dkim_aligned: bool` — whether any DKIM signature aligned | 9 | - | - | PENDING |
-| CHK-569 | 03-DMARC-RFC7489.md:71 | checkbox | `spf_aligned: bool` — whether SPF passed and aligned | 9 | - | - | PENDING |
-| CHK-570 | 03-DMARC-RFC7489.md:72 | checkbox | `applied_policy: Option<Policy>` — the policy that was applied | 9 | - | - | PENDING |
-| CHK-571 | 03-DMARC-RFC7489.md:73 | checkbox | `record: Option<DmarcRecord>` — the DMARC record found (if any) | 9 | - | - | PENDING |
-| CHK-572 | 03-DMARC-RFC7489.md:75 | checkbox | Define `Disposition` enum: | 9 | - | - | PENDING |
-| CHK-573 | 03-DMARC-RFC7489.md:76 | checkbox | `Pass` — message passed DMARC | 9 | - | - | PENDING |
-| CHK-574 | 03-DMARC-RFC7489.md:77 | checkbox | `Quarantine` — quarantine per policy | 9 | - | - | PENDING |
-| CHK-575 | 03-DMARC-RFC7489.md:78 | checkbox | `Reject` — reject per policy | 9 | - | - | PENDING |
-| CHK-576 | 03-DMARC-RFC7489.md:79 | checkbox | `None` — no policy (monitoring mode, pct sampling excluded, or no record) | 9 | - | - | PENDING |
-| CHK-577 | 03-DMARC-RFC7489.md:80 | checkbox | `TempFail` — DNS temporary failure during record discovery | 9 | - | - | PENDING |
+| CHK-535 | 03-DMARC-RFC7489.md:19 | checkbox | Define `DmarcRecord` struct: | 9 | src/dmarc/types.rs:97 | 9164210 | DONE |
+| CHK-536 | 03-DMARC-RFC7489.md:20 | checkbox | `policy: Policy` — policy for organizational domain (p= tag) | 9 | src/dmarc/types.rs:99 | 9164210 | DONE |
+| CHK-537 | 03-DMARC-RFC7489.md:21 | checkbox | `subdomain_policy: Policy` — subdomain policy (sp= tag, defaults to p) | 9 | src/dmarc/types.rs:101 | 9164210 | DONE |
+| CHK-538 | 03-DMARC-RFC7489.md:22 | checkbox | `non_existent_subdomain_policy: Option<Policy>` — np= tag (RFC 9091) | 9 | src/dmarc/types.rs:103 | 9164210 | DONE |
+| CHK-539 | 03-DMARC-RFC7489.md:23 | checkbox | `dkim_alignment: AlignmentMode` — DKIM alignment mode (adkim= tag, default: relaxed) | 9 | src/dmarc/types.rs:105 | 9164210 | DONE |
+| CHK-540 | 03-DMARC-RFC7489.md:24 | checkbox | `spf_alignment: AlignmentMode` — SPF alignment mode (aspf= tag, default: relaxed) | 9 | src/dmarc/types.rs:107 | 9164210 | DONE |
+| CHK-541 | 03-DMARC-RFC7489.md:25 | checkbox | `percent: u8` — percentage of messages to apply policy (pct= tag, default: 100) | 9 | src/dmarc/types.rs:109 | 9164210 | DONE |
+| CHK-542 | 03-DMARC-RFC7489.md:26 | checkbox | `failure_options: Vec<FailureOption>` — failure reporting options (fo= tag) | 9 | src/dmarc/types.rs:111 | 9164210 | DONE |
+| CHK-543 | 03-DMARC-RFC7489.md:27 | checkbox | `report_format: ReportFormat` — report format (rf= tag, default: AFRF) | 9 | src/dmarc/types.rs:113 | 9164210 | DONE |
+| CHK-544 | 03-DMARC-RFC7489.md:28 | checkbox | `report_interval: u32` — aggregate report interval seconds (ri= tag, default: 86400) | 9 | src/dmarc/types.rs:115 | 9164210 | DONE |
+| CHK-545 | 03-DMARC-RFC7489.md:29 | checkbox | `rua: Vec<ReportUri>` — aggregate report URIs (rua= tag) | 9 | src/dmarc/types.rs:117 | 9164210 | DONE |
+| CHK-546 | 03-DMARC-RFC7489.md:30 | checkbox | `ruf: Vec<ReportUri>` — failure report URIs (ruf= tag) | 9 | src/dmarc/types.rs:119 | 9164210 | DONE |
+| CHK-547 | 03-DMARC-RFC7489.md:34 | checkbox | Define `Policy` enum: | 9 | src/dmarc/types.rs:3 | 9164210 | DONE |
+| CHK-548 | 03-DMARC-RFC7489.md:35 | checkbox | `None` — no action, monitoring only | 9 | src/dmarc/types.rs:5 | 9164210 | DONE |
+| CHK-549 | 03-DMARC-RFC7489.md:36 | checkbox | `Quarantine` — treat as suspicious (spam folder) | 9 | src/dmarc/types.rs:7 | 9164210 | DONE |
+| CHK-550 | 03-DMARC-RFC7489.md:37 | checkbox | `Reject` — reject the message | 9 | src/dmarc/types.rs:9 | 9164210 | DONE |
+| CHK-551 | 03-DMARC-RFC7489.md:38 | checkbox | Parsing: case-insensitive ("none", "quarantine", "reject") | 9 | src/dmarc/types.rs:14 | 9164210 | DONE |
+| CHK-552 | 03-DMARC-RFC7489.md:42 | checkbox | Define `AlignmentMode` enum: | 9 | src/dmarc/types.rs:25 | 9164210 | DONE |
+| CHK-553 | 03-DMARC-RFC7489.md:43 | checkbox | `Relaxed` — organizational domain match (default) | 9 | src/dmarc/types.rs:28 | 9164210 | DONE |
+| CHK-554 | 03-DMARC-RFC7489.md:44 | checkbox | `Strict` — exact domain match | 9 | src/dmarc/types.rs:30 | 9164210 | DONE |
+| CHK-555 | 03-DMARC-RFC7489.md:45 | checkbox | Parsing: "r" → Relaxed, "s" → Strict | 9 | src/dmarc/types.rs:35 | 9164210 | DONE |
+| CHK-556 | 03-DMARC-RFC7489.md:49 | checkbox | Define `FailureOption` enum: | 9 | src/dmarc/types.rs:45 | 9164210 | DONE |
+| CHK-557 | 03-DMARC-RFC7489.md:50 | checkbox | `Zero` — `0`: generate report if all mechanisms fail (default) | 9 | src/dmarc/types.rs:48 | 9164210 | DONE |
+| CHK-558 | 03-DMARC-RFC7489.md:51 | checkbox | `One` — `1`: generate report if any mechanism fails | 9 | src/dmarc/types.rs:50 | 9164210 | DONE |
+| CHK-559 | 03-DMARC-RFC7489.md:52 | checkbox | `D` — `d`: generate report if DKIM fails | 9 | src/dmarc/types.rs:52 | 9164210 | DONE |
+| CHK-560 | 03-DMARC-RFC7489.md:53 | checkbox | `S` — `s`: generate report if SPF fails | 9 | src/dmarc/types.rs:54 | 9164210 | DONE |
+| CHK-561 | 03-DMARC-RFC7489.md:54 | checkbox | Parsing: colon-separated, case-insensitive. Unknown options ignored. | 9 | src/dmarc/parser.rs:169 | 9164210 | DONE |
+| CHK-562 | 03-DMARC-RFC7489.md:58 | checkbox | Define `ReportUri` struct: | 9 | src/dmarc/types.rs:88 | 9164210 | DONE |
+| CHK-563 | 03-DMARC-RFC7489.md:59 | checkbox | `address: String` — email address (after stripping `mailto:` prefix) | 9 | src/dmarc/types.rs:90 | 9164210 | DONE |
+| CHK-564 | 03-DMARC-RFC7489.md:60 | checkbox | `max_size: Option<u64>` — size limit in bytes | 9 | src/dmarc/types.rs:92 | 9164210 | DONE |
+| CHK-565 | 03-DMARC-RFC7489.md:62 | checkbox | Size suffix parsing: `!` followed by number + optional unit (k/m/g/t, case-insensitive) | 9 | src/dmarc/parser.rs:238 | 9164210 | DONE |
+| CHK-566 | 03-DMARC-RFC7489.md:68 | checkbox | Define `DmarcResult` struct (NOT a flat enum — structured with evaluation details): | 9 | src/dmarc/types.rs:124 | 9164210 | DONE |
+| CHK-567 | 03-DMARC-RFC7489.md:69 | checkbox | `disposition: Disposition` — what to do with message | 9 | src/dmarc/types.rs:126 | 9164210 | DONE |
+| CHK-568 | 03-DMARC-RFC7489.md:70 | checkbox | `dkim_aligned: bool` — whether any DKIM signature aligned | 9 | src/dmarc/types.rs:128 | 9164210 | DONE |
+| CHK-569 | 03-DMARC-RFC7489.md:71 | checkbox | `spf_aligned: bool` — whether SPF passed and aligned | 9 | src/dmarc/types.rs:130 | 9164210 | DONE |
+| CHK-570 | 03-DMARC-RFC7489.md:72 | checkbox | `applied_policy: Option<Policy>` — the policy that was applied | 9 | src/dmarc/types.rs:132 | 9164210 | DONE |
+| CHK-571 | 03-DMARC-RFC7489.md:73 | checkbox | `record: Option<DmarcRecord>` — the DMARC record found (if any) | 9 | src/dmarc/types.rs:134 | 9164210 | DONE |
+| CHK-572 | 03-DMARC-RFC7489.md:75 | checkbox | Define `Disposition` enum: | 9 | src/dmarc/types.rs:139 | 9164210 | DONE |
+| CHK-573 | 03-DMARC-RFC7489.md:76 | checkbox | `Pass` — message passed DMARC | 9 | src/dmarc/types.rs:141 | 9164210 | DONE |
+| CHK-574 | 03-DMARC-RFC7489.md:77 | checkbox | `Quarantine` — quarantine per policy | 9 | src/dmarc/types.rs:143 | 9164210 | DONE |
+| CHK-575 | 03-DMARC-RFC7489.md:78 | checkbox | `Reject` — reject per policy | 9 | src/dmarc/types.rs:145 | 9164210 | DONE |
+| CHK-576 | 03-DMARC-RFC7489.md:79 | checkbox | `None` — no policy (monitoring mode, pct sampling excluded, or no record) | 9 | src/dmarc/types.rs:147 | 9164210 | DONE |
+| CHK-577 | 03-DMARC-RFC7489.md:80 | checkbox | `TempFail` — DNS temporary failure during record discovery | 9 | src/dmarc/types.rs:149 | 9164210 | DONE |
 | CHK-578 | 03-DMARC-RFC7489.md:88 | checkbox | Extract domain from RFC5322.From header | 10 | - | - | PENDING |
 | CHK-579 | 03-DMARC-RFC7489.md:89 | checkbox | Query: `_dmarc.<from-domain>` TXT record | 10 | - | - | PENDING |
 | CHK-580 | 03-DMARC-RFC7489.md:90 | checkbox | If no record found and domain is not organizational domain: | 10 | - | - | PENDING |
@@ -598,34 +598,34 @@
 | CHK-593 | 03-DMARC-RFC7489.md:109 | checkbox | The psl crate embeds a snapshot of the PSL — no runtime fetch needed | 1 | src/common/domain.rs:44 | 992b713 | DONE |
 | CHK-594 | 03-DMARC-RFC7489.md:113 | checkbox | DNS caching: CALLER responsibility (resolver layer), not library scope | 10 | - | - | PENDING |
 | CHK-595 | 03-DMARC-RFC7489.md:114 | checkbox | Document this clearly — callers implement caching in their DnsResolver wrapper | 10 | - | - | PENDING |
-| CHK-596 | 03-DMARC-RFC7489.md:122 | checkbox | Parse as tag=value pairs, separated by semicolons | 9 | - | - | PENDING |
-| CHK-597 | 03-DMARC-RFC7489.md:123 | checkbox | Tags are case-insensitive | 9 | - | - | PENDING |
-| CHK-598 | 03-DMARC-RFC7489.md:124 | checkbox | Values may be case-sensitive (URIs) or case-insensitive (policies) | 9 | - | - | PENDING |
-| CHK-599 | 03-DMARC-RFC7489.md:125 | checkbox | Whitespace around tags/values is ignored | 9 | - | - | PENDING |
-| CHK-600 | 03-DMARC-RFC7489.md:126 | checkbox | Trailing semicolons allowed | 9 | - | - | PENDING |
-| CHK-601 | 03-DMARC-RFC7489.md:130 | checkbox | `v=` — version, MUST be "DMARC1", MUST be first tag | 9 | - | - | PENDING |
-| CHK-602 | 03-DMARC-RFC7489.md:131 | checkbox | `p=` — policy: "none", "quarantine", "reject" (case-insensitive) | 9 | - | - | PENDING |
-| CHK-603 | 03-DMARC-RFC7489.md:132 | checkbox | Missing v= or p= → parse error | 9 | - | - | PENDING |
-| CHK-604 | 03-DMARC-RFC7489.md:133 | checkbox | v= not first → parse error | 9 | - | - | PENDING |
-| CHK-605 | 03-DMARC-RFC7489.md:134 | checkbox | Invalid p= value → parse error | 9 | - | - | PENDING |
-| CHK-606 | 03-DMARC-RFC7489.md:138 | checkbox | `sp=` — subdomain policy (defaults to `p` value if absent) | 9 | - | - | PENDING |
-| CHK-607 | 03-DMARC-RFC7489.md:139 | checkbox | `np=` — non-existent subdomain policy (RFC 9091). Optional field, no default. | 9 | - | - | PENDING |
-| CHK-608 | 03-DMARC-RFC7489.md:140 | checkbox | `adkim=` — DKIM alignment: "r" (relaxed, default) or "s" (strict) | 9 | - | - | PENDING |
-| CHK-609 | 03-DMARC-RFC7489.md:141 | checkbox | `aspf=` — SPF alignment: "r" (relaxed, default) or "s" (strict) | 9 | - | - | PENDING |
-| CHK-610 | 03-DMARC-RFC7489.md:142 | checkbox | `pct=` — percentage 0-100, default 100. Values >100 clamped to 100, <0 clamped to 0. Non-numeric → use default. | 9 | - | - | PENDING |
-| CHK-611 | 03-DMARC-RFC7489.md:143 | checkbox | `fo=` — failure options, colon-separated. Default: "0". Parse into `Vec<FailureOption>`, unknown options ignored. | 9 | - | - | PENDING |
-| CHK-612 | 03-DMARC-RFC7489.md:144 | checkbox | `rf=` — report format. Default: "afrf". Parse into enum. | 9 | - | - | PENDING |
-| CHK-613 | 03-DMARC-RFC7489.md:145 | checkbox | `ri=` — report interval in seconds. Default: 86400. Non-numeric → use default. | 9 | - | - | PENDING |
-| CHK-614 | 03-DMARC-RFC7489.md:146 | checkbox | `rua=` — aggregate report URIs, comma-separated. Parse into `Vec<ReportUri>`. | 9 | - | - | PENDING |
-| CHK-615 | 03-DMARC-RFC7489.md:147 | checkbox | `ruf=` — failure report URIs, comma-separated. Parse into `Vec<ReportUri>`. | 9 | - | - | PENDING |
-| CHK-616 | 03-DMARC-RFC7489.md:148 | checkbox | Unknown tags: ignore (forward compatibility) | 9 | - | - | PENDING |
-| CHK-617 | 03-DMARC-RFC7489.md:152 | checkbox | Format: `mailto:address` or `mailto:address!size` or `mailto:address!size_unit` | 9 | - | - | PENDING |
-| CHK-618 | 03-DMARC-RFC7489.md:153 | checkbox | Only "mailto:" scheme accepted. Non-mailto URIs → parse error. | 9 | - | - | PENDING |
-| CHK-619 | 03-DMARC-RFC7489.md:154 | checkbox | Size suffix: `!` followed by decimal number + optional unit (k/m/g/t, case-insensitive) | 9 | - | - | PENDING |
-| CHK-620 | 03-DMARC-RFC7489.md:155 | checkbox | No unit → raw bytes | 9 | - | - | PENDING |
-| CHK-621 | 03-DMARC-RFC7489.md:156 | checkbox | Multiple URIs: comma-separated | 9 | - | - | PENDING |
-| CHK-622 | 03-DMARC-RFC7489.md:160 | checkbox | Duplicate p= → use first value (per RFC 7489 §6.3) | 9 | - | - | PENDING |
-| CHK-623 | 03-DMARC-RFC7489.md:161 | checkbox | Other duplicate tags: implementation may use first or last. Be consistent. | 9 | - | - | PENDING |
+| CHK-596 | 03-DMARC-RFC7489.md:122 | checkbox | Parse as tag=value pairs, separated by semicolons | 9 | src/dmarc/parser.rs:134 | 9164210 | DONE |
+| CHK-597 | 03-DMARC-RFC7489.md:123 | checkbox | Tags are case-insensitive | 9 | src/dmarc/parser.rs:64 | 9164210 | DONE |
+| CHK-598 | 03-DMARC-RFC7489.md:124 | checkbox | Values may be case-sensitive (URIs) or case-insensitive (policies) | 9 | src/dmarc/parser.rs:45 | 9164210 | DONE |
+| CHK-599 | 03-DMARC-RFC7489.md:125 | checkbox | Whitespace around tags/values is ignored | 9 | src/dmarc/parser.rs:142 | 9164210 | DONE |
+| CHK-600 | 03-DMARC-RFC7489.md:126 | checkbox | Trailing semicolons allowed | 9 | src/dmarc/parser.rs:138 | 9164210 | DONE |
+| CHK-601 | 03-DMARC-RFC7489.md:130 | checkbox | `v=` — version, MUST be "DMARC1", MUST be first tag | 9 | src/dmarc/parser.rs:29 | 9164210 | DONE |
+| CHK-602 | 03-DMARC-RFC7489.md:131 | checkbox | `p=` — policy: "none", "quarantine", "reject" (case-insensitive) | 9 | src/dmarc/parser.rs:44 | 9164210 | DONE |
+| CHK-603 | 03-DMARC-RFC7489.md:132 | checkbox | Missing v= or p= → parse error | 9 | src/dmarc/parser.rs:48 | 9164210 | DONE |
+| CHK-604 | 03-DMARC-RFC7489.md:133 | checkbox | v= not first → parse error | 9 | src/dmarc/parser.rs:30 | 9164210 | DONE |
+| CHK-605 | 03-DMARC-RFC7489.md:134 | checkbox | Invalid p= value → parse error | 9 | src/dmarc/parser.rs:46 | 9164210 | DONE |
+| CHK-606 | 03-DMARC-RFC7489.md:138 | checkbox | `sp=` — subdomain policy (defaults to `p` value if absent) | 9 | src/dmarc/parser.rs:82 | 9164210 | DONE |
+| CHK-607 | 03-DMARC-RFC7489.md:139 | checkbox | `np=` — non-existent subdomain policy (RFC 9091). Optional field, no default. | 9 | src/dmarc/parser.rs:86 | 9164210 | DONE |
+| CHK-608 | 03-DMARC-RFC7489.md:140 | checkbox | `adkim=` — DKIM alignment: "r" (relaxed, default) or "s" (strict) | 9 | src/dmarc/parser.rs:89 | 9164210 | DONE |
+| CHK-609 | 03-DMARC-RFC7489.md:141 | checkbox | `aspf=` — SPF alignment: "r" (relaxed, default) or "s" (strict) | 9 | src/dmarc/parser.rs:93 | 9164210 | DONE |
+| CHK-610 | 03-DMARC-RFC7489.md:142 | checkbox | `pct=` — percentage 0-100, default 100. Values >100 clamped to 100, <0 clamped to 0. Non-numeric → use default. | 9 | src/dmarc/parser.rs:154 | 9164210 | DONE |
+| CHK-611 | 03-DMARC-RFC7489.md:143 | checkbox | `fo=` — failure options, colon-separated. Default: "0". Parse into `Vec<FailureOption>`, unknown options ignored. | 9 | src/dmarc/parser.rs:169 | 9164210 | DONE |
+| CHK-612 | 03-DMARC-RFC7489.md:144 | checkbox | `rf=` — report format. Default: "afrf". Parse into enum. | 9 | src/dmarc/parser.rs:101 | 9164210 | DONE |
+| CHK-613 | 03-DMARC-RFC7489.md:145 | checkbox | `ri=` — report interval in seconds. Default: 86400. Non-numeric → use default. | 9 | src/dmarc/parser.rs:187 | 9164210 | DONE |
+| CHK-614 | 03-DMARC-RFC7489.md:146 | checkbox | `rua=` — aggregate report URIs, comma-separated. Parse into `Vec<ReportUri>`. | 9 | src/dmarc/parser.rs:107 | 9164210 | DONE |
+| CHK-615 | 03-DMARC-RFC7489.md:147 | checkbox | `ruf=` — failure report URIs, comma-separated. Parse into `Vec<ReportUri>`. | 9 | src/dmarc/parser.rs:112 | 9164210 | DONE |
+| CHK-616 | 03-DMARC-RFC7489.md:148 | checkbox | Unknown tags: ignore (forward compatibility) | 9 | src/dmarc/parser.rs:78 | 9164210 | DONE |
+| CHK-617 | 03-DMARC-RFC7489.md:152 | checkbox | Format: `mailto:address` or `mailto:address!size` or `mailto:address!size_unit` | 9 | src/dmarc/parser.rs:208 | 9164210 | DONE |
+| CHK-618 | 03-DMARC-RFC7489.md:153 | checkbox | Only "mailto:" scheme accepted. Non-mailto URIs → parse error. | 9 | src/dmarc/parser.rs:210 | 9164210 | DONE |
+| CHK-619 | 03-DMARC-RFC7489.md:154 | checkbox | Size suffix: `!` followed by decimal number + optional unit (k/m/g/t, case-insensitive) | 9 | src/dmarc/parser.rs:238 | 9164210 | DONE |
+| CHK-620 | 03-DMARC-RFC7489.md:155 | checkbox | No unit → raw bytes | 9 | src/dmarc/parser.rs:252 | 9164210 | DONE |
+| CHK-621 | 03-DMARC-RFC7489.md:156 | checkbox | Multiple URIs: comma-separated | 9 | src/dmarc/parser.rs:195 | 9164210 | DONE |
+| CHK-622 | 03-DMARC-RFC7489.md:160 | checkbox | Duplicate p= → use first value (per RFC 7489 §6.3) | 9 | src/dmarc/parser.rs:66 | 9164210 | DONE |
+| CHK-623 | 03-DMARC-RFC7489.md:161 | checkbox | Other duplicate tags: implementation may use first or last. Be consistent. | 9 | src/dmarc/parser.rs:68 | 9164210 | DONE |
 | CHK-624 | 03-DMARC-RFC7489.md:169 | checkbox | For each DKIM result that is `Pass`: | 10 | - | - | PENDING |
 | CHK-625 | 03-DMARC-RFC7489.md:170 | checkbox | Get the `d=` domain from the DKIM signature | 10 | - | - | PENDING |
 | CHK-626 | 03-DMARC-RFC7489.md:171 | checkbox | Compare with RFC5322.From domain | 10 | - | - | PENDING |
@@ -683,28 +683,28 @@
 | CHK-678 | 03-DMARC-RFC7489.md:348 | checkbox | The crate embeds a PSL snapshot — no runtime download needed | 1 | src/common/domain.rs:44 | 992b713 | DONE |
 | CHK-679 | 03-DMARC-RFC7489.md:349 | checkbox | PSL data freshness: tied to crate publish date. For production, consider periodic crate updates. | 1 | src/common/domain.rs:44 | 992b713 | DONE |
 | CHK-680 | 03-DMARC-RFC7489.md:350 | checkbox | Normalize domain before PSL lookup: lowercase, strip trailing dot | 1 | src/common/domain.rs:209 | 992b713 | DONE |
-| CHK-681 | 03-DMARC-RFC7489.md:379 | checkbox | Minimal valid: `v=DMARC1; p=none` | 9 | - | - | PENDING |
-| CHK-682 | 03-DMARC-RFC7489.md:380 | checkbox | Full record with all tags | 9 | - | - | PENDING |
-| CHK-683 | 03-DMARC-RFC7489.md:381 | checkbox | Missing `v=` → error | 9 | - | - | PENDING |
-| CHK-684 | 03-DMARC-RFC7489.md:382 | checkbox | `v=` not first tag → error | 9 | - | - | PENDING |
-| CHK-685 | 03-DMARC-RFC7489.md:383 | checkbox | Invalid `p=` value → error | 9 | - | - | PENDING |
-| CHK-686 | 03-DMARC-RFC7489.md:384 | checkbox | Unknown tags → ignored | 9 | - | - | PENDING |
-| CHK-687 | 03-DMARC-RFC7489.md:385 | checkbox | Case insensitivity: `v=dmarc1; p=Quarantine` → valid | 9 | - | - | PENDING |
-| CHK-688 | 03-DMARC-RFC7489.md:386 | checkbox | URI parsing with size limits (k, m, g, t units, bare bytes) | 9 | - | - | PENDING |
-| CHK-689 | 03-DMARC-RFC7489.md:387 | checkbox | Multiple URIs in rua | 9 | - | - | PENDING |
-| CHK-690 | 03-DMARC-RFC7489.md:388 | checkbox | Non-mailto URI → error | 9 | - | - | PENDING |
-| CHK-691 | 03-DMARC-RFC7489.md:389 | checkbox | Trailing semicolons → valid | 9 | - | - | PENDING |
-| CHK-692 | 03-DMARC-RFC7489.md:390 | checkbox | Whitespace variations → valid | 9 | - | - | PENDING |
-| CHK-693 | 03-DMARC-RFC7489.md:391 | checkbox | No semicolons: `v=DMARC1;p=none;pct=75` → valid | 9 | - | - | PENDING |
-| CHK-694 | 03-DMARC-RFC7489.md:392 | checkbox | Duplicate p= → first wins | 9 | - | - | PENDING |
-| CHK-695 | 03-DMARC-RFC7489.md:393 | checkbox | pct > 100 → clamped to 100 | 9 | - | - | PENDING |
-| CHK-696 | 03-DMARC-RFC7489.md:394 | checkbox | pct < 0 → clamped to 0 | 9 | - | - | PENDING |
-| CHK-697 | 03-DMARC-RFC7489.md:395 | checkbox | pct non-numeric → default 100 | 9 | - | - | PENDING |
-| CHK-698 | 03-DMARC-RFC7489.md:396 | checkbox | fo= with multiple options: `fo=0:1:d:s` | 9 | - | - | PENDING |
-| CHK-699 | 03-DMARC-RFC7489.md:397 | checkbox | fo= with unknown options → unknown ignored | 9 | - | - | PENDING |
-| CHK-700 | 03-DMARC-RFC7489.md:398 | checkbox | np= parsing (RFC 9091) | 9 | - | - | PENDING |
-| CHK-701 | 03-DMARC-RFC7489.md:399 | checkbox | sp= defaults to p= when absent | 9 | - | - | PENDING |
-| CHK-702 | 03-DMARC-RFC7489.md:400 | checkbox | ri= parsing, non-numeric → default | 9 | - | - | PENDING |
+| CHK-681 | 03-DMARC-RFC7489.md:379 | checkbox | Minimal valid: `v=DMARC1; p=none` | 9 | src/dmarc/parser.rs:271 | 9164210 | DONE |
+| CHK-682 | 03-DMARC-RFC7489.md:380 | checkbox | Full record with all tags | 9 | src/dmarc/parser.rs:289 | 9164210 | DONE |
+| CHK-683 | 03-DMARC-RFC7489.md:381 | checkbox | Missing `v=` → error | 9 | src/dmarc/parser.rs:319 | 9164210 | DONE |
+| CHK-684 | 03-DMARC-RFC7489.md:382 | checkbox | `v=` not first tag → error | 9 | src/dmarc/parser.rs:328 | 9164210 | DONE |
+| CHK-685 | 03-DMARC-RFC7489.md:383 | checkbox | Invalid `p=` value → error | 9 | src/dmarc/parser.rs:337 | 9164210 | DONE |
+| CHK-686 | 03-DMARC-RFC7489.md:384 | checkbox | Unknown tags → ignored | 9 | src/dmarc/parser.rs:346 | 9164210 | DONE |
+| CHK-687 | 03-DMARC-RFC7489.md:385 | checkbox | Case insensitivity: `v=dmarc1; p=Quarantine` → valid | 9 | src/dmarc/parser.rs:354 | 9164210 | DONE |
+| CHK-688 | 03-DMARC-RFC7489.md:386 | checkbox | URI parsing with size limits (k, m, g, t units, bare bytes) | 9 | src/dmarc/parser.rs:364 | 9164210 | DONE |
+| CHK-689 | 03-DMARC-RFC7489.md:387 | checkbox | Multiple URIs in rua | 9 | src/dmarc/parser.rs:400 | 9164210 | DONE |
+| CHK-690 | 03-DMARC-RFC7489.md:388 | checkbox | Non-mailto URI → error | 9 | src/dmarc/parser.rs:413 | 9164210 | DONE |
+| CHK-691 | 03-DMARC-RFC7489.md:389 | checkbox | Trailing semicolons → valid | 9 | src/dmarc/parser.rs:424 | 9164210 | DONE |
+| CHK-692 | 03-DMARC-RFC7489.md:390 | checkbox | Whitespace variations → valid | 9 | src/dmarc/parser.rs:438 | 9164210 | DONE |
+| CHK-693 | 03-DMARC-RFC7489.md:391 | checkbox | No semicolons: `v=DMARC1;p=none;pct=75` → valid | 9 | src/dmarc/parser.rs:447 | 9164210 | DONE |
+| CHK-694 | 03-DMARC-RFC7489.md:392 | checkbox | Duplicate p= → first wins | 9 | src/dmarc/parser.rs:456 | 9164210 | DONE |
+| CHK-695 | 03-DMARC-RFC7489.md:393 | checkbox | pct > 100 → clamped to 100 | 9 | src/dmarc/parser.rs:464 | 9164210 | DONE |
+| CHK-696 | 03-DMARC-RFC7489.md:394 | checkbox | pct < 0 → clamped to 0 | 9 | src/dmarc/parser.rs:472 | 9164210 | DONE |
+| CHK-697 | 03-DMARC-RFC7489.md:395 | checkbox | pct non-numeric → default 100 | 9 | src/dmarc/parser.rs:480 | 9164210 | DONE |
+| CHK-698 | 03-DMARC-RFC7489.md:396 | checkbox | fo= with multiple options: `fo=0:1:d:s` | 9 | src/dmarc/parser.rs:488 | 9164210 | DONE |
+| CHK-699 | 03-DMARC-RFC7489.md:397 | checkbox | fo= with unknown options → unknown ignored | 9 | src/dmarc/parser.rs:500 | 9164210 | DONE |
+| CHK-700 | 03-DMARC-RFC7489.md:398 | checkbox | np= parsing (RFC 9091) | 9 | src/dmarc/parser.rs:509 | 9164210 | DONE |
+| CHK-701 | 03-DMARC-RFC7489.md:399 | checkbox | sp= defaults to p= when absent | 9 | src/dmarc/parser.rs:522 | 9164210 | DONE |
+| CHK-702 | 03-DMARC-RFC7489.md:400 | checkbox | ri= parsing, non-numeric → default | 9 | src/dmarc/parser.rs:537 | 9164210 | DONE |
 | CHK-703 | 03-DMARC-RFC7489.md:404 | checkbox | Strict DKIM alignment: exact match passes | 10 | - | - | PENDING |
 | CHK-704 | 03-DMARC-RFC7489.md:405 | checkbox | Strict DKIM alignment: subdomain fails | 10 | - | - | PENDING |
 | CHK-705 | 03-DMARC-RFC7489.md:406 | checkbox | Relaxed DKIM alignment: subdomain passes (org domain matches) | 10 | - | - | PENDING |
@@ -762,8 +762,8 @@
 | CHK-757 | 03-DMARC-RFC7489.md:482 | checkbox | Public Suffix List: `psl` crate v2 | 1 | Cargo.toml:20 | 992b713 | DONE |
 | CHK-758 | 03-DMARC-RFC7489.md:483 | checkbox | DNS resolver: shared with SPF/DKIM via DnsResolver trait | 1 | src/common/dns.rs:39 | 992b713 | DONE |
 | CHK-759 | 03-DMARC-RFC7489.md:484 | checkbox | Random: `rand` crate for pct sampling | 1 | Cargo.toml:26 | 992b713 | DONE |
-| CHK-760 | 03-DMARC-RFC7489.md:590 | checkbox | DMARC record parsing complete with all tags (including np= from RFC 9091) | 9 | - | - | PENDING |
-| CHK-761 | 03-DMARC-RFC7489.md:591 | checkbox | All parsed fields are structured types (enums, not raw strings) | 9 | - | - | PENDING |
+| CHK-760 | 03-DMARC-RFC7489.md:590 | checkbox | DMARC record parsing complete with all tags (including np= from RFC 9091) | 9 | src/dmarc/parser.rs:289 | 9164210 | DONE |
+| CHK-761 | 03-DMARC-RFC7489.md:591 | checkbox | All parsed fields are structured types (enums, not raw strings) | 9 | src/dmarc/parser.rs:551 | 9164210 | DONE |
 | CHK-762 | 03-DMARC-RFC7489.md:592 | checkbox | DNS discovery with fallback to organizational domain | 10 | - | - | PENDING |
 | CHK-763 | 03-DMARC-RFC7489.md:593 | checkbox | DNS TempFail during discovery → TempFail disposition (NOT None) | 10 | - | - | PENDING |
 | CHK-764 | 03-DMARC-RFC7489.md:594 | checkbox | Public Suffix List integration via psl crate | 10 | - | - | PENDING |

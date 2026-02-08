@@ -5,4 +5,5 @@
 
 pub mod common;
 pub mod dkim;
+pub mod dmarc;
 pub mod spf;
