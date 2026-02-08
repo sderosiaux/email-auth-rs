@@ -580,24 +580,24 @@
 | CHK-575 | 03-DMARC-RFC7489.md:78 | checkbox | `Reject` — reject per policy | 9 | src/dmarc/types.rs:145 | 9164210 | DONE |
 | CHK-576 | 03-DMARC-RFC7489.md:79 | checkbox | `None` — no policy (monitoring mode, pct sampling excluded, or no record) | 9 | src/dmarc/types.rs:147 | 9164210 | DONE |
 | CHK-577 | 03-DMARC-RFC7489.md:80 | checkbox | `TempFail` — DNS temporary failure during record discovery | 9 | src/dmarc/types.rs:149 | 9164210 | DONE |
-| CHK-578 | 03-DMARC-RFC7489.md:88 | checkbox | Extract domain from RFC5322.From header | 10 | - | - | PENDING |
-| CHK-579 | 03-DMARC-RFC7489.md:89 | checkbox | Query: `_dmarc.<from-domain>` TXT record | 10 | - | - | PENDING |
-| CHK-580 | 03-DMARC-RFC7489.md:90 | checkbox | If no record found and domain is not organizational domain: | 10 | - | - | PENDING |
-| CHK-581 | 03-DMARC-RFC7489.md:91 | checkbox | Determine organizational domain (public suffix + 1 label) | 10 | - | - | PENDING |
-| CHK-582 | 03-DMARC-RFC7489.md:92 | checkbox | Query: `_dmarc.<organizational-domain>` | 10 | - | - | PENDING |
-| CHK-583 | 03-DMARC-RFC7489.md:93 | checkbox | Multiple TXT records at same name: use first valid DMARC record (parse each, take first success) | 10 | - | - | PENDING |
-| CHK-584 | 03-DMARC-RFC7489.md:94 | checkbox | No record found (NXDOMAIN or no valid DMARC records): DmarcResult with disposition=None, no policy | 10 | - | - | PENDING |
-| CHK-585 | 03-DMARC-RFC7489.md:98 | checkbox | **CRITICAL**: DNS TempFail during record discovery MUST NOT be treated as "no record" | 10 | - | - | PENDING |
-| CHK-586 | 03-DMARC-RFC7489.md:99 | checkbox | If TXT query returns TempFail: return DmarcResult with `disposition: Disposition::TempFail` | 10 | - | - | PENDING |
-| CHK-587 | 03-DMARC-RFC7489.md:100 | checkbox | Rationale: treating DNS outage as "no policy" means messages bypass DMARC during DNS failures — this is a security violation | 10 | - | - | PENDING |
+| CHK-578 | 03-DMARC-RFC7489.md:88 | checkbox | Extract domain from RFC5322.From header | 10 | src/dmarc/eval.rs:25 | 3590bfe | DONE |
+| CHK-579 | 03-DMARC-RFC7489.md:89 | checkbox | Query: `_dmarc.<from-domain>` TXT record | 10 | src/dmarc/eval.rs:108 | 3590bfe | DONE |
+| CHK-580 | 03-DMARC-RFC7489.md:90 | checkbox | If no record found and domain is not organizational domain: | 10 | src/dmarc/eval.rs:115 | 3590bfe | DONE |
+| CHK-581 | 03-DMARC-RFC7489.md:91 | checkbox | Determine organizational domain (public suffix + 1 label) | 10 | src/dmarc/eval.rs:118 | 3590bfe | DONE |
+| CHK-582 | 03-DMARC-RFC7489.md:92 | checkbox | Query: `_dmarc.<organizational-domain>` | 10 | src/dmarc/eval.rs:123 | 3590bfe | DONE |
+| CHK-583 | 03-DMARC-RFC7489.md:93 | checkbox | Multiple TXT records at same name: use first valid DMARC record (parse each, take first success) | 10 | src/dmarc/eval.rs:136 | 3590bfe | DONE |
+| CHK-584 | 03-DMARC-RFC7489.md:94 | checkbox | No record found (NXDOMAIN or no valid DMARC records): DmarcResult with disposition=None, no policy | 10 | src/dmarc/eval.rs:54 | 3590bfe | DONE |
+| CHK-585 | 03-DMARC-RFC7489.md:98 | checkbox | **CRITICAL**: DNS TempFail during record discovery MUST NOT be treated as "no record" | 10 | src/dmarc/eval.rs:62 | 3590bfe | DONE |
+| CHK-586 | 03-DMARC-RFC7489.md:99 | checkbox | If TXT query returns TempFail: return DmarcResult with `disposition: Disposition::TempFail` | 10 | src/dmarc/eval.rs:63 | 3590bfe | DONE |
+| CHK-587 | 03-DMARC-RFC7489.md:100 | checkbox | Rationale: treating DNS outage as "no policy" means messages bypass DMARC during DNS failures — this is a security violation | 10 | src/dmarc/eval.rs:62 | 3590bfe | DONE |
 | CHK-588 | 03-DMARC-RFC7489.md:104 | checkbox | Use Public Suffix List (PSL) to determine organizational domain | 1 | src/common/domain.rs:167 | 992b713 | DONE |
 | CHK-589 | 03-DMARC-RFC7489.md:105 | checkbox | Organizational domain = public suffix + one label | 1 | src/common/domain.rs:167 | 992b713 | DONE |
 | CHK-590 | 03-DMARC-RFC7489.md:106 | checkbox | Example: `mail.example.com` → `example.com` | 1 | src/common/domain.rs:173 | 992b713 | DONE |
 | CHK-591 | 03-DMARC-RFC7489.md:107 | checkbox | Example: `foo.bar.co.uk` → `bar.co.uk` | 1 | src/common/domain.rs:197 | 992b713 | DONE |
 | CHK-592 | 03-DMARC-RFC7489.md:108 | checkbox | Use `psl` crate v2: `psl::domain_str(&normalized)` returns the registrable domain | 1 | src/common/domain.rs:44 | 992b713 | DONE |
 | CHK-593 | 03-DMARC-RFC7489.md:109 | checkbox | The psl crate embeds a snapshot of the PSL — no runtime fetch needed | 1 | src/common/domain.rs:44 | 992b713 | DONE |
-| CHK-594 | 03-DMARC-RFC7489.md:113 | checkbox | DNS caching: CALLER responsibility (resolver layer), not library scope | 10 | - | - | PENDING |
-| CHK-595 | 03-DMARC-RFC7489.md:114 | checkbox | Document this clearly — callers implement caching in their DnsResolver wrapper | 10 | - | - | PENDING |
+| CHK-594 | 03-DMARC-RFC7489.md:113 | checkbox | DNS caching: CALLER responsibility (resolver layer), not library scope | 10 | src/dmarc/eval.rs:9 | 3590bfe | DONE |
+| CHK-595 | 03-DMARC-RFC7489.md:114 | checkbox | Document this clearly — callers implement caching in their DnsResolver wrapper | 10 | src/dmarc/eval.rs:9 | 3590bfe | DONE |
 | CHK-596 | 03-DMARC-RFC7489.md:122 | checkbox | Parse as tag=value pairs, separated by semicolons | 9 | src/dmarc/parser.rs:134 | 9164210 | DONE |
 | CHK-597 | 03-DMARC-RFC7489.md:123 | checkbox | Tags are case-insensitive | 9 | src/dmarc/parser.rs:64 | 9164210 | DONE |
 | CHK-598 | 03-DMARC-RFC7489.md:124 | checkbox | Values may be case-sensitive (URIs) or case-insensitive (policies) | 9 | src/dmarc/parser.rs:45 | 9164210 | DONE |
@@ -626,39 +626,39 @@
 | CHK-621 | 03-DMARC-RFC7489.md:156 | checkbox | Multiple URIs: comma-separated | 9 | src/dmarc/parser.rs:195 | 9164210 | DONE |
 | CHK-622 | 03-DMARC-RFC7489.md:160 | checkbox | Duplicate p= → use first value (per RFC 7489 §6.3) | 9 | src/dmarc/parser.rs:66 | 9164210 | DONE |
 | CHK-623 | 03-DMARC-RFC7489.md:161 | checkbox | Other duplicate tags: implementation may use first or last. Be consistent. | 9 | src/dmarc/parser.rs:68 | 9164210 | DONE |
-| CHK-624 | 03-DMARC-RFC7489.md:169 | checkbox | For each DKIM result that is `Pass`: | 10 | - | - | PENDING |
-| CHK-625 | 03-DMARC-RFC7489.md:170 | checkbox | Get the `d=` domain from the DKIM signature | 10 | - | - | PENDING |
-| CHK-626 | 03-DMARC-RFC7489.md:171 | checkbox | Compare with RFC5322.From domain | 10 | - | - | PENDING |
-| CHK-627 | 03-DMARC-RFC7489.md:172 | checkbox | Strict mode: exact match required (case-insensitive, normalize trailing dots) | 10 | - | - | PENDING |
-| CHK-628 | 03-DMARC-RFC7489.md:173 | checkbox | Relaxed mode: `organizational_domain(dkim_d)` == `organizational_domain(from_domain)` | 10 | - | - | PENDING |
-| CHK-629 | 03-DMARC-RFC7489.md:174 | checkbox | If ANY DKIM signature both passes AND aligns: DKIM alignment passes | 10 | - | - | PENDING |
-| CHK-630 | 03-DMARC-RFC7489.md:178 | checkbox | SPF must have resulted in `Pass` (not SoftFail, not Neutral) | 10 | - | - | PENDING |
-| CHK-631 | 03-DMARC-RFC7489.md:179 | checkbox | SPF authenticated domain = MAIL FROM domain (or HELO if MAIL FROM empty) | 10 | - | - | PENDING |
-| CHK-632 | 03-DMARC-RFC7489.md:180 | checkbox | Compare authenticated domain with RFC5322.From domain | 10 | - | - | PENDING |
-| CHK-633 | 03-DMARC-RFC7489.md:181 | checkbox | Strict mode: exact match required | 10 | - | - | PENDING |
-| CHK-634 | 03-DMARC-RFC7489.md:182 | checkbox | Relaxed mode: organizational domain match | 10 | - | - | PENDING |
-| CHK-635 | 03-DMARC-RFC7489.md:183 | checkbox | SPF must pass AND align for SPF alignment to pass | 10 | - | - | PENDING |
-| CHK-636 | 03-DMARC-RFC7489.md:216 | checkbox | DKIM alignment passes, OR | 10 | - | - | PENDING |
-| CHK-637 | 03-DMARC-RFC7489.md:217 | checkbox | SPF alignment passes | 10 | - | - | PENDING |
-| CHK-638 | 03-DMARC-RFC7489.md:218 | checkbox | Only ONE needs to pass (OR logic) | 10 | - | - | PENDING |
-| CHK-639 | 03-DMARC-RFC7489.md:222 | checkbox | If From domain equals organizational domain: use `p=` (organizational domain policy) | 10 | - | - | PENDING |
-| CHK-640 | 03-DMARC-RFC7489.md:223 | checkbox | If From domain is a subdomain: | 10 | - | - | PENDING |
-| CHK-641 | 03-DMARC-RFC7489.md:224 | checkbox | Check if subdomain is non-existent (see §5.4) | 10 | - | - | PENDING |
-| CHK-642 | 03-DMARC-RFC7489.md:225 | checkbox | If non-existent: use `np=` if present, else fall back to `sp=`, else fall back to `p=` | 10 | - | - | PENDING |
-| CHK-643 | 03-DMARC-RFC7489.md:226 | checkbox | If existing subdomain: use `sp=` (which defaults to `p=` if absent in record) | 10 | - | - | PENDING |
-| CHK-644 | 03-DMARC-RFC7489.md:227 | checkbox | Fallback chain: `np=` → `sp=` → `p=` | 10 | - | - | PENDING |
-| CHK-645 | 03-DMARC-RFC7489.md:231 | checkbox | Query DNS for the From domain: A, AAAA, and MX records | 10 | - | - | PENDING |
-| CHK-646 | 03-DMARC-RFC7489.md:232 | checkbox | If ALL THREE return NxDomain → domain is non-existent | 10 | - | - | PENDING |
-| CHK-647 | 03-DMARC-RFC7489.md:233 | checkbox | Any other result (even empty records) → domain exists | 10 | - | - | PENDING |
-| CHK-648 | 03-DMARC-RFC7489.md:234 | checkbox | **Performance**: parallelize these 3 DNS queries with `tokio::join!` — they are independent | 10 | - | - | PENDING |
-| CHK-649 | 03-DMARC-RFC7489.md:238 | checkbox | If `pct` < 100: | 10 | - | - | PENDING |
-| CHK-650 | 03-DMARC-RFC7489.md:239 | checkbox | Generate random value 0-99 | 10 | - | - | PENDING |
-| CHK-651 | 03-DMARC-RFC7489.md:240 | checkbox | If value < pct: apply the policy (quarantine/reject) | 10 | - | - | PENDING |
-| CHK-652 | 03-DMARC-RFC7489.md:241 | checkbox | If value >= pct: disposition = None (monitoring mode, policy not enforced) | 10 | - | - | PENDING |
-| CHK-653 | 03-DMARC-RFC7489.md:242 | checkbox | pct=100: always apply policy (no sampling) | 10 | - | - | PENDING |
-| CHK-654 | 03-DMARC-RFC7489.md:243 | checkbox | pct=0: never apply policy (all monitoring) | 10 | - | - | PENDING |
-| CHK-655 | 03-DMARC-RFC7489.md:244 | checkbox | Use `rand` crate for randomness | 10 | - | - | PENDING |
-| CHK-656 | 03-DMARC-RFC7489.md:245 | checkbox | For testing: provide internal method that accepts deterministic roll value | 10 | - | - | PENDING |
+| CHK-624 | 03-DMARC-RFC7489.md:169 | checkbox | For each DKIM result that is `Pass`: | 10 | src/dmarc/eval.rs:182 | 3590bfe | DONE |
+| CHK-625 | 03-DMARC-RFC7489.md:170 | checkbox | Get the `d=` domain from the DKIM signature | 10 | src/dmarc/eval.rs:184 | 3590bfe | DONE |
+| CHK-626 | 03-DMARC-RFC7489.md:171 | checkbox | Compare with RFC5322.From domain | 10 | src/dmarc/eval.rs:185 | 3590bfe | DONE |
+| CHK-627 | 03-DMARC-RFC7489.md:172 | checkbox | Strict mode: exact match required (case-insensitive, normalize trailing dots) | 10 | src/dmarc/eval.rs:200 | 3590bfe | DONE |
+| CHK-628 | 03-DMARC-RFC7489.md:173 | checkbox | Relaxed mode: `organizational_domain(dkim_d)` == `organizational_domain(from_domain)` | 10 | src/dmarc/eval.rs:201 | 3590bfe | DONE |
+| CHK-629 | 03-DMARC-RFC7489.md:174 | checkbox | If ANY DKIM signature both passes AND aligns: DKIM alignment passes | 10 | src/dmarc/eval.rs:186 | 3590bfe | DONE |
+| CHK-630 | 03-DMARC-RFC7489.md:178 | checkbox | SPF must have resulted in `Pass` (not SoftFail, not Neutral) | 10 | src/dmarc/eval.rs:194 | 3590bfe | DONE |
+| CHK-631 | 03-DMARC-RFC7489.md:179 | checkbox | SPF authenticated domain = MAIL FROM domain (or HELO if MAIL FROM empty) | 10 | src/dmarc/eval.rs:25 | 3590bfe | DONE |
+| CHK-632 | 03-DMARC-RFC7489.md:180 | checkbox | Compare authenticated domain with RFC5322.From domain | 10 | src/dmarc/eval.rs:197 | 3590bfe | DONE |
+| CHK-633 | 03-DMARC-RFC7489.md:181 | checkbox | Strict mode: exact match required | 10 | src/dmarc/eval.rs:200 | 3590bfe | DONE |
+| CHK-634 | 03-DMARC-RFC7489.md:182 | checkbox | Relaxed mode: organizational domain match | 10 | src/dmarc/eval.rs:201 | 3590bfe | DONE |
+| CHK-635 | 03-DMARC-RFC7489.md:183 | checkbox | SPF must pass AND align for SPF alignment to pass | 10 | src/dmarc/eval.rs:194 | 3590bfe | DONE |
+| CHK-636 | 03-DMARC-RFC7489.md:216 | checkbox | DKIM alignment passes, OR | 10 | src/dmarc/eval.rs:82 | 3590bfe | DONE |
+| CHK-637 | 03-DMARC-RFC7489.md:217 | checkbox | SPF alignment passes | 10 | src/dmarc/eval.rs:82 | 3590bfe | DONE |
+| CHK-638 | 03-DMARC-RFC7489.md:218 | checkbox | Only ONE needs to pass (OR logic) | 10 | src/dmarc/eval.rs:82 | 3590bfe | DONE |
+| CHK-639 | 03-DMARC-RFC7489.md:222 | checkbox | If From domain equals organizational domain: use `p=` (organizational domain policy) | 10 | src/dmarc/eval.rs:94 | 3590bfe | DONE |
+| CHK-640 | 03-DMARC-RFC7489.md:223 | checkbox | If From domain is a subdomain: | 10 | src/dmarc/eval.rs:97 | 3590bfe | DONE |
+| CHK-641 | 03-DMARC-RFC7489.md:224 | checkbox | Check if subdomain is non-existent (see §5.4) | 10 | src/dmarc/eval.rs:153 | 3590bfe | DONE |
+| CHK-642 | 03-DMARC-RFC7489.md:225 | checkbox | If non-existent: use `np=` if present, else fall back to `sp=`, else fall back to `p=` | 10 | src/dmarc/eval.rs:157 | 3590bfe | DONE |
+| CHK-643 | 03-DMARC-RFC7489.md:226 | checkbox | If existing subdomain: use `sp=` (which defaults to `p=` if absent in record) | 10 | src/dmarc/eval.rs:161 | 3590bfe | DONE |
+| CHK-644 | 03-DMARC-RFC7489.md:227 | checkbox | Fallback chain: `np=` → `sp=` → `p=` | 10 | src/dmarc/eval.rs:157 | 3590bfe | DONE |
+| CHK-645 | 03-DMARC-RFC7489.md:231 | checkbox | Query DNS for the From domain: A, AAAA, and MX records | 10 | src/dmarc/eval.rs:168 | 3590bfe | DONE |
+| CHK-646 | 03-DMARC-RFC7489.md:232 | checkbox | If ALL THREE return NxDomain → domain is non-existent | 10 | src/dmarc/eval.rs:174 | 3590bfe | DONE |
+| CHK-647 | 03-DMARC-RFC7489.md:233 | checkbox | Any other result (even empty records) → domain exists | 10 | src/dmarc/eval.rs:174 | 3590bfe | DONE |
+| CHK-648 | 03-DMARC-RFC7489.md:234 | checkbox | **Performance**: parallelize these 3 DNS queries with `tokio::join!` — they are independent | 10 | src/dmarc/eval.rs:170 | 3590bfe | DONE |
+| CHK-649 | 03-DMARC-RFC7489.md:238 | checkbox | If `pct` < 100: | 10 | src/dmarc/eval.rs:208 | 3590bfe | DONE |
+| CHK-650 | 03-DMARC-RFC7489.md:239 | checkbox | Generate random value 0-99 | 10 | src/dmarc/eval.rs:214 | 3590bfe | DONE |
+| CHK-651 | 03-DMARC-RFC7489.md:240 | checkbox | If value < pct: apply the policy (quarantine/reject) | 10 | src/dmarc/eval.rs:216 | 3590bfe | DONE |
+| CHK-652 | 03-DMARC-RFC7489.md:241 | checkbox | If value >= pct: disposition = None (monitoring mode, policy not enforced) | 10 | src/dmarc/eval.rs:218 | 3590bfe | DONE |
+| CHK-653 | 03-DMARC-RFC7489.md:242 | checkbox | pct=100: always apply policy (no sampling) | 10 | src/dmarc/eval.rs:210 | 3590bfe | DONE |
+| CHK-654 | 03-DMARC-RFC7489.md:243 | checkbox | pct=0: never apply policy (all monitoring) | 10 | src/dmarc/eval.rs:212 | 3590bfe | DONE |
+| CHK-655 | 03-DMARC-RFC7489.md:244 | checkbox | Use `rand` crate for randomness | 10 | src/dmarc/eval.rs:214 | 3590bfe | DONE |
+| CHK-656 | 03-DMARC-RFC7489.md:245 | checkbox | For testing: provide internal method that accepts deterministic roll value | 10 | src/dmarc/eval.rs:37 | 3590bfe | DONE |
 | CHK-657 | 03-DMARC-RFC7489.md:311 | checkbox | Define `AggregateReport` struct per RFC 7489 Appendix C XML schema: | 11 | - | - | PENDING |
 | CHK-658 | 03-DMARC-RFC7489.md:312 | checkbox | Report metadata: org_name, email, report_id, date_range (begin/end timestamps) | 11 | - | - | PENDING |
 | CHK-659 | 03-DMARC-RFC7489.md:313 | checkbox | Policy published: domain, adkim, aspf, p, sp, pct | 11 | - | - | PENDING |
@@ -705,29 +705,29 @@
 | CHK-700 | 03-DMARC-RFC7489.md:398 | checkbox | np= parsing (RFC 9091) | 9 | src/dmarc/parser.rs:509 | 9164210 | DONE |
 | CHK-701 | 03-DMARC-RFC7489.md:399 | checkbox | sp= defaults to p= when absent | 9 | src/dmarc/parser.rs:522 | 9164210 | DONE |
 | CHK-702 | 03-DMARC-RFC7489.md:400 | checkbox | ri= parsing, non-numeric → default | 9 | src/dmarc/parser.rs:537 | 9164210 | DONE |
-| CHK-703 | 03-DMARC-RFC7489.md:404 | checkbox | Strict DKIM alignment: exact match passes | 10 | - | - | PENDING |
-| CHK-704 | 03-DMARC-RFC7489.md:405 | checkbox | Strict DKIM alignment: subdomain fails | 10 | - | - | PENDING |
-| CHK-705 | 03-DMARC-RFC7489.md:406 | checkbox | Relaxed DKIM alignment: subdomain passes (org domain matches) | 10 | - | - | PENDING |
-| CHK-706 | 03-DMARC-RFC7489.md:407 | checkbox | Relaxed DKIM alignment: different org domain fails | 10 | - | - | PENDING |
-| CHK-707 | 03-DMARC-RFC7489.md:408 | checkbox | Strict SPF alignment: exact match passes | 10 | - | - | PENDING |
-| CHK-708 | 03-DMARC-RFC7489.md:409 | checkbox | Relaxed SPF alignment: subdomain passes | 10 | - | - | PENDING |
-| CHK-709 | 03-DMARC-RFC7489.md:410 | checkbox | SPF SoftFail does NOT produce alignment (must be Pass) | 10 | - | - | PENDING |
-| CHK-710 | 03-DMARC-RFC7489.md:411 | checkbox | Misaligned both → DMARC fails | 10 | - | - | PENDING |
-| CHK-711 | 03-DMARC-RFC7489.md:415 | checkbox | No DMARC record: disposition=None | 10 | - | - | PENDING |
-| CHK-712 | 03-DMARC-RFC7489.md:416 | checkbox | DNS TempFail during discovery: disposition=TempFail (NOT None) | 10 | - | - | PENDING |
-| CHK-713 | 03-DMARC-RFC7489.md:417 | checkbox | DKIM passes and aligns: Pass | 10 | - | - | PENDING |
-| CHK-714 | 03-DMARC-RFC7489.md:418 | checkbox | SPF passes and aligns: Pass | 10 | - | - | PENDING |
-| CHK-715 | 03-DMARC-RFC7489.md:419 | checkbox | Both pass and align: Pass | 10 | - | - | PENDING |
-| CHK-716 | 03-DMARC-RFC7489.md:420 | checkbox | DKIM passes, not aligned + SPF fails: apply policy | 10 | - | - | PENDING |
-| CHK-717 | 03-DMARC-RFC7489.md:421 | checkbox | Policy=none: disposition=None (monitoring) | 10 | - | - | PENDING |
-| CHK-718 | 03-DMARC-RFC7489.md:422 | checkbox | Policy=quarantine: disposition=Quarantine | 10 | - | - | PENDING |
-| CHK-719 | 03-DMARC-RFC7489.md:423 | checkbox | Policy=reject: disposition=Reject | 10 | - | - | PENDING |
-| CHK-720 | 03-DMARC-RFC7489.md:424 | checkbox | Subdomain policy different from parent (sp= test) | 10 | - | - | PENDING |
-| CHK-721 | 03-DMARC-RFC7489.md:425 | checkbox | np= tag: non-existent subdomain uses np policy | 10 | - | - | PENDING |
-| CHK-722 | 03-DMARC-RFC7489.md:426 | checkbox | np= absent, non-existent subdomain: fall back to sp=, then p= | 10 | - | - | PENDING |
-| CHK-723 | 03-DMARC-RFC7489.md:427 | checkbox | pct=50: test with deterministic roll — verify both branches | 10 | - | - | PENDING |
-| CHK-724 | 03-DMARC-RFC7489.md:428 | checkbox | pct=0: always monitoring | 10 | - | - | PENDING |
-| CHK-725 | 03-DMARC-RFC7489.md:429 | checkbox | pct=100: always apply | 10 | - | - | PENDING |
+| CHK-703 | 03-DMARC-RFC7489.md:404 | checkbox | Strict DKIM alignment: exact match passes | 10 | src/dmarc/eval.rs:237 | 3590bfe | DONE |
+| CHK-704 | 03-DMARC-RFC7489.md:405 | checkbox | Strict DKIM alignment: subdomain fails | 10 | src/dmarc/eval.rs:243 | 3590bfe | DONE |
+| CHK-705 | 03-DMARC-RFC7489.md:406 | checkbox | Relaxed DKIM alignment: subdomain passes (org domain matches) | 10 | src/dmarc/eval.rs:249 | 3590bfe | DONE |
+| CHK-706 | 03-DMARC-RFC7489.md:407 | checkbox | Relaxed DKIM alignment: different org domain fails | 10 | src/dmarc/eval.rs:255 | 3590bfe | DONE |
+| CHK-707 | 03-DMARC-RFC7489.md:408 | checkbox | Strict SPF alignment: exact match passes | 10 | src/dmarc/eval.rs:261 | 3590bfe | DONE |
+| CHK-708 | 03-DMARC-RFC7489.md:409 | checkbox | Relaxed SPF alignment: subdomain passes | 10 | src/dmarc/eval.rs:272 | 3590bfe | DONE |
+| CHK-709 | 03-DMARC-RFC7489.md:410 | checkbox | SPF SoftFail does NOT produce alignment (must be Pass) | 10 | src/dmarc/eval.rs:282 | 3590bfe | DONE |
+| CHK-710 | 03-DMARC-RFC7489.md:411 | checkbox | Misaligned both → DMARC fails | 10 | src/dmarc/eval.rs:292 | 3590bfe | DONE |
+| CHK-711 | 03-DMARC-RFC7489.md:415 | checkbox | No DMARC record: disposition=None | 10 | src/dmarc/eval.rs:312 | 3590bfe | DONE |
+| CHK-712 | 03-DMARC-RFC7489.md:416 | checkbox | DNS TempFail during discovery: disposition=TempFail (NOT None) | 10 | src/dmarc/eval.rs:323 | 3590bfe | DONE |
+| CHK-713 | 03-DMARC-RFC7489.md:417 | checkbox | DKIM passes and aligns: Pass | 10 | src/dmarc/eval.rs:335 | 3590bfe | DONE |
+| CHK-714 | 03-DMARC-RFC7489.md:418 | checkbox | SPF passes and aligns: Pass | 10 | src/dmarc/eval.rs:351 | 3590bfe | DONE |
+| CHK-715 | 03-DMARC-RFC7489.md:419 | checkbox | Both pass and align: Pass | 10 | src/dmarc/eval.rs:364 | 3590bfe | DONE |
+| CHK-716 | 03-DMARC-RFC7489.md:420 | checkbox | DKIM passes, not aligned + SPF fails: apply policy | 10 | src/dmarc/eval.rs:381 | 3590bfe | DONE |
+| CHK-717 | 03-DMARC-RFC7489.md:421 | checkbox | Policy=none: disposition=None (monitoring) | 10 | src/dmarc/eval.rs:396 | 3590bfe | DONE |
+| CHK-718 | 03-DMARC-RFC7489.md:422 | checkbox | Policy=quarantine: disposition=Quarantine | 10 | src/dmarc/eval.rs:411 | 3590bfe | DONE |
+| CHK-719 | 03-DMARC-RFC7489.md:423 | checkbox | Policy=reject: disposition=Reject | 10 | src/dmarc/eval.rs:425 | 3590bfe | DONE |
+| CHK-720 | 03-DMARC-RFC7489.md:424 | checkbox | Subdomain policy different from parent (sp= test) | 10 | src/dmarc/eval.rs:439 | 3590bfe | DONE |
+| CHK-721 | 03-DMARC-RFC7489.md:425 | checkbox | np= tag: non-existent subdomain uses np policy | 10 | src/dmarc/eval.rs:462 | 3590bfe | DONE |
+| CHK-722 | 03-DMARC-RFC7489.md:426 | checkbox | np= absent, non-existent subdomain: fall back to sp=, then p= | 10 | src/dmarc/eval.rs:480 | 3590bfe | DONE |
+| CHK-723 | 03-DMARC-RFC7489.md:427 | checkbox | pct=50: test with deterministic roll — verify both branches | 10 | src/dmarc/eval.rs:498 | 3590bfe | DONE |
+| CHK-724 | 03-DMARC-RFC7489.md:428 | checkbox | pct=0: always monitoring | 10 | src/dmarc/eval.rs:523 | 3590bfe | DONE |
+| CHK-725 | 03-DMARC-RFC7489.md:429 | checkbox | pct=100: always apply | 10 | src/dmarc/eval.rs:537 | 3590bfe | DONE |
 | CHK-726 | 03-DMARC-RFC7489.md:433 | checkbox | `example.com` → `example.com` | 1 | src/common/domain.rs:167 | 992b713 | DONE |
 | CHK-727 | 03-DMARC-RFC7489.md:434 | checkbox | `mail.example.com` → `example.com` | 1 | src/common/domain.rs:173 | 992b713 | DONE |
 | CHK-728 | 03-DMARC-RFC7489.md:435 | checkbox | `foo.bar.example.com` → `example.com` | 1 | src/common/domain.rs:179 | 992b713 | DONE |
@@ -752,30 +752,30 @@
 | CHK-747 | 03-DMARC-RFC7489.md:462 | checkbox | fo=d: DKIM passes, SPF fails → NO report (fo=d only triggers on DKIM failure) | 11 | - | - | PENDING |
 | CHK-748 | 03-DMARC-RFC7489.md:463 | checkbox | fo=s: SPF fails → generate report (regardless of DKIM result) | 11 | - | - | PENDING |
 | CHK-749 | 03-DMARC-RFC7489.md:464 | checkbox | fo=s: SPF passes, DKIM fails → NO report | 11 | - | - | PENDING |
-| CHK-750 | 03-DMARC-RFC7489.md:470 | checkbox | DMARC DNS TempFail → TempFail disposition (NEVER treat as "no policy") | 10 | - | - | PENDING |
-| CHK-751 | 03-DMARC-RFC7489.md:471 | checkbox | Validate all DNS responses — handle NxDomain vs empty vs TempFail distinctly | 10 | - | - | PENDING |
-| CHK-752 | 03-DMARC-RFC7489.md:472 | checkbox | Handle oversized records gracefully (truncate parsing, don't crash) | 10 | - | - | PENDING |
-| CHK-753 | 03-DMARC-RFC7489.md:473 | checkbox | l= body length in DKIM: accept but note security concern (body truncation attacks) | 10 | - | - | PENDING |
-| CHK-754 | 03-DMARC-RFC7489.md:474 | checkbox | Rate limiting DNS queries: caller responsibility (document this) | 10 | - | - | PENDING |
-| CHK-755 | 03-DMARC-RFC7489.md:480 | checkbox | SPF module (from this crate) | 10 | - | - | PENDING |
-| CHK-756 | 03-DMARC-RFC7489.md:481 | checkbox | DKIM module (from this crate) | 10 | - | - | PENDING |
+| CHK-750 | 03-DMARC-RFC7489.md:470 | checkbox | DMARC DNS TempFail → TempFail disposition (NEVER treat as "no policy") | 10 | src/dmarc/eval.rs:62 | 3590bfe | DONE |
+| CHK-751 | 03-DMARC-RFC7489.md:471 | checkbox | Validate all DNS responses — handle NxDomain vs empty vs TempFail distinctly | 10 | src/dmarc/eval.rs:130 | 3590bfe | DONE |
+| CHK-752 | 03-DMARC-RFC7489.md:472 | checkbox | Handle oversized records gracefully (truncate parsing, don't crash) | 10 | src/dmarc/eval.rs:136 | 3590bfe | DONE |
+| CHK-753 | 03-DMARC-RFC7489.md:473 | checkbox | l= body length in DKIM: accept but note security concern (body truncation attacks) | 10 | src/dmarc/eval.rs:1 | 3590bfe | DONE |
+| CHK-754 | 03-DMARC-RFC7489.md:474 | checkbox | Rate limiting DNS queries: caller responsibility (document this) | 10 | src/dmarc/eval.rs:9 | 3590bfe | DONE |
+| CHK-755 | 03-DMARC-RFC7489.md:480 | checkbox | SPF module (from this crate) | 10 | src/dmarc/eval.rs:4 | 3590bfe | DONE |
+| CHK-756 | 03-DMARC-RFC7489.md:481 | checkbox | DKIM module (from this crate) | 10 | src/dmarc/eval.rs:3 | 3590bfe | DONE |
 | CHK-757 | 03-DMARC-RFC7489.md:482 | checkbox | Public Suffix List: `psl` crate v2 | 1 | Cargo.toml:20 | 992b713 | DONE |
 | CHK-758 | 03-DMARC-RFC7489.md:483 | checkbox | DNS resolver: shared with SPF/DKIM via DnsResolver trait | 1 | src/common/dns.rs:39 | 992b713 | DONE |
 | CHK-759 | 03-DMARC-RFC7489.md:484 | checkbox | Random: `rand` crate for pct sampling | 1 | Cargo.toml:26 | 992b713 | DONE |
 | CHK-760 | 03-DMARC-RFC7489.md:590 | checkbox | DMARC record parsing complete with all tags (including np= from RFC 9091) | 9 | src/dmarc/parser.rs:289 | 9164210 | DONE |
 | CHK-761 | 03-DMARC-RFC7489.md:591 | checkbox | All parsed fields are structured types (enums, not raw strings) | 9 | src/dmarc/parser.rs:551 | 9164210 | DONE |
-| CHK-762 | 03-DMARC-RFC7489.md:592 | checkbox | DNS discovery with fallback to organizational domain | 10 | - | - | PENDING |
-| CHK-763 | 03-DMARC-RFC7489.md:593 | checkbox | DNS TempFail during discovery → TempFail disposition (NOT None) | 10 | - | - | PENDING |
-| CHK-764 | 03-DMARC-RFC7489.md:594 | checkbox | Public Suffix List integration via psl crate | 10 | - | - | PENDING |
-| CHK-765 | 03-DMARC-RFC7489.md:595 | checkbox | DKIM alignment implemented (strict and relaxed) | 10 | - | - | PENDING |
-| CHK-766 | 03-DMARC-RFC7489.md:596 | checkbox | SPF alignment implemented (strict and relaxed, requires SPF Pass) | 10 | - | - | PENDING |
-| CHK-767 | 03-DMARC-RFC7489.md:597 | checkbox | Policy selection logic: p= / sp= / np= with fallback chain | 10 | - | - | PENDING |
-| CHK-768 | 03-DMARC-RFC7489.md:598 | checkbox | Non-existent subdomain detection (A + AAAA + MX queries, parallelized) | 10 | - | - | PENDING |
-| CHK-769 | 03-DMARC-RFC7489.md:599 | checkbox | Percentage sampling with deterministic testing support | 10 | - | - | PENDING |
-| CHK-770 | 03-DMARC-RFC7489.md:600 | checkbox | DmarcResult is structured (disposition, alignment bools, policy, record) | 10 | - | - | PENDING |
+| CHK-762 | 03-DMARC-RFC7489.md:592 | checkbox | DNS discovery with fallback to organizational domain | 10 | src/dmarc/eval.rs:103 | 3590bfe | DONE |
+| CHK-763 | 03-DMARC-RFC7489.md:593 | checkbox | DNS TempFail during discovery → TempFail disposition (NOT None) | 10 | src/dmarc/eval.rs:62 | 3590bfe | DONE |
+| CHK-764 | 03-DMARC-RFC7489.md:594 | checkbox | Public Suffix List integration via psl crate | 10 | src/dmarc/eval.rs:118 | 3590bfe | DONE |
+| CHK-765 | 03-DMARC-RFC7489.md:595 | checkbox | DKIM alignment implemented (strict and relaxed) | 10 | src/dmarc/eval.rs:180 | 3590bfe | DONE |
+| CHK-766 | 03-DMARC-RFC7489.md:596 | checkbox | SPF alignment implemented (strict and relaxed, requires SPF Pass) | 10 | src/dmarc/eval.rs:190 | 3590bfe | DONE |
+| CHK-767 | 03-DMARC-RFC7489.md:597 | checkbox | Policy selection logic: p= / sp= / np= with fallback chain | 10 | src/dmarc/eval.rs:91 | 3590bfe | DONE |
+| CHK-768 | 03-DMARC-RFC7489.md:598 | checkbox | Non-existent subdomain detection (A + AAAA + MX queries, parallelized) | 10 | src/dmarc/eval.rs:165 | 3590bfe | DONE |
+| CHK-769 | 03-DMARC-RFC7489.md:599 | checkbox | Percentage sampling with deterministic testing support | 10 | src/dmarc/eval.rs:206 | 3590bfe | DONE |
+| CHK-770 | 03-DMARC-RFC7489.md:600 | checkbox | DmarcResult is structured (disposition, alignment bools, policy, record) | 10 | src/dmarc/eval.rs:98 | 3590bfe | DONE |
 | CHK-771 | 03-DMARC-RFC7489.md:601 | checkbox | Combined EmailAuthenticator with From extraction | 17 | - | - | PENDING |
-| CHK-772 | 03-DMARC-RFC7489.md:602 | checkbox | Unit tests cover: parsing, alignment, policy, org domain, discovery, TempFail | 10 | - | - | PENDING |
-| CHK-773 | 03-DMARC-RFC7489.md:603 | checkbox | No unwrap/expect in library code (tests only) | 10 | - | - | PENDING |
+| CHK-772 | 03-DMARC-RFC7489.md:602 | checkbox | Unit tests cover: parsing, alignment, policy, org domain, discovery, TempFail | 10 | src/dmarc/eval.rs:232 | 3590bfe | DONE |
+| CHK-773 | 03-DMARC-RFC7489.md:603 | checkbox | No unwrap/expect in library code (tests only) | 10 | src/dmarc/eval.rs:1 | 3590bfe | DONE |
 | CHK-774 | 04-ARC-RFC8617.md:19 | checkbox | `ArcAuthenticationResults` (AAR) — authentication snapshot on arrival | 12 | - | - | PENDING |
 | CHK-775 | 04-ARC-RFC8617.md:20 | checkbox | `ArcMessageSignature` (AMS) — DKIM-like signature over message headers+body | 12 | - | - | PENDING |
 | CHK-776 | 04-ARC-RFC8617.md:21 | checkbox | `ArcSeal` (AS) — signature over ARC headers only, seals the chain | 12 | - | - | PENDING |
