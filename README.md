@@ -4,7 +4,7 @@ A Rust email authentication library implementing SPF, DKIM, DMARC, ARC, and BIMI
 
 ## Current Status
 
-**Cycle 1 — Lane 13: ARC Sealing & Roundtrip Complete**
+**Cycle 1 — Lane 14: BIMI Types & Discovery Complete**
 
 | Component | Status |
 |-----------|--------|
@@ -13,7 +13,7 @@ A Rust email authentication library implementing SPF, DKIM, DMARC, ARC, and BIMI
 | **DKIM** | ✅ Complete: types, parsing, canonicalization, verification, signing |
 | **DMARC** | ✅ Complete: evaluation, policy selection, alignment checks, sampling, aggregate/failure reporting |
 | **ARC** | ✅ Complete: types, parsing, validation, sealing with cv= logic, multi-hop roundtrips |
-| **BIMI** | ⏳ Pending |
+| **BIMI** | ✅ In Progress: types, record parsing, DNS discovery with org-domain fallback, DMARC eligibility checks, header stripping |
 
 ## Getting Started
 
@@ -100,6 +100,16 @@ email-auth = "0.1.0"
 - Signature verification integrated with `ring` crypto library
 - **Sealing**: ARC-Seal generation with cv= determination (none/pass/fail), AAR+AMS+AS header construction
 - **Roundtrips**: Seal-then-validate, multi-hop chains, body modification detection via oldest_pass tracking
+
+### `bimi`
+
+- Types: `BimiRecord`, `BimiSelectorHeader`, `BimiResult`, `BimiValidationResult`
+- **Record Parsing**: Tag=value format (v=, l=, a= tags), version validation, HTTPS URI enforcement
+- **Discovery**: DNS TXT lookup at `<selector>._bimi.<domain>` with org-domain fallback, declination detection
+- **DMARC Eligibility**: Enforcement policy check (quarantine/reject), percent sampling (pct=100), alignment verification
+- **Header Processing**: BIMI-Selector extraction, sender-inserted header stripping (BIMI-Location, BIMI-Indicator)
+- **Result Reporting**: Structured result types (Pass/None/Fail/TempError/Skipped/Declined)
+- **Planned**: VMC certificate validation, SVG Tiny PS validation, logo fetching (caller responsibility)
 
 ## Development
 
