@@ -4,7 +4,7 @@ A Rust email authentication library implementing SPF, DKIM, DMARC, ARC, and BIMI
 
 ## Current Status
 
-**Cycle 1 — Lane 12: ARC Parsing & Validation Complete**
+**Cycle 1 — Lane 13: ARC Sealing & Roundtrip Complete**
 
 | Component | Status |
 |-----------|--------|
@@ -12,7 +12,7 @@ A Rust email authentication library implementing SPF, DKIM, DMARC, ARC, and BIMI
 | **SPF** | ✅ Complete: types, parsing, macros, evaluation algorithm |
 | **DKIM** | ✅ Complete: types, parsing, canonicalization, verification, signing |
 | **DMARC** | ✅ Complete: evaluation, policy selection, alignment checks, sampling, aggregate/failure reporting |
-| **ARC** | ✅ Complete: types, parsing, validation (ARC-Seal, ARC-Message-Signature, ARC-Authentication-Results) |
+| **ARC** | ✅ Complete: types, parsing, validation, sealing with cv= logic, multi-hop roundtrips |
 | **BIMI** | ⏳ Pending |
 
 ## Getting Started
@@ -98,6 +98,8 @@ email-auth = "0.1.0"
 - **Chain Verification**: Sequential ARC-Set chain validation with instance counter checks
 - Relaxed header canonicalization for ARC seals (only method supported)
 - Signature verification integrated with `ring` crypto library
+- **Sealing**: ARC-Seal generation with cv= determination (none/pass/fail), AAR+AMS+AS header construction
+- **Roundtrips**: Seal-then-validate, multi-hop chains, body modification detection via oldest_pass tracking
 
 ## Development
 
