@@ -659,25 +659,25 @@
 | CHK-654 | 03-DMARC-RFC7489.md:243 | checkbox | pct=0: never apply policy (all monitoring) | 10 | src/dmarc/eval.rs:212 | 3590bfe | DONE |
 | CHK-655 | 03-DMARC-RFC7489.md:244 | checkbox | Use `rand` crate for randomness | 10 | src/dmarc/eval.rs:214 | 3590bfe | DONE |
 | CHK-656 | 03-DMARC-RFC7489.md:245 | checkbox | For testing: provide internal method that accepts deterministic roll value | 10 | src/dmarc/eval.rs:37 | 3590bfe | DONE |
-| CHK-657 | 03-DMARC-RFC7489.md:311 | checkbox | Define `AggregateReport` struct per RFC 7489 Appendix C XML schema: | 11 | - | - | PENDING |
-| CHK-658 | 03-DMARC-RFC7489.md:312 | checkbox | Report metadata: org_name, email, report_id, date_range (begin/end timestamps) | 11 | - | - | PENDING |
-| CHK-659 | 03-DMARC-RFC7489.md:313 | checkbox | Policy published: domain, adkim, aspf, p, sp, pct | 11 | - | - | PENDING |
-| CHK-660 | 03-DMARC-RFC7489.md:314 | checkbox | Records: source_ip, count, disposition, dkim results, spf results | 11 | - | - | PENDING |
-| CHK-661 | 03-DMARC-RFC7489.md:315 | checkbox | XML serialization matching the DMARC aggregate report schema | 11 | - | - | PENDING |
-| CHK-662 | 03-DMARC-RFC7489.md:316 | checkbox | `AggregateReportBuilder` — accumulates authentication results, produces XML | 11 | - | - | PENDING |
-| CHK-663 | 03-DMARC-RFC7489.md:317 | checkbox | External report URI verification: query `<target-domain>._report._dmarc.<sender-domain>` TXT for `v=DMARC1` authorization | 11 | - | - | PENDING |
-| CHK-664 | 03-DMARC-RFC7489.md:318 | checkbox | If target domain differs from sender domain, verify authorization before including URI | 11 | - | - | PENDING |
-| CHK-665 | 03-DMARC-RFC7489.md:319 | checkbox | If `_report._dmarc` query fails or returns no `v=DMARC1` record → drop that report URI | 11 | - | - | PENDING |
-| CHK-666 | 03-DMARC-RFC7489.md:323 | checkbox | Define `FailureReport` struct per RFC 6591 (AFRF): | 11 | - | - | PENDING |
-| CHK-667 | 03-DMARC-RFC7489.md:324 | checkbox | Original headers (or relevant subset) | 11 | - | - | PENDING |
-| CHK-668 | 03-DMARC-RFC7489.md:325 | checkbox | Authentication failure details | 11 | - | - | PENDING |
-| CHK-669 | 03-DMARC-RFC7489.md:326 | checkbox | Feedback type: "auth-failure" | 11 | - | - | PENDING |
-| CHK-670 | 03-DMARC-RFC7489.md:327 | checkbox | AFRF message generation (MIME multipart/report with message/feedback-report) | 11 | - | - | PENDING |
-| CHK-671 | 03-DMARC-RFC7489.md:328 | checkbox | Failure option filtering: check `fo=` tag to determine which failures trigger reports | 11 | - | - | PENDING |
-| CHK-672 | 03-DMARC-RFC7489.md:329 | checkbox | `fo=0` (default): report only when ALL mechanisms fail to produce aligned pass | 11 | - | - | PENDING |
-| CHK-673 | 03-DMARC-RFC7489.md:330 | checkbox | `fo=1`: report when ANY mechanism fails to produce aligned pass | 11 | - | - | PENDING |
-| CHK-674 | 03-DMARC-RFC7489.md:331 | checkbox | `fo=d`: report when DKIM evaluation fails (regardless of SPF) | 11 | - | - | PENDING |
-| CHK-675 | 03-DMARC-RFC7489.md:332 | checkbox | `fo=s`: report when SPF evaluation fails (regardless of DKIM) | 11 | - | - | PENDING |
+| CHK-657 | 03-DMARC-RFC7489.md:311 | checkbox | Define `AggregateReport` struct per RFC 7489 Appendix C XML schema: | 11 | src/dmarc/report.rs:19 | 44726ad | DONE |
+| CHK-658 | 03-DMARC-RFC7489.md:312 | checkbox | Report metadata: org_name, email, report_id, date_range (begin/end timestamps) | 11 | src/dmarc/report.rs:21 | 44726ad | DONE |
+| CHK-659 | 03-DMARC-RFC7489.md:313 | checkbox | Policy published: domain, adkim, aspf, p, sp, pct | 11 | src/dmarc/report.rs:35 | 44726ad | DONE |
+| CHK-660 | 03-DMARC-RFC7489.md:314 | checkbox | Records: source_ip, count, disposition, dkim results, spf results | 11 | src/dmarc/report.rs:45 | 44726ad | DONE |
+| CHK-661 | 03-DMARC-RFC7489.md:315 | checkbox | XML serialization matching the DMARC aggregate report schema | 11 | src/dmarc/report.rs:82 | 44726ad | DONE |
+| CHK-662 | 03-DMARC-RFC7489.md:316 | checkbox | `AggregateReportBuilder` — accumulates authentication results, produces XML | 11 | src/dmarc/report.rs:143 | 44726ad | DONE |
+| CHK-663 | 03-DMARC-RFC7489.md:317 | checkbox | External report URI verification: query `<target-domain>._report._dmarc.<sender-domain>` TXT for `v=DMARC1` authorization | 11 | src/dmarc/report.rs:188 | 44726ad | DONE |
+| CHK-664 | 03-DMARC-RFC7489.md:318 | checkbox | If target domain differs from sender domain, verify authorization before including URI | 11 | src/dmarc/report.rs:199 | 44726ad | DONE |
+| CHK-665 | 03-DMARC-RFC7489.md:319 | checkbox | If `_report._dmarc` query fails or returns no `v=DMARC1` record → drop that report URI | 11 | src/dmarc/report.rs:206 | 44726ad | DONE |
+| CHK-666 | 03-DMARC-RFC7489.md:323 | checkbox | Define `FailureReport` struct per RFC 6591 (AFRF): | 11 | src/dmarc/report.rs:219 | 44726ad | DONE |
+| CHK-667 | 03-DMARC-RFC7489.md:324 | checkbox | Original headers (or relevant subset) | 11 | src/dmarc/report.rs:222 | 44726ad | DONE |
+| CHK-668 | 03-DMARC-RFC7489.md:325 | checkbox | Authentication failure details | 11 | src/dmarc/report.rs:224 | 44726ad | DONE |
+| CHK-669 | 03-DMARC-RFC7489.md:326 | checkbox | Feedback type: "auth-failure" | 11 | src/dmarc/report.rs:237 | 44726ad | DONE |
+| CHK-670 | 03-DMARC-RFC7489.md:327 | checkbox | AFRF message generation (MIME multipart/report with message/feedback-report) | 11 | src/dmarc/report.rs:234 | 44726ad | DONE |
+| CHK-671 | 03-DMARC-RFC7489.md:328 | checkbox | Failure option filtering: check `fo=` tag to determine which failures trigger reports | 11 | src/dmarc/report.rs:277 | 44726ad | DONE |
+| CHK-672 | 03-DMARC-RFC7489.md:329 | checkbox | `fo=0` (default): report only when ALL mechanisms fail to produce aligned pass | 11 | src/dmarc/report.rs:282 | 44726ad | DONE |
+| CHK-673 | 03-DMARC-RFC7489.md:330 | checkbox | `fo=1`: report when ANY mechanism fails to produce aligned pass | 11 | src/dmarc/report.rs:289 | 44726ad | DONE |
+| CHK-674 | 03-DMARC-RFC7489.md:331 | checkbox | `fo=d`: report when DKIM evaluation fails (regardless of SPF) | 11 | src/dmarc/report.rs:296 | 44726ad | DONE |
+| CHK-675 | 03-DMARC-RFC7489.md:332 | checkbox | `fo=s`: report when SPF evaluation fails (regardless of DKIM) | 11 | src/dmarc/report.rs:303 | 44726ad | DONE |
 | CHK-676 | 03-DMARC-RFC7489.md:346 | checkbox | Use `psl` crate v2 (v2.1+) | 1 | src/common/domain.rs:44 | 992b713 | DONE |
 | CHK-677 | 03-DMARC-RFC7489.md:347 | checkbox | `psl::domain_str(&normalized_domain)` → returns registrable domain (org domain) | 1 | src/common/domain.rs:44 | 992b713 | DONE |
 | CHK-678 | 03-DMARC-RFC7489.md:348 | checkbox | The crate embeds a PSL snapshot — no runtime download needed | 1 | src/common/domain.rs:44 | 992b713 | DONE |
@@ -735,23 +735,23 @@
 | CHK-730 | 03-DMARC-RFC7489.md:437 | checkbox | `mail.example.co.uk` → `example.co.uk` | 1 | src/common/domain.rs:191 | 992b713 | DONE |
 | CHK-731 | 03-DMARC-RFC7489.md:438 | checkbox | `foo.bar.co.uk` → `bar.co.uk` | 1 | src/common/domain.rs:197 | 992b713 | DONE |
 | CHK-732 | 03-DMARC-RFC7489.md:439 | checkbox | Deep subdomain: `a.b.c.example.com` → `example.com` | 1 | src/common/domain.rs:203 | 992b713 | DONE |
-| CHK-733 | 03-DMARC-RFC7489.md:444 | checkbox | Build aggregate report with AggregateReportBuilder → serialize to XML → verify XML structure matches RFC 7489 Appendix C schema | 11 | - | - | PENDING |
-| CHK-734 | 03-DMARC-RFC7489.md:445 | checkbox | Report metadata: org_name, email, report_id, date_range present in XML | 11 | - | - | PENDING |
-| CHK-735 | 03-DMARC-RFC7489.md:446 | checkbox | Policy published: domain, adkim, aspf, p, sp, pct fields in XML | 11 | - | - | PENDING |
-| CHK-736 | 03-DMARC-RFC7489.md:447 | checkbox | Multiple records: add 3 auth results, verify 3 `<record>` elements in output | 11 | - | - | PENDING |
-| CHK-737 | 03-DMARC-RFC7489.md:448 | checkbox | Empty report (no records): valid XML with zero records | 11 | - | - | PENDING |
-| CHK-738 | 03-DMARC-RFC7489.md:451 | checkbox | Same domain (sender=example.com, rua=mailto:dmarc@example.com): no `_report._dmarc` query needed | 11 | - | - | PENDING |
-| CHK-739 | 03-DMARC-RFC7489.md:452 | checkbox | Cross-domain (sender=example.com, rua=mailto:reports@thirdparty.com): query `example.com._report._dmarc.thirdparty.com` TXT → `v=DMARC1` → authorized | 11 | - | - | PENDING |
-| CHK-740 | 03-DMARC-RFC7489.md:453 | checkbox | Cross-domain without authorization record → URI dropped | 11 | - | - | PENDING |
-| CHK-741 | 03-DMARC-RFC7489.md:454 | checkbox | Cross-domain with TempFail on `_report._dmarc` query → URI dropped (safe default) | 11 | - | - | PENDING |
-| CHK-742 | 03-DMARC-RFC7489.md:457 | checkbox | Failure report AFRF format: verify output contains `Feedback-Type: auth-failure` | 11 | - | - | PENDING |
-| CHK-743 | 03-DMARC-RFC7489.md:458 | checkbox | fo=0 (default): both SPF and DKIM fail → generate report | 11 | - | - | PENDING |
-| CHK-744 | 03-DMARC-RFC7489.md:459 | checkbox | fo=0: SPF fails but DKIM aligns → NO report (not all mechanisms failed) | 11 | - | - | PENDING |
-| CHK-745 | 03-DMARC-RFC7489.md:460 | checkbox | fo=1: SPF fails but DKIM aligns → generate report (any mechanism failed) | 11 | - | - | PENDING |
-| CHK-746 | 03-DMARC-RFC7489.md:461 | checkbox | fo=d: DKIM fails → generate report (regardless of SPF result) | 11 | - | - | PENDING |
-| CHK-747 | 03-DMARC-RFC7489.md:462 | checkbox | fo=d: DKIM passes, SPF fails → NO report (fo=d only triggers on DKIM failure) | 11 | - | - | PENDING |
-| CHK-748 | 03-DMARC-RFC7489.md:463 | checkbox | fo=s: SPF fails → generate report (regardless of DKIM result) | 11 | - | - | PENDING |
-| CHK-749 | 03-DMARC-RFC7489.md:464 | checkbox | fo=s: SPF passes, DKIM fails → NO report | 11 | - | - | PENDING |
+| CHK-733 | 03-DMARC-RFC7489.md:444 | checkbox | Build aggregate report with AggregateReportBuilder → serialize to XML → verify XML structure matches RFC 7489 Appendix C schema | 11 | src/dmarc/report.rs:421 | 44726ad | DONE |
+| CHK-734 | 03-DMARC-RFC7489.md:445 | checkbox | Report metadata: org_name, email, report_id, date_range present in XML | 11 | src/dmarc/report.rs:439 | 44726ad | DONE |
+| CHK-735 | 03-DMARC-RFC7489.md:446 | checkbox | Policy published: domain, adkim, aspf, p, sp, pct fields in XML | 11 | src/dmarc/report.rs:454 | 44726ad | DONE |
+| CHK-736 | 03-DMARC-RFC7489.md:447 | checkbox | Multiple records: add 3 auth results, verify 3 `<record>` elements in output | 11 | src/dmarc/report.rs:468 | 44726ad | DONE |
+| CHK-737 | 03-DMARC-RFC7489.md:448 | checkbox | Empty report (no records): valid XML with zero records | 11 | src/dmarc/report.rs:482 | 44726ad | DONE |
+| CHK-738 | 03-DMARC-RFC7489.md:451 | checkbox | Same domain (sender=example.com, rua=mailto:dmarc@example.com): no `_report._dmarc` query needed | 11 | src/dmarc/report.rs:497 | 44726ad | DONE |
+| CHK-739 | 03-DMARC-RFC7489.md:452 | checkbox | Cross-domain (sender=example.com, rua=mailto:reports@thirdparty.com): query `example.com._report._dmarc.thirdparty.com` TXT → `v=DMARC1` → authorized | 11 | src/dmarc/report.rs:508 | 44726ad | DONE |
+| CHK-740 | 03-DMARC-RFC7489.md:453 | checkbox | Cross-domain without authorization record → URI dropped | 11 | src/dmarc/report.rs:523 | 44726ad | DONE |
+| CHK-741 | 03-DMARC-RFC7489.md:454 | checkbox | Cross-domain with TempFail on `_report._dmarc` query → URI dropped (safe default) | 11 | src/dmarc/report.rs:534 | 44726ad | DONE |
+| CHK-742 | 03-DMARC-RFC7489.md:457 | checkbox | Failure report AFRF format: verify output contains `Feedback-Type: auth-failure` | 11 | src/dmarc/report.rs:549 | 44726ad | DONE |
+| CHK-743 | 03-DMARC-RFC7489.md:458 | checkbox | fo=0 (default): both SPF and DKIM fail → generate report | 11 | src/dmarc/report.rs:572 | 44726ad | DONE |
+| CHK-744 | 03-DMARC-RFC7489.md:459 | checkbox | fo=0: SPF fails but DKIM aligns → NO report (not all mechanisms failed) | 11 | src/dmarc/report.rs:581 | 44726ad | DONE |
+| CHK-745 | 03-DMARC-RFC7489.md:460 | checkbox | fo=1: SPF fails but DKIM aligns → generate report (any mechanism failed) | 11 | src/dmarc/report.rs:590 | 44726ad | DONE |
+| CHK-746 | 03-DMARC-RFC7489.md:461 | checkbox | fo=d: DKIM fails → generate report (regardless of SPF result) | 11 | src/dmarc/report.rs:603 | 44726ad | DONE |
+| CHK-747 | 03-DMARC-RFC7489.md:462 | checkbox | fo=d: DKIM passes, SPF fails → NO report (fo=d only triggers on DKIM failure) | 11 | src/dmarc/report.rs:612 | 44726ad | DONE |
+| CHK-748 | 03-DMARC-RFC7489.md:463 | checkbox | fo=s: SPF fails → generate report (regardless of DKIM result) | 11 | src/dmarc/report.rs:621 | 44726ad | DONE |
+| CHK-749 | 03-DMARC-RFC7489.md:464 | checkbox | fo=s: SPF passes, DKIM fails → NO report | 11 | src/dmarc/report.rs:630 | 44726ad | DONE |
 | CHK-750 | 03-DMARC-RFC7489.md:470 | checkbox | DMARC DNS TempFail → TempFail disposition (NEVER treat as "no policy") | 10 | src/dmarc/eval.rs:62 | 3590bfe | DONE |
 | CHK-751 | 03-DMARC-RFC7489.md:471 | checkbox | Validate all DNS responses — handle NxDomain vs empty vs TempFail distinctly | 10 | src/dmarc/eval.rs:130 | 3590bfe | DONE |
 | CHK-752 | 03-DMARC-RFC7489.md:472 | checkbox | Handle oversized records gracefully (truncate parsing, don't crash) | 10 | src/dmarc/eval.rs:136 | 3590bfe | DONE |
