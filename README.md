@@ -4,7 +4,7 @@ A Rust email authentication library implementing SPF, DKIM, DMARC, ARC, and BIMI
 
 ## Current Status
 
-**Cycle 1 — Lane 15: SVG Validation Complete**
+**Cycle 1 — Lane 16: VMC Validation Complete**
 
 | Component | Status |
 |-----------|--------|
@@ -13,7 +13,7 @@ A Rust email authentication library implementing SPF, DKIM, DMARC, ARC, and BIMI
 | **DKIM** | ✅ Complete: types, parsing, canonicalization, verification, signing |
 | **DMARC** | ✅ Complete: evaluation, policy selection, alignment checks, sampling, aggregate/failure reporting |
 | **ARC** | ✅ Complete: types, parsing, validation, sealing with cv= logic, multi-hop roundtrips |
-| **BIMI** | ✅ Complete: types, record parsing, DNS discovery with org-domain fallback, DMARC eligibility checks, header stripping, SVG Tiny PS validation |
+| **BIMI** | ✅ Complete: types, record parsing, DNS discovery, DMARC eligibility, SVG Tiny PS validation, VMC certificate chain validation |
 
 ## Getting Started
 
@@ -109,8 +109,9 @@ email-auth = "0.1.0"
 - **DMARC Eligibility**: Enforcement policy check (quarantine/reject), percent sampling (pct=100), alignment verification
 - **Header Processing**: BIMI-Selector extraction, sender-inserted header stripping (BIMI-Location, BIMI-Indicator)
 - **SVG Validation**: SVG Tiny PS profile enforcement (baseProfile="tiny-ps"), required elements (title), prohibited elements (script, animations, embedded images), XXE prevention, 32KB size limit
+- **VMC Certificate Validation**: X.509 BIMI certificate chain validation via PEM parsing, EKU OID verification, SAN matching, LogoType extension extraction, logo hash comparison, validity period checking
 - **Result Reporting**: Structured result types (Pass/None/Fail/TempError/Skipped/Declined)
-- **Future**: VMC certificate chain validation, logo fetching (caller responsibility via HTTPS client)
+- **Future**: Logo fetching (caller responsibility via HTTPS client)
 
 ## Development
 
