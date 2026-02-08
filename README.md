@@ -16,121 +16,37 @@ A Rust email authentication library implementing SPF, DKIM, DMARC, ARC, and BIMI
 | **BIMI** | ✅ Complete: types, record parsing, DNS discovery, DMARC eligibility, SVG Tiny PS validation, VMC certificate chain validation |
 | **EmailAuthenticator** | ✅ Complete: message parsing, combined SPF+DKIM+DMARC pipeline |
 
-## Getting Started
-
-### Installation
-
-Add to your `Cargo.toml`:
+## Installation
 
 ```toml
 [dependencies]
 email-auth = "0.1.0"
 ```
 
-### Requirements
+**Requirements:** Rust 1.63+, Tokio, Ring, Hickory DNS (or custom `DnsResolver` trait impl)
 
-- Rust 1.63+
-- Tokio async runtime
-- Ring cryptography library (RSA, Ed25519, SHA)
-- Hickory DNS resolver (or implement `DnsResolver` trait)
+## Usage
 
-## Key Design Principles
+```rust
+use email_auth::{EmailAuthenticator, AuthenticationResult};
 
-- **Spec-driven**: Implementation derives from RFC specifications in `specs/`
-- **DNS caching optional**: Caller responsibility via `DnsResolver` trait
-- **No unwrap/expect in library code**: All error paths explicit
-- **Ground-truth testing**: Crypto operations validated against manual computations
-- **Async/await throughout**: Full async support with `tokio`
+let authenticator = EmailAuthenticator::new(resolver);
+let result = authenticator.authenticate(
+    "sender@example.com",    // MAIL FROM
+    "203.0.113.1",           // client IP
+    raw_message.as_bytes(),  // RFC 5322 message
+).await?;
 
-## Implemented Modules
-
-### `common`
-
-- `DnsResolver` trait for abstraction (async DNS queries)
-- Domain utilities: normalization, organizational domain (via Public Suffix List)
-- CIDR matching for IPv4/IPv6
-- Mock resolver for testing
-
-### `spf`
-
-- Full SPF RFC 7208 implementation
-- Types: `SpfRecord`, `Directive`, `Mechanism`, `SpfResult`
-- Parsing with macro expansion (%{s}, %{d}, %{i}, etc.)
-- `check_host()` evaluation: include/redirect, MX/A/PTR mechanisms, DNS limits, cycle detection
-- 120+ test cases covering all edge cases
-
-### `dkim`
-
-- Types: `DkimSignature`, `DkimSigner`, `Algorithm`, `CanonicalizationMethod`, `DkimPublicKey`, `DkimResult`
-- Signature header parsing (tag=value format, folding, base64)
-- Key record parsing (selector._domainkey.domain DNS lookup)
-- Canonicalization: simple and relaxed methods for headers and body, line-ending normalization
-- Header selection (bottom-up), over-signing support, b= tag stripping
-- **Signing**: RSA-SHA256 and Ed25519 key pair constructors, header selection, body hash generation, signature generation
-- **Verification**: RSA-SHA256, RSA-SHA1 (verification only), Ed25519 with crypto validation via `ring`
-- Body hash verification with constant-time comparison
-- Expiration checks, key constraints (h=, s=, t= tags)
-- Timestamp/expiration generation (t= and x= tags)
-
-### `dmarc`
-
-- Types: `DmarcRecord`, `Policy`, `AlignmentMode`, `FailureOption`, `ReportUri`, `DmarcResult`, `Disposition`
-- DMARC record parsing: policy, subdomain policy, alignment modes, failure reporting options, report URIs
-- Record discovery: DNS TXT lookup at `_dmarc.<domain>` with organizational domain fallback, TempFail disposition handling
-- Policy selection with `p=` / `sp=` / `np=` (RFC 9091 non-existent subdomain policy) fallback chain
-- Alignment checks: strict (exact domain match) and relaxed (organizational domain match)
-- DKIM alignment: `d=` domain of passing DKIM signature against From domain
-- SPF alignment: `SPF Pass` result domain against From domain
-- Non-existent subdomain detection (parallel A/AAAA/MX queries)
-- Percentage sampling (pct= tag): deterministic random 0-99 range, per-message evaluation
-- **Reporting**: `AggregateReport` with XML serialization (RFC 7489 Appendix C schema), `FailureReport` with AFRF format
-  - External report URI verification via DNS `_report._dmarc.<domain>` queries
-  - `fo=` filtering: 0 (all fail), 1 (any fail), d (DKIM fail), s (SPF fail)
-  - Multipart MIME assembly for failure reports
-
-### `arc`
-
-- Types: `ArcSet`, `ArcSeal`, `ArcMessageSignature`, `ArcAuthenticationResults`, `ArcResult`
-- **Parsing**: ARC-Seal, ARC-Message-Signature, ARC-Authentication-Results header parsing (tag=value format)
-- **Validation**: Instance validation (monotonically increasing CV chain), header tag requirements
-  - ARC-Seal: b= tag stripped for signature verification, no h= or body hash (unlike DKIM)
-  - ARC-Message-Signature: DKIM-compatible signature format with d=, s=, and required tags
-  - ARC-Authentication-Results: structured header parsing with auth method results
-- **Chain Verification**: Sequential ARC-Set chain validation with instance counter checks
-- Relaxed header canonicalization for ARC seals (only method supported)
-- Signature verification integrated with `ring` crypto library
-- **Sealing**: ARC-Seal generation with cv= determination (none/pass/fail), AAR+AMS+AS header construction
-- **Roundtrips**: Seal-then-validate, multi-hop chains, body modification detection via oldest_pass tracking
-
-### `bimi`
-
-- Types: `BimiRecord`, `BimiSelectorHeader`, `BimiResult`, `BimiValidationResult`
-- **Record Parsing**: Tag=value format (v=, l=, a= tags), version validation, HTTPS URI enforcement
-- **Discovery**: DNS TXT lookup at `<selector>._bimi.<domain>` with org-domain fallback, declination detection
-- **DMARC Eligibility**: Enforcement policy check (quarantine/reject), percent sampling (pct=100), alignment verification
-- **Header Processing**: BIMI-Selector extraction, sender-inserted header stripping (BIMI-Location, BIMI-Indicator)
-- **SVG Validation**: SVG Tiny PS profile enforcement (baseProfile="tiny-ps"), required elements (title), prohibited elements (script, animations, embedded images), XXE prevention, 32KB size limit
-- **VMC Certificate Validation**: X.509 BIMI certificate chain validation via PEM parsing, EKU OID verification, SAN matching, LogoType extension extraction, logo hash comparison, validity period checking
-- **Result Reporting**: Structured result types (Pass/None/Fail/TempError/Skipped/Declined)
-- **Future**: Logo fetching (caller responsibility via HTTPS client)
-
-### `EmailAuthenticator`
-
-- **Message Parsing**: Header/body split, RFC 5322 comment stripping, folded header unfolding, bare LF handling
-- **From Extraction**: RFC 5322 address parsing with angle brackets, display names, comment stripping
-- **Combined Pipeline**: Orchestrates SPF check → DKIM verification → DMARC evaluation
-- **Authentication Result**: Structured `AuthenticationResult` with individual SPF/DKIM/DMARC results, extracted From domain, SPF domain, and disposition
-- **Error Handling**: Explicit error types (malformed message, missing From header, DNS failures)
+// result.spf, result.dkim, result.dmarc, result.disposition
+```
 
 ## Development
-
-### Running Tests
 
 ```bash
 cargo test
 ```
 
-### Project Structure
+## Project Structure
 
 ```
 specs/              # RFC specifications (source of truth)
@@ -153,8 +69,8 @@ src/
 - **DNS validation**: Implement DNS response validation at resolver layer
 - **RSA key size**: Library enforces minimum 1024-bit, recommends 2048+
 - **Clock skew**: Configurable expiration tolerance for DKIM/ARC timestamps
-- **SVG parsing**: 32KB size limit enforced before parsing, XXE entity expansion prevention, script injection detection via prohibited element checks
-- **PTR verification**: Forward confirmation required (expensive — cache aggressively)
+- **SVG parsing**: 32KB size limit, XXE prevention, script injection detection
+- **PTR verification**: Forward confirmation required (cache aggressively)
 
 ## License
 
