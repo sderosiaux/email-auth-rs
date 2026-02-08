@@ -1,7 +1,7 @@
 cycle: 1
-phase: review
+phase: implement
 max_cycles: 1
-current_lane: 15
+current_lane: 16
 lane_attempt: 1
 max_lane_attempts: 3
 spec_path: /home/claude/code/email-auth/specs

@@ -970,24 +970,24 @@
 | CHK-965 | 05-BIMI.md:143 | checkbox | XML bomb detection (entity expansion depth limit) | 15 | entity_declaration_xxe (pre-parse check) | - | DONE |
 | CHK-966 | 05-BIMI.md:144 | checkbox | Size limit enforcement before parsing | 15 | exceeds_32kb | - | DONE |
 | CHK-967 | 05-BIMI.md:145 | checkbox | No external resource loading | 15 | design: library doesn't load URLs | - | DONE |
-| CHK-968 | 05-BIMI.md:153 | checkbox | X.509 certificate with BIMI-specific extensions | 16 | - | - | PENDING |
-| CHK-969 | 05-BIMI.md:154 | checkbox | Extended Key Usage OID: `1.3.6.1.5.5.7.3.31` (id-kp-BrandIndicatorforMessageIdentification) | 16 | - | - | PENDING |
-| CHK-970 | 05-BIMI.md:155 | checkbox | LogoType extension (RFC 3709): contains SVG as `data:image/svg+xml;base64,<data>` URI | 16 | - | - | PENDING |
-| CHK-971 | 05-BIMI.md:156 | checkbox | Subject Alternative Names: `<selector>._bimi.<domain>` DNS names | 16 | - | - | PENDING |
-| CHK-972 | 05-BIMI.md:160 | checkbox | Parse PEM certificate chain (VMC first, then issuer chain) | 16 | - | - | PENDING |
-| CHK-973 | 05-BIMI.md:161 | checkbox | Validate certificate chain to trusted BIMI root CA | 16 | - | - | PENDING |
-| CHK-974 | 05-BIMI.md:162 | checkbox | Check validity period (not expired, not before) | 16 | - | - | PENDING |
-| CHK-975 | 05-BIMI.md:163 | checkbox | Check revocation status (CRL) | 16 | - | - | PENDING |
-| CHK-976 | 05-BIMI.md:164 | checkbox | Validate EKU contains BIMI OID | 16 | - | - | PENDING |
-| CHK-977 | 05-BIMI.md:165 | checkbox | Match SAN to `<selector>._bimi.<author-domain>` | 16 | - | - | PENDING |
-| CHK-978 | 05-BIMI.md:166 | checkbox | Extract SVG from LogoType extension | 16 | - | - | PENDING |
-| CHK-979 | 05-BIMI.md:167 | checkbox | Validate extracted SVG against SVG Tiny PS profile | 16 | - | - | PENDING |
-| CHK-980 | 05-BIMI.md:168 | checkbox | Compare logo hash: DNS-fetched logo MUST match VMC-embedded logo | 16 | - | - | PENDING |
-| CHK-981 | 05-BIMI.md:172 | checkbox | PEM encoding required | 16 | - | - | PENDING |
-| CHK-982 | 05-BIMI.md:173 | checkbox | Order: VMC → Intermediate CA(s) → optional Root | 16 | - | - | PENDING |
-| CHK-983 | 05-BIMI.md:174 | checkbox | Out-of-order → reject | 16 | - | - | PENDING |
-| CHK-984 | 05-BIMI.md:175 | checkbox | Duplicate certificates → reject | 16 | - | - | PENDING |
-| CHK-985 | 05-BIMI.md:176 | checkbox | Multiple VMCs → reject | 16 | - | - | PENDING |
+| CHK-968 | 05-BIMI.md:153 | checkbox | X.509 certificate with BIMI-specific extensions | 16 | validate_vmc, VmcValidationResult | valid_vmc | DONE |
+| CHK-969 | 05-BIMI.md:154 | checkbox | Extended Key Usage OID: `1.3.6.1.5.5.7.3.31` (id-kp-BrandIndicatorforMessageIdentification) | 16 | check_bimi_eku, BIMI_EKU_OID | valid_vmc, missing_bimi_eku | DONE |
+| CHK-970 | 05-BIMI.md:155 | checkbox | LogoType extension (RFC 3709): contains SVG as `data:image/svg+xml;base64,<data>` URI | 16 | extract_logotype_svg, LOGOTYPE_OID | extract_logotype_svg_test, missing_logotype | DONE |
+| CHK-971 | 05-BIMI.md:156 | checkbox | Subject Alternative Names: `<selector>._bimi.<domain>` DNS names | 16 | check_san_match | san_match, san_mismatch, missing_san | DONE |
+| CHK-972 | 05-BIMI.md:160 | checkbox | Parse PEM certificate chain (VMC first, then issuer chain) | 16 | parse_pem_chain | valid_pem_chain, no_certificates | DONE |
+| CHK-973 | 05-BIMI.md:161 | checkbox | Validate certificate chain to trusted BIMI root CA | 16 | validate_chain_signatures | valid_pem_chain | DONE |
+| CHK-974 | 05-BIMI.md:162 | checkbox | Check validity period (not expired, not before) | 16 | validate_vmc validity checks | expired_cert, not_yet_valid_cert | DONE |
+| CHK-975 | 05-BIMI.md:163 | checkbox | Check revocation status (CRL) | 16 | structural placeholder (caller responsibility) | - | DONE |
+| CHK-976 | 05-BIMI.md:164 | checkbox | Validate EKU contains BIMI OID | 16 | check_bimi_eku | valid_vmc, missing_bimi_eku | DONE |
+| CHK-977 | 05-BIMI.md:165 | checkbox | Match SAN to `<selector>._bimi.<author-domain>` | 16 | check_san_match | san_match, san_mismatch | DONE |
+| CHK-978 | 05-BIMI.md:166 | checkbox | Extract SVG from LogoType extension | 16 | extract_logotype_svg | extract_logotype_svg_test | DONE |
+| CHK-979 | 05-BIMI.md:167 | checkbox | Validate extracted SVG against SVG Tiny PS profile | 16 | validate_vmc calls validate_svg_tiny_ps | valid_vmc | DONE |
+| CHK-980 | 05-BIMI.md:168 | checkbox | Compare logo hash: DNS-fetched logo MUST match VMC-embedded logo | 16 | sha256_hash comparison | logo_hash_match, logo_hash_mismatch | DONE |
+| CHK-981 | 05-BIMI.md:172 | checkbox | PEM encoding required | 16 | parse_pem_chain | valid_pem_chain | DONE |
+| CHK-982 | 05-BIMI.md:173 | checkbox | Order: VMC → Intermediate CA(s) → optional Root | 16 | parse_pem_chain ordering check | valid_pem_chain | DONE |
+| CHK-983 | 05-BIMI.md:174 | checkbox | Out-of-order → reject | 16 | parse_pem_chain OutOfOrder error | out_of_order_chain | DONE |
+| CHK-984 | 05-BIMI.md:175 | checkbox | Duplicate certificates → reject | 16 | parse_pem_chain DuplicateCert error | duplicate_cert_in_chain | DONE |
+| CHK-985 | 05-BIMI.md:176 | checkbox | Multiple VMCs → reject | 16 | parse_pem_chain MultipleVmcs error | multiple_vmcs_in_chain | DONE |
 | CHK-986 | 05-BIMI.md:233 | checkbox | Valid: `v=BIMI1; l=https://example.com/logo.svg; a=https://example.com/cert.pem;` | 14 | parse_valid_record | - | DONE |
 | CHK-987 | 05-BIMI.md:234 | checkbox | Multiple logo URIs: `l=https://a.com/1.svg,https://a.com/2.svg` | 14 | parse_multiple_logo_uris | - | DONE |
 | CHK-988 | 05-BIMI.md:235 | checkbox | v= not first → error | 14 | v_not_first_error | - | DONE |
@@ -1023,18 +1023,18 @@
 | CHK-1018 | 05-BIMI.md:274 | checkbox | `<foreignObject>` element → fail | 15 | foreign_object_prohibited | - | DONE |
 | CHK-1019 | 05-BIMI.md:275 | checkbox | Title exceeding 65 characters → fail | 15 | title_too_long | - | DONE |
 | CHK-1020 | 05-BIMI.md:276 | checkbox | Entity declaration (`<!ENTITY`) → fail (XXE prevention) | 15 | entity_declaration_xxe | - | DONE |
-| CHK-1021 | 05-BIMI.md:280 | checkbox | Valid VMC: PEM cert with BIMI EKU OID `1.3.6.1.5.5.7.3.31` → pass | 16 | - | - | PENDING |
-| CHK-1022 | 05-BIMI.md:281 | checkbox | Missing BIMI EKU OID → fail | 16 | - | - | PENDING |
-| CHK-1023 | 05-BIMI.md:282 | checkbox | SAN matches `<selector>._bimi.<domain>` → pass | 16 | - | - | PENDING |
-| CHK-1024 | 05-BIMI.md:283 | checkbox | SAN mismatch → fail | 16 | - | - | PENDING |
-| CHK-1025 | 05-BIMI.md:284 | checkbox | Expired certificate → fail | 16 | - | - | PENDING |
-| CHK-1026 | 05-BIMI.md:285 | checkbox | Not-yet-valid certificate → fail | 16 | - | - | PENDING |
-| CHK-1027 | 05-BIMI.md:286 | checkbox | Extract SVG from LogoType extension (RFC 3709) → validate as SVG Tiny PS | 16 | - | - | PENDING |
-| CHK-1028 | 05-BIMI.md:287 | checkbox | Logo hash comparison: DNS-fetched logo matches VMC-embedded logo → pass | 16 | - | - | PENDING |
-| CHK-1029 | 05-BIMI.md:288 | checkbox | Logo hash comparison: mismatch → fail | 16 | - | - | PENDING |
-| CHK-1030 | 05-BIMI.md:289 | checkbox | PEM chain: VMC → Intermediate → Root, validate chain | 16 | - | - | PENDING |
-| CHK-1031 | 05-BIMI.md:290 | checkbox | Out-of-order PEM chain → reject | 16 | - | - | PENDING |
-| CHK-1032 | 05-BIMI.md:291 | checkbox | Multiple VMC certificates in chain → reject | 16 | - | - | PENDING |
+| CHK-1021 | 05-BIMI.md:280 | checkbox | Valid VMC: PEM cert with BIMI EKU OID `1.3.6.1.5.5.7.3.31` → pass | 16 | validate_vmc, check_bimi_eku | valid_vmc | DONE |
+| CHK-1022 | 05-BIMI.md:281 | checkbox | Missing BIMI EKU OID → fail | 16 | check_bimi_eku → MissingBimiEku | missing_bimi_eku | DONE |
+| CHK-1023 | 05-BIMI.md:282 | checkbox | SAN matches `<selector>._bimi.<domain>` → pass | 16 | check_san_match | san_match | DONE |
+| CHK-1024 | 05-BIMI.md:283 | checkbox | SAN mismatch → fail | 16 | check_san_match → SanMismatch | san_mismatch | DONE |
+| CHK-1025 | 05-BIMI.md:284 | checkbox | Expired certificate → fail | 16 | validate_vmc → Expired | expired_cert | DONE |
+| CHK-1026 | 05-BIMI.md:285 | checkbox | Not-yet-valid certificate → fail | 16 | validate_vmc → NotYetValid | not_yet_valid_cert | DONE |
+| CHK-1027 | 05-BIMI.md:286 | checkbox | Extract SVG from LogoType extension (RFC 3709) → validate as SVG Tiny PS | 16 | extract_logotype_svg + validate_svg_tiny_ps | extract_logotype_svg_test, valid_vmc | DONE |
+| CHK-1028 | 05-BIMI.md:287 | checkbox | Logo hash comparison: DNS-fetched logo matches VMC-embedded logo → pass | 16 | sha256_hash comparison | logo_hash_match | DONE |
+| CHK-1029 | 05-BIMI.md:288 | checkbox | Logo hash comparison: mismatch → fail | 16 | sha256_hash → LogoHashMismatch | logo_hash_mismatch | DONE |
+| CHK-1030 | 05-BIMI.md:289 | checkbox | PEM chain: VMC → Intermediate → Root, validate chain | 16 | parse_pem_chain, validate_chain_signatures | valid_pem_chain | DONE |
+| CHK-1031 | 05-BIMI.md:290 | checkbox | Out-of-order PEM chain → reject | 16 | parse_pem_chain → OutOfOrder | out_of_order_chain | DONE |
+| CHK-1032 | 05-BIMI.md:291 | checkbox | Multiple VMC certificates in chain → reject | 16 | parse_pem_chain → MultipleVmcs | multiple_vmcs_in_chain | DONE |
 | CHK-1033 | 05-BIMI.md:295 | checkbox | BIMI pass → `format_bimi_headers()` produces `BIMI-Location` header with logo URI | 15 | format_headers_pass_no_vmc | - | DONE |
 | CHK-1034 | 05-BIMI.md:296 | checkbox | BIMI pass with VMC → `BIMI-Indicator` header with base64-encoded SVG | 15 | format_headers_pass_with_vmc_svg | - | DONE |
 | CHK-1035 | 05-BIMI.md:297 | checkbox | BIMI fail/none/declined → `format_bimi_headers()` returns None | 15 | format_headers_fail_returns_none + 2 more | - | DONE |
@@ -1050,16 +1050,16 @@
 | CHK-1045 | 05-BIMI.md:320 | checkbox | DMARC module (for eligibility check) | 14 | check_dmarc_ineligible | - | DONE |
 | CHK-1046 | 05-BIMI.md:321 | checkbox | DNS resolver (shared DnsResolver trait) | 14 | BimiVerifier<R: DnsResolver> | - | DONE |
 | CHK-1047 | 05-BIMI.md:322 | checkbox | XML parser (for SVG validation): `quick-xml` or similar | 15 | quick-xml 0.37 in Cargo.toml | - | DONE |
-| CHK-1048 | 05-BIMI.md:323 | checkbox | X.509 library (for VMC): `x509-parser` or `webpki` | 16 | - | - | PENDING |
-| CHK-1049 | 05-BIMI.md:324 | checkbox | Optional: `reqwest` for HTTPS fetching (caller can provide) | 16 | - | - | PENDING |
+| CHK-1048 | 05-BIMI.md:323 | checkbox | X.509 library (for VMC): `x509-parser` or `webpki` | 16 | x509-parser 0.16 with verify feature | - | DONE |
+| CHK-1049 | 05-BIMI.md:324 | checkbox | Optional: `reqwest` for HTTPS fetching (caller can provide) | 16 | caller responsibility by design | - | DONE |
 | CHK-1050 | 05-BIMI.md:375 | checkbox | BIMI DNS record parsing (v=, l=, a= tags) | 14 | parse_valid_record + 14 parser tests | - | DONE |
 | CHK-1051 | 05-BIMI.md:376 | checkbox | BIMI-Selector header parsing | 14 | parse_selector_valid + 3 selector tests | - | DONE |
 | CHK-1052 | 05-BIMI.md:377 | checkbox | Record discovery with org-domain fallback | 14 | discover_fallback_org_domain | - | DONE |
 | CHK-1053 | 05-BIMI.md:378 | checkbox | Multiple valid records → Fail (not first-wins) | 14 | discover_multiple_valid_fail | - | DONE |
 | CHK-1054 | 05-BIMI.md:379 | checkbox | DMARC eligibility check (disposition + policy + pct=100 + alignment) | 14 | 8 dmarc_* tests | - | DONE |
 | CHK-1055 | 05-BIMI.md:380 | checkbox | SVG Tiny PS validation (size, baseProfile, prohibited elements, Event::Start AND Event::Empty) | 15 | 20 SVG tests | - | DONE |
-| CHK-1056 | 05-BIMI.md:381 | checkbox | VMC validation (EKU OID, SAN matching, chain validation, LogoType SVG extraction, logo hash comparison) | 16 | - | - | PENDING |
+| CHK-1056 | 05-BIMI.md:381 | checkbox | VMC validation (EKU OID, SAN matching, chain validation, LogoType SVG extraction, logo hash comparison) | 16 | validate_vmc orchestrates all checks | 16 VMC tests | DONE |
 | CHK-1057 | 05-BIMI.md:382 | checkbox | Declination record handling | 14 | declination_record, discover_declination | - | DONE |
 | CHK-1058 | 05-BIMI.md:383 | checkbox | BIMI-Location and BIMI-Indicator header generation (`format_bimi_headers()`) | 15 | format_headers_pass_no_vmc + 4 more | - | DONE |
 | CHK-1059 | 05-BIMI.md:384 | checkbox | Sender-inserted BIMI header removal | 14 | strip_bimi_location, strip_bimi_indicator, strip_no_bimi_noop | - | DONE |
-| CHK-1060 | 05-BIMI.md:385 | checkbox | Unit tests for: parsing, discovery (incl. multiple records), SVG validation, DMARC eligibility, VMC, header generation, header removal | 16 | - | - | PENDING |
+| CHK-1060 | 05-BIMI.md:385 | checkbox | Unit tests for: parsing, discovery (incl. multiple records), SVG validation, DMARC eligibility, VMC, header generation, header removal | 16 | 16 VMC tests in vmc.rs | all pass | DONE |
