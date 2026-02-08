@@ -1063,3 +1063,6 @@
 | CHK-1058 | 05-BIMI.md:383 | checkbox | BIMI-Location and BIMI-Indicator header generation (`format_bimi_headers()`) | 15 | format_headers_pass_no_vmc + 4 more | - | DONE |
 | CHK-1059 | 05-BIMI.md:384 | checkbox | Sender-inserted BIMI header removal | 14 | strip_bimi_location, strip_bimi_indicator, strip_no_bimi_noop | - | DONE |
 | CHK-1060 | 05-BIMI.md:385 | checkbox | Unit tests for: parsing, discovery (incl. multiple records), SVG validation, DMARC eligibility, VMC, header generation, header removal | 16 | 16 VMC tests in vmc.rs | all pass | DONE |
+| CHK-1061 | 01-SPF-RFC7208.md:365 | derived | MX host DNS error → skip that host, continue (partial MX resolution failure test) | - | - | - | PENDING |
+| CHK-1062 | 05-BIMI.md:278 | derived | `xlink:href` with external URL → fail (full external reference blocking for SVG) | - | - | - | PENDING |
+| CHK-1063 | 04-ARC-RFC8617.md:11.3b | derived | Extract shared crypto helpers (`wrap_pkcs1_in_spki`, `decode_pem`, `encode_asn1_length`) to `common::crypto` | - | - | - | PENDING |

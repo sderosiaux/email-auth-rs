@@ -27,7 +27,7 @@ pub struct BimiRecord {
 - [ ] `v=` — version, MUST be "BIMI1", MUST be first tag
 - [ ] `l=` — logo URI(s), comma-separated, 1-2 URIs, MUST be HTTPS
 - [ ] `a=` — authority evidence URI (VMC), MUST be HTTPS if present
-- [ ] Empty `l=` with no `a=` → declination record (domain opts out)
+- [ ] Empty `l=` with no `a=` → declination record (domain opts out). Note: missing `l=` WITH `a=` present is NOT a declination — it's a valid record with authority evidence only. Check BOTH conditions: `logo_uris.is_empty() && authority_uri.is_none()`. <!-- forge:cycle-1 -->
 - [ ] Unknown tags → ignored
 
 ### 1.2 BIMI-Selector Header
@@ -269,6 +269,7 @@ pub fn parse_bimi_selector(header_value: &str) -> Result<BimiSelectorHeader, Str
 - [ ] Comma-delimited viewBox → fail
 - [ ] Event handler on self-closing element: `<rect onclick="x"/>` → fail (Event::Empty, not just Event::Start)
 - [ ] `javascript:` URI in href → fail
+- [ ] `xlink:href` with external URL → fail (full external reference blocking) <!-- forge:cycle-1 -->
 - [ ] `<animate>` element → fail
 - [ ] `<image>` element → fail
 - [ ] `<foreignObject>` element → fail
@@ -320,7 +321,9 @@ pub fn parse_bimi_selector(header_value: &str) -> Result<BimiSelectorHeader, Str
 - [ ] DMARC module (for eligibility check)
 - [ ] DNS resolver (shared DnsResolver trait)
 - [ ] XML parser (for SVG validation): `quick-xml` or similar
-- [ ] X.509 library (for VMC): `x509-parser` or `webpki`
+- [ ] X.509 library (for VMC): `x509-parser` 0.16 with `features = ["verify"]` (required for `verify_signature()` method). `Oid` imported from `x509_parser::der_parser::oid::Oid`, not in prelude. <!-- forge:cycle-1 -->
+- [ ] SHA-256 hashing: `sha2` crate for logo hash comparison <!-- forge:cycle-1 -->
+- [ ] Test certificates: `rcgen` 0.13 as dev-dependency for generating test VMC certificates with custom EKU/SAN/LogoType <!-- forge:cycle-1 -->
 - [ ] Optional: `reqwest` for HTTPS fetching (caller can provide)
 
 ---
@@ -362,7 +365,44 @@ pub fn parse_bimi_selector(header_value: &str) -> Result<BimiSelectorHeader, Str
 - Spec §2.2 requires pct=100 (or absent, defaulting to 100) for BIMI eligibility
 - **FIX**: Access `dmarc_result.record` and check `record.percent == 100`
 
-### 11.3 Patterns That Worked
+### 11.3 v4 (Cycle 1) Learnings <!-- forge:cycle-1 -->
+
+#### 11.3.0 Entity Detection: Belt-and-Suspenders
+- `svg.contains("<!ENTITY")` runs BEFORE XML parsing — safer than relying on quick-xml's DTD behavior
+- quick-xml's behavior with DTDs may vary across versions
+
+#### 11.3.0b viewBox Square Aspect Tolerance
+- Spec says "square aspect ratio (1:1)" but no tolerance defined
+- Use `(w - h).abs() > f64::EPSILON` — strict float equality. Acceptable since viewBox values are typically integers.
+
+#### 11.3.0c BimiHeaders Struct
+- New `BimiHeaders { location: String, indicator: Option<String> }` — cleaner than returning tuple
+- `format_bimi_headers()` takes optional `validated_svg` parameter — caller responsible for fetch+validate
+- Without VMC (no `validated_svg`), only `BIMI-Location` is produced
+
+#### 11.3.0d VMC LogoType Extension Parsing
+- RFC 3709 defines complex ASN.1 for LogoType — x509-parser doesn't parse this OID specifically
+- Pragmatic approach: string/byte search for `data:image/svg+xml;base64,` marker within extension value
+- Works because data URI is the only way SVG is embedded per BIMI spec
+
+#### 11.3.0e VMC Chain Validation Limitations
+- Chain signature validation checks each cert is signed by next in chain
+- NO trusted root CA set implemented — real deployments need to configure trusted BIMI CAs (DigiCert, Entrust)
+- CRL checking is structural only — actual CRL fetching requires HTTP (caller responsibility)
+
+#### 11.3.0f VMC Logo Hash Comparison
+- Use SHA-256 hash comparison (`sha2` crate) rather than byte-for-byte
+- More robust against encoding differences (though in practice they should be identical)
+
+#### 11.3.0g x509-parser API Gotchas
+- `find_extension()` deprecated → use `get_extension_unique()` which returns `Result<Option<&X509Extension>>`
+- `ExtendedKeyUsage.other: Vec<Oid>` captures non-standard EKU OIDs — BIMI OID `1.3.6.1.5.5.7.3.31` lands there
+- rcgen 0.13: `CertificateParams::new(Vec<String>)` returns `Result`. `KeyPair::generate_for()` returns `Result`. `signed_by()` takes `(&KeyPair, &Certificate, &KeyPair)`.
+
+#### 11.3.0h Multiple VMC Detection
+- Count end-entity (non-CA) certificates in PEM chain. More than 1 → MultipleVmcs error. First cert must be VMC.
+
+### 11.4 Patterns That Worked
 - `quick-xml` event-based parsing for SVG validation — memory-efficient, catches prohibited elements during parse
 - Declination record detection (`v=BIMI1;` with no l= or empty l=) — clean separate result variant
 - DMARC eligibility as standalone function — reusable, easy to test independently

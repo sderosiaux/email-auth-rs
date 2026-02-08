@@ -163,6 +163,7 @@ DKIM allows a domain to cryptographically sign email messages, enabling receiver
 ### 3.3 Line Ending Normalization
 - [ ] Convert bare LF (`\n`) to CRLF (`\r\n`) BEFORE canonicalization
 - [ ] This is critical: real-world messages may have mixed line endings
+- [ ] Lone CR (`\r` not followed by `\n`): preserve as-is — it is not a line ending. Only bare LF and CRLF are recognized as line endings. <!-- forge:cycle-1 -->
 
 ### 3.4 Body Length Limit (`l=` tag)
 - [ ] Truncate canonicalized body to `l=` bytes before hashing
@@ -177,6 +178,7 @@ DKIM allows a domain to cryptographically sign email messages, enabling receiver
   - Simple: `headername:\r\n`
   - Relaxed: `headername:\r\n`
 - [ ] Over-signed headers MUST NOT be silently skipped — they are security-critical (prevent header injection)
+- [ ] Over-signed header format for BOTH simple and relaxed: `headername:\r\n` (relaxed lowercases the name). This is consistent across both canonicalization methods. <!-- forge:cycle-1 -->
 
 ### 3.6 b= Tag Stripping
 
@@ -233,8 +235,8 @@ DKIM allows a domain to cryptographically sign email messages, enabling receiver
 - [ ] Mismatch → Fail with BodyHashMismatch
 
 #### Constant-Time Comparison
-- [ ] Use `ring::constant_time::verify_slices_are_equal` or `subtle` crate's `ConstantTimeEq`
-- [ ] ring 0.17 has deprecated `verify_slices_are_equal` — check for replacement or use `subtle` crate
+- [ ] Use `subtle` crate's `ConstantTimeEq` — `computed.ct_eq(&expected).into()` returns `bool` <!-- forge:cycle-1 -->
+- [ ] ring 0.17 deprecated `ring::constant_time::verify_slices_are_equal` — use `subtle` crate instead
 - [ ] NEVER use `==` for body hash comparison (timing side-channel)
 
 ### 4.6 Header Hash Computation
@@ -517,10 +519,11 @@ DkimPublicKey::parse(txt_record: &str) -> Result<DkimPublicKey, KeyParseError>
 - Ed25519: `ring::signature::ED25519` algorithm constant
 - RSA: use `_FOR_LEGACY_USE_ONLY` variants for 1024-bit and SHA-1
 
-### 10.2 ring Constant-Time Deprecation
+### 10.2 Constant-Time Comparison: `subtle` crate <!-- forge:cycle-1 -->
 - `ring::constant_time::verify_slices_are_equal` is deprecated in ring 0.17
-- Still functional but flagged. Consider `subtle` crate as alternative.
-- Must use `#[allow(deprecated)]` if keeping ring's version
+- **Use `subtle` 2.6 crate**: `subtle::ConstantTimeEq` works on `Vec<u8>` slices
+- Pattern: `computed.ct_eq(&expected).into()` returns `bool`
+- Note: `ct_eq().into()` may fail type inference — use `bool::from(ct_eq())` if needed
 
 ### 10.3 Base64 Handling
 - DKIM signature values (b=, bh=) may contain whitespace in base64
@@ -557,7 +560,34 @@ DkimPublicKey::parse(txt_record: &str) -> Result<DkimPublicKey, KeyParseError>
 - After stripping: 2048-bit RSA key is ~270 bytes PKCS#1 (was ~294 SPKI). The 256-byte threshold for key size detection still works.
 - **This was the root cause of 3 test failures in v2 iteration** — hash inputs were identical between signer and verifier but verification failed because ring couldn't parse the SPKI-wrapped key
 
-### 10.8 Gotchas
+### 10.8 Signing: PKCS#1 → SPKI Wrapping <!-- forge:cycle-1 -->
+- `RsaKeyPair::public().as_ref()` returns PKCS#1 RSAPublicKey DER (modulus + exponent), NOT SPKI
+- DKIM `p=` expects SPKI → must `wrap_pkcs1_in_spki()`: construct `SEQUENCE { AlgorithmIdentifier(RSA OID + NULL), BIT STRING(0x00 + PKCS#1) }`
+- This is the inverse of `strip_spki_wrapper()` in verify.rs — roundtrip: `wrap → DNS mock → strip → ring verify`
+- `RsaKeyPair::public_modulus_len()` is deprecated in ring 0.17 — use `public().modulus_len()` instead
+
+### 10.8b PEM Decoding <!-- forge:cycle-1 -->
+- Minimal PEM decoder: find BEGIN/END markers, decode base64 between them
+- No `pem` crate dependency needed
+- Handle both `BEGIN PRIVATE KEY` (PKCS8) and `BEGIN RSA PRIVATE KEY` (traditional RSA) markers
+- `Ed25519KeyPair` requires `KeyPair` trait import for `public_key()` method: `use ring::signature::KeyPair;`
+
+### 10.8c Signing API Return Format <!-- forge:cycle-1 -->
+- `sign_message()` returns the header VALUE only (everything after `DKIM-Signature:`), not the full header line
+- Caller constructs full header: `format!("DKIM-Signature: {}", value)`
+- Consistent with verifier's `(name, value)` pair convention
+
+### 10.8d Header Name Storage <!-- forge:cycle-1 -->
+- `h=` header names stored as-is during parsing (case preserved)
+- Canonicalization handles case normalization during verification
+- RFC 6376 says header selection is case-insensitive but doesn't mandate storage format
+
+### 10.8e Canonicalization Function Design <!-- forge:cycle-1 -->
+- `canonicalize_header()` returns String WITHOUT trailing CRLF — callers append CRLF themselves
+- Reason: DKIM-Signature header (last in hash input) must NOT have trailing CRLF, so caller controls this
+- `select_headers()` returns Vec<String> WITH CRLF — all selected headers except DKIM-Signature need it
+
+### 10.9 (archived) Gotchas
 - b= stripping regex must NOT match "bh=" — use lookbehind or structural parsing
 - DKIM-Signature header appended to hash WITHOUT trailing CRLF (spec requirement)
 - Header selection is bottom-up: if h= lists "to" twice and message has 3 To headers, first "to" in h= selects the last To header, second "to" selects second-to-last

@@ -139,8 +139,8 @@ DMARC builds on SPF and DKIM to provide domain-level policy for email authentica
 - [ ] `np=` — non-existent subdomain policy (RFC 9091). Optional field, no default.
 - [ ] `adkim=` — DKIM alignment: "r" (relaxed, default) or "s" (strict)
 - [ ] `aspf=` — SPF alignment: "r" (relaxed, default) or "s" (strict)
-- [ ] `pct=` — percentage 0-100, default 100. Values >100 clamped to 100, <0 clamped to 0. Non-numeric → use default.
-- [ ] `fo=` — failure options, colon-separated. Default: "0". Parse into `Vec<FailureOption>`, unknown options ignored.
+- [ ] `pct=` — percentage 0-100, default 100. Parse as `i64` first (not `u8` — rejects negatives), then clamp to 0-100. Values >100 clamped to 100, <0 clamped to 0. Non-numeric → use default. <!-- forge:cycle-1 -->
+- [ ] `fo=` — failure options, **colon-separated** (not semicolon, not comma — easy to confuse). Default: "0". Parse into `Vec<FailureOption>`, unknown options ignored. <!-- forge:cycle-1 -->
 - [ ] `rf=` — report format. Default: "afrf". Parse into enum.
 - [ ] `ri=` — report interval in seconds. Default: 86400. Non-numeric → use default.
 - [ ] `rua=` — aggregate report URIs, comma-separated. Parse into `Vec<ReportUri>`.
@@ -151,7 +151,7 @@ DMARC builds on SPF and DKIM to provide domain-level policy for email authentica
 
 - [ ] Format: `mailto:address` or `mailto:address!size` or `mailto:address!size_unit`
 - [ ] Only "mailto:" scheme accepted. Non-mailto URIs → parse error.
-- [ ] Size suffix: `!` followed by decimal number + optional unit (k/m/g/t, case-insensitive)
+- [ ] Size suffix: use `rfind('!')` to split (email local-parts may contain `!`). `!` followed by decimal number + optional unit (k/m/g/t, case-insensitive) <!-- forge:cycle-1 -->
 - [ ] No unit → raw bytes
 - [ ] Multiple URIs: comma-separated
 
@@ -527,9 +527,9 @@ email-auth/
 - Use UFCS to avoid infinite recursion: `<R as DnsResolver>::query_txt(self, name).await`
 
 ### 13.2 psl Crate Usage
-- `psl::domain_str(&str)` returns `Option<&str>` — the registrable domain
+- `psl::domain_str(&str)` is a free function — returns `Option<&str>` (the registrable domain). No trait import needed. <!-- forge:cycle-1 -->
 - Input must be normalized (lowercase, no trailing dot)
-- `psl` crate uses `Psl` trait — import it for the `domain_str` function
+- `psl::domain_str("com")` returns `None` — TLD-only input has no registrable domain. Fallback to input is correct. <!-- forge:cycle-1 -->
 
 ### 13.3 DMARC Record Discovery Pattern
 ```rust
@@ -565,7 +565,42 @@ async fn discover_record(&self, from_domain: &str, org_domain: &str) -> Option<D
 - rand 0.9: `random_range` (not `gen_range` from 0.8)
 - `rand::random_range(0u8..100)` for pct sampling
 
-### 13.8 v3 Learnings
+### 13.8 v4 (Cycle 1) Learnings <!-- forge:cycle-1 -->
+
+#### 13.8.0 Policy::None vs Option::None
+- `Policy::None` collides with `Option::None` — must write `Option::None` explicitly in parse methods returning `Option<Policy>`. Affects ~10 call sites in DmarcResult construction.
+
+#### 13.8.0b TempFail on Subdomain Query
+- If `_dmarc.sub.example.com` returns TempFail, do NOT fall back to org domain
+- TempFail on first query → immediately return TempFail disposition
+- Rationale: spec §6.6.3 says DNS TempFail must not be treated as "no record", and falling through would violate this
+
+#### 13.8.0c Non-Existent Domain Detection with TempFail
+- If A returns TempFail but AAAA/MX return NxDomain, domain is NOT considered non-existent (conservative)
+- Only all-three-NxDomain triggers the non-existent path
+
+#### 13.8.0d Aggregate Report XML Generation
+- Hand-rolled XML via `std::fmt::Write` is sufficient — Appendix C schema is ~30 elements with no attributes/namespaces/CDATA
+- `quick-xml` is overkill for generation (it's used for BIMI SVG parsing, not DMARC XML output)
+- XML escaping: `&`, `<`, `>`, `"`, `'` — manual but trivial for a fixed schema
+
+#### 13.8.0e ReportDisposition vs Disposition
+- Aggregate reports use a 3-value `ReportDisposition` (none/quarantine/reject)
+- DMARC evaluation uses a 5-value `Disposition` (adds Pass, TempFail)
+- Separate enum prevents invalid states in reports
+
+#### 13.8.0f AFRF Boundary String
+- RFC 6591 doesn't specify a boundary format. Use fixed `----=_DMARC_AFRF_Boundary`
+- Production implementations should generate unique boundaries
+
+#### 13.8.0g Message Parsing (auth.rs) Additional Learnings
+- Missing From header → `Err(AuthError::NoFromDomain)` (DMARC alignment requires From domain)
+- Multiple From headers: take first found (RFC 5322 allows only one, but malformed messages exist)
+- `split_message`: body stays as `&[u8]` — DKIM verifier handles natively. Only headers converted via `from_utf8_lossy`
+- `extract_email_address`: use `rfind('<')` not `find('<')` — handles display names containing `<` in quoted strings
+- `unfold`: only CRLF followed by SP/HTAB is unfolded. CRLF without continuation preserved as-is (RFC 5322 §2.2.3)
+
+### 13.9 (archived) v3 Learnings
 
 #### 13.8.1 Bugs Found in v3 (MUST fix in v4)
 - **pct sampling only applied to Quarantine, not Reject**: `eval.rs` only applied pct sampling when `policy == Quarantine`. RFC 7489 §6.6.4 says pct applies to BOTH quarantine and reject. `p=reject; pct=50` always rejected instead of 50% reject / 50% monitoring. **FIX**: Apply pct sampling to any non-None policy disposition (both Quarantine and Reject).
@@ -582,6 +617,46 @@ async fn discover_record(&self, from_domain: &str, org_domain: &str) -> Option<D
 - `evaluate_with_roll(roll: Option<u8>)` pattern for deterministic pct testing — clean separation of randomness
 - DmarcResult as a struct (not flat enum) with disposition + alignment bools + policy + record — gives callers full context
 - TempFail propagation from DNS discovery — correctly distinguishes "no policy" from "can't determine policy"
+
+---
+
+## Architectural Decisions (Forge)
+
+### AD-1: DnsResolver trait uses `fn → impl Future + Send` (cycle 1)
+**Context**: Native `async fn in trait` doesn't guarantee `Send` futures, which is required for `Pin<Box<dyn Future + Send>>` in SPF's recursive `check_host_inner`.
+**Decision**: Trait methods use `fn(...) -> impl Future<...> + Send` instead of `async fn`.
+**Alternatives**: `async_trait` crate (adds `Box::pin` allocation overhead on every call); native `async fn in trait` with `#[allow(async_fn_in_trait)]` (breaks when `dyn DnsResolver` or Send-bounded futures are needed).
+**Status**: Accepted
+
+### AD-2: `subtle` crate for constant-time comparison (cycle 1)
+**Context**: ring 0.17 deprecated `ring::constant_time::verify_slices_are_equal`. Need constant-time body hash comparison for DKIM.
+**Decision**: Use `subtle` 2.6 crate's `ConstantTimeEq`.
+**Alternatives**: `#[allow(deprecated)]` on ring's version (fragile across updates); manual constant-time impl (error-prone).
+**Status**: Accepted
+
+### AD-3: ArcSealer independent from DkimSigner (cycle 1)
+**Context**: ARC sealing has different requirements than DKIM signing (always relaxed/relaxed, no v= tag, instance-based, cv= tag).
+**Decision**: ArcSealer holds its own `PrivateKey`, duplicates `wrap_pkcs1_in_spki()` / `decode_pem()` / `encode_asn1_length()`.
+**Alternatives**: Wrap DkimSigner (couples ARC API to DKIM builder pattern); extract shared crypto module (premature — only 2 consumers).
+**Status**: Accepted
+
+### AD-4: Hand-rolled XML for DMARC aggregate reports (cycle 1)
+**Context**: DMARC Appendix C schema is ~30 elements with no attributes, namespaces, or CDATA.
+**Decision**: Use `std::fmt::Write` for XML generation. Zero new dependencies.
+**Alternatives**: `quick-xml` writer (already a dependency via BIMI, but adds complexity for a static schema).
+**Status**: Accepted
+
+### AD-5: Minimal PEM decoder (cycle 1)
+**Context**: DKIM/ARC signing needs to load PEM PKCS8 private keys.
+**Decision**: Find BEGIN/END markers, decode base64 between them. Handle both PKCS8 and traditional RSA markers.
+**Alternatives**: `pem` crate (additional dependency for ~20 lines of code).
+**Status**: Accepted
+
+### AD-6: SPKI stripping via OID byte search (cycle 1)
+**Context**: DKIM `p=` stores SPKI DER but ring expects PKCS#1 for RSA. Need to strip the SPKI wrapper.
+**Decision**: Search for RSA OID bytes (`2a 86 48 86 f7 0d 01 01 01`) in DER, parse BIT STRING after. Fallback: return bytes as-is if no OID found.
+**Alternatives**: Full ASN.1 parser (more correct but significantly more code); `der-parser` crate (additional dependency).
+**Status**: Accepted
 
 ---
 
