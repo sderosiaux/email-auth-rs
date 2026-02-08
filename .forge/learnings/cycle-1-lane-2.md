@@ -22,3 +22,7 @@
 
 ## DEBT
 - None. Parser is clean and complete for lane 2 scope.
+
+## RETRY (review violations fixed)
+- **CHK-038/040/041/042**: Review correctly identified missing DNS→parser bridge. Added `src/spf/lookup.rs` with `lookup_spf()` that queries TXT, filters `v=spf1`, enforces single-record, maps DNS errors. 10 new tests cover all paths.
+- Pattern: `is_spf_record()` uses same logic as spec learning §9.3: `lower == "v=spf1" || lower.starts_with("v=spf1 ")`.

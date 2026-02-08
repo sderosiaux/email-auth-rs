@@ -3,35 +3,35 @@
 
 | ID | Source | Ref | Work Item | Lane | Test | Commit | Status |
 |----|--------|-----|-----------|------|------|--------|--------|
-| CHK-001 | 01-SPF-RFC7208.md:15 | checkbox | Define `SpfRecord` struct containing: | 2 | src/spf/types.rs:68 | - | DONE |
-| CHK-002 | 01-SPF-RFC7208.md:16 | checkbox | `directives: Vec<Directive>` (mechanisms with qualifiers, in order) | 2 | src/spf/types.rs:69 | - | DONE |
-| CHK-003 | 01-SPF-RFC7208.md:17 | checkbox | `redirect: Option<String>` (redirect modifier target domain) | 2 | src/spf/types.rs:70 | - | DONE |
-| CHK-004 | 01-SPF-RFC7208.md:18 | checkbox | `explanation: Option<String>` (exp= modifier domain) | 2 | src/spf/types.rs:71 | - | DONE |
-| CHK-005 | 01-SPF-RFC7208.md:19 | checkbox | Unknown modifiers: silently ignored (forward compatibility per RFC 7208 §6) | 2 | src/spf/parser.rs:51 | - | DONE |
-| CHK-006 | 01-SPF-RFC7208.md:23 | checkbox | Define `Directive` struct: | 2 | src/spf/types.rs:49 | - | DONE |
-| CHK-007 | 01-SPF-RFC7208.md:24 | checkbox | `qualifier: Qualifier` (enum: Pass `+`, Fail `-`, SoftFail `~`, Neutral `?`) | 2 | src/spf/types.rs:27 | - | DONE |
-| CHK-008 | 01-SPF-RFC7208.md:25 | checkbox | `mechanism: Mechanism` | 2 | src/spf/types.rs:50 | - | DONE |
-| CHK-009 | 01-SPF-RFC7208.md:29 | checkbox | Define `Mechanism` enum with variants: | 2 | src/spf/types.rs:54 | - | DONE |
-| CHK-010 | 01-SPF-RFC7208.md:30 | checkbox | `All` — matches everything | 2 | src/spf/types.rs:55 | - | DONE |
-| CHK-011 | 01-SPF-RFC7208.md:31 | checkbox | `Include { domain: String }` — recursive lookup | 2 | src/spf/types.rs:56 | - | DONE |
-| CHK-012 | 01-SPF-RFC7208.md:32 | checkbox | `A { domain: Option<String>, cidr4: Option<u8>, cidr6: Option<u8> }` — A/AAAA records | 2 | src/spf/types.rs:57 | - | DONE |
-| CHK-013 | 01-SPF-RFC7208.md:33 | checkbox | `Mx { domain: Option<String>, cidr4: Option<u8>, cidr6: Option<u8> }` — MX records | 2 | src/spf/types.rs:58 | - | DONE |
-| CHK-014 | 01-SPF-RFC7208.md:34 | checkbox | `Ptr { domain: Option<String> }` — PTR record (deprecated but MUST support per RFC) | 2 | src/spf/types.rs:59 | - | DONE |
-| CHK-015 | 01-SPF-RFC7208.md:35 | checkbox | `Ip4 { addr: Ipv4Addr, prefix: Option<u8> }` — IPv4 CIDR | 2 | src/spf/types.rs:60 | - | DONE |
-| CHK-016 | 01-SPF-RFC7208.md:36 | checkbox | `Ip6 { addr: Ipv6Addr, prefix: Option<u8> }` — IPv6 CIDR | 2 | src/spf/types.rs:61 | - | DONE |
-| CHK-017 | 01-SPF-RFC7208.md:37 | checkbox | `Exists { domain: String }` — DNS existence check | 2 | src/spf/types.rs:62 | - | DONE |
-| CHK-018 | 01-SPF-RFC7208.md:41 | checkbox | A and Mx mechanisms support dual CIDR: `a:domain/cidr4//cidr6` | 2 | src/spf/parser.rs:449 | - | DONE |
-| CHK-019 | 01-SPF-RFC7208.md:42 | checkbox | Parse both prefixes independently | 2 | src/spf/parser.rs:449 | - | DONE |
-| CHK-020 | 01-SPF-RFC7208.md:43 | checkbox | Default cidr4=32, cidr6=128 | 2 | src/spf/types.rs:57 | - | DONE |
-| CHK-021 | 01-SPF-RFC7208.md:44 | checkbox | Validate prefix ranges: v4 0-32, v6 0-128 | 2 | src/spf/parser.rs:525 | - | DONE |
-| CHK-022 | 01-SPF-RFC7208.md:48 | checkbox | Define `SpfResult` enum (RFC 7208 Section 2.6): | 2 | src/spf/types.rs:5 | - | DONE |
-| CHK-023 | 01-SPF-RFC7208.md:49 | checkbox | `Pass` — sender is authorized | 2 | src/spf/types.rs:7 | - | DONE |
-| CHK-024 | 01-SPF-RFC7208.md:50 | checkbox | `Fail { explanation: Option<String> }` — sender is NOT authorized, with optional explanation from exp= | 2 | src/spf/types.rs:9 | - | DONE |
-| CHK-025 | 01-SPF-RFC7208.md:51 | checkbox | `SoftFail` — weak authorization failure | 2 | src/spf/types.rs:11 | - | DONE |
-| CHK-026 | 01-SPF-RFC7208.md:52 | checkbox | `Neutral` — no assertion made | 2 | src/spf/types.rs:13 | - | DONE |
-| CHK-027 | 01-SPF-RFC7208.md:53 | checkbox | `None` — no SPF record found | 2 | src/spf/types.rs:15 | - | DONE |
-| CHK-028 | 01-SPF-RFC7208.md:54 | checkbox | `TempError` — transient DNS error | 2 | src/spf/types.rs:17 | - | DONE |
-| CHK-029 | 01-SPF-RFC7208.md:55 | checkbox | `PermError` — permanent error (syntax, too many lookups, etc.) | 2 | src/spf/types.rs:19 | - | DONE |
+| CHK-001 | 01-SPF-RFC7208.md:15 | checkbox | Define `SpfRecord` struct containing: | 2 | src/spf/types.rs:68 | 6b1ee0f | DONE |
+| CHK-002 | 01-SPF-RFC7208.md:16 | checkbox | `directives: Vec<Directive>` (mechanisms with qualifiers, in order) | 2 | src/spf/types.rs:69 | 6b1ee0f | DONE |
+| CHK-003 | 01-SPF-RFC7208.md:17 | checkbox | `redirect: Option<String>` (redirect modifier target domain) | 2 | src/spf/types.rs:70 | 6b1ee0f | DONE |
+| CHK-004 | 01-SPF-RFC7208.md:18 | checkbox | `explanation: Option<String>` (exp= modifier domain) | 2 | src/spf/types.rs:71 | 6b1ee0f | DONE |
+| CHK-005 | 01-SPF-RFC7208.md:19 | checkbox | Unknown modifiers: silently ignored (forward compatibility per RFC 7208 §6) | 2 | src/spf/parser.rs:51 | 6b1ee0f | DONE |
+| CHK-006 | 01-SPF-RFC7208.md:23 | checkbox | Define `Directive` struct: | 2 | src/spf/types.rs:49 | 6b1ee0f | DONE |
+| CHK-007 | 01-SPF-RFC7208.md:24 | checkbox | `qualifier: Qualifier` (enum: Pass `+`, Fail `-`, SoftFail `~`, Neutral `?`) | 2 | src/spf/types.rs:27 | 6b1ee0f | DONE |
+| CHK-008 | 01-SPF-RFC7208.md:25 | checkbox | `mechanism: Mechanism` | 2 | src/spf/types.rs:50 | 6b1ee0f | DONE |
+| CHK-009 | 01-SPF-RFC7208.md:29 | checkbox | Define `Mechanism` enum with variants: | 2 | src/spf/types.rs:54 | 6b1ee0f | DONE |
+| CHK-010 | 01-SPF-RFC7208.md:30 | checkbox | `All` — matches everything | 2 | src/spf/types.rs:55 | 6b1ee0f | DONE |
+| CHK-011 | 01-SPF-RFC7208.md:31 | checkbox | `Include { domain: String }` — recursive lookup | 2 | src/spf/types.rs:56 | 6b1ee0f | DONE |
+| CHK-012 | 01-SPF-RFC7208.md:32 | checkbox | `A { domain: Option<String>, cidr4: Option<u8>, cidr6: Option<u8> }` — A/AAAA records | 2 | src/spf/types.rs:57 | 6b1ee0f | DONE |
+| CHK-013 | 01-SPF-RFC7208.md:33 | checkbox | `Mx { domain: Option<String>, cidr4: Option<u8>, cidr6: Option<u8> }` — MX records | 2 | src/spf/types.rs:58 | 6b1ee0f | DONE |
+| CHK-014 | 01-SPF-RFC7208.md:34 | checkbox | `Ptr { domain: Option<String> }` — PTR record (deprecated but MUST support per RFC) | 2 | src/spf/types.rs:59 | 6b1ee0f | DONE |
+| CHK-015 | 01-SPF-RFC7208.md:35 | checkbox | `Ip4 { addr: Ipv4Addr, prefix: Option<u8> }` — IPv4 CIDR | 2 | src/spf/types.rs:60 | 6b1ee0f | DONE |
+| CHK-016 | 01-SPF-RFC7208.md:36 | checkbox | `Ip6 { addr: Ipv6Addr, prefix: Option<u8> }` — IPv6 CIDR | 2 | src/spf/types.rs:61 | 6b1ee0f | DONE |
+| CHK-017 | 01-SPF-RFC7208.md:37 | checkbox | `Exists { domain: String }` — DNS existence check | 2 | src/spf/types.rs:62 | 6b1ee0f | DONE |
+| CHK-018 | 01-SPF-RFC7208.md:41 | checkbox | A and Mx mechanisms support dual CIDR: `a:domain/cidr4//cidr6` | 2 | src/spf/parser.rs:449 | 6b1ee0f | DONE |
+| CHK-019 | 01-SPF-RFC7208.md:42 | checkbox | Parse both prefixes independently | 2 | src/spf/parser.rs:449 | 6b1ee0f | DONE |
+| CHK-020 | 01-SPF-RFC7208.md:43 | checkbox | Default cidr4=32, cidr6=128 | 2 | src/spf/types.rs:57 | 6b1ee0f | DONE |
+| CHK-021 | 01-SPF-RFC7208.md:44 | checkbox | Validate prefix ranges: v4 0-32, v6 0-128 | 2 | src/spf/parser.rs:525 | 6b1ee0f | DONE |
+| CHK-022 | 01-SPF-RFC7208.md:48 | checkbox | Define `SpfResult` enum (RFC 7208 Section 2.6): | 2 | src/spf/types.rs:5 | 6b1ee0f | DONE |
+| CHK-023 | 01-SPF-RFC7208.md:49 | checkbox | `Pass` — sender is authorized | 2 | src/spf/types.rs:7 | 6b1ee0f | DONE |
+| CHK-024 | 01-SPF-RFC7208.md:50 | checkbox | `Fail { explanation: Option<String> }` — sender is NOT authorized, with optional explanation from exp= | 2 | src/spf/types.rs:9 | 6b1ee0f | DONE |
+| CHK-025 | 01-SPF-RFC7208.md:51 | checkbox | `SoftFail` — weak authorization failure | 2 | src/spf/types.rs:11 | 6b1ee0f | DONE |
+| CHK-026 | 01-SPF-RFC7208.md:52 | checkbox | `Neutral` — no assertion made | 2 | src/spf/types.rs:13 | 6b1ee0f | DONE |
+| CHK-027 | 01-SPF-RFC7208.md:53 | checkbox | `None` — no SPF record found | 2 | src/spf/types.rs:15 | 6b1ee0f | DONE |
+| CHK-028 | 01-SPF-RFC7208.md:54 | checkbox | `TempError` — transient DNS error | 2 | src/spf/types.rs:17 | 6b1ee0f | DONE |
+| CHK-029 | 01-SPF-RFC7208.md:55 | checkbox | `PermError` — permanent error (syntax, too many lookups, etc.) | 2 | src/spf/types.rs:19 | 6b1ee0f | DONE |
 | CHK-030 | 01-SPF-RFC7208.md:59 | checkbox | Define `MacroContext` struct for macro expansion: | 3 | - | - | PENDING |
 | CHK-031 | 01-SPF-RFC7208.md:60 | checkbox | `sender: String` — full sender address (local-part@domain) | 3 | - | - | PENDING |
 | CHK-032 | 01-SPF-RFC7208.md:61 | checkbox | `local_part: String` — local-part of sender | 3 | - | - | PENDING |
@@ -40,27 +40,27 @@
 | CHK-035 | 01-SPF-RFC7208.md:64 | checkbox | `helo: String` — HELO/EHLO identity | 3 | - | - | PENDING |
 | CHK-036 | 01-SPF-RFC7208.md:65 | checkbox | `domain: String` — current domain being evaluated | 3 | - | - | PENDING |
 | CHK-037 | 01-SPF-RFC7208.md:66 | checkbox | `receiver: String` — receiving domain name (for `%{r}` macro) | 3 | - | - | PENDING |
-| CHK-038 | 01-SPF-RFC7208.md:74 | checkbox | Query DNS TXT records for domain | 2 | src/spf/parser.rs:6 | - | DONE |
-| CHK-039 | 01-SPF-RFC7208.md:75 | checkbox | Filter records starting with "v=spf1" followed by space or end-of-string (case-insensitive) | 2 | src/spf/parser.rs:12 | - | DONE |
-| CHK-040 | 01-SPF-RFC7208.md:76 | checkbox | Handle multiple TXT records: MUST be exactly one SPF record, else `PermError` | 2 | src/spf/parser.rs:6 | - | DONE |
-| CHK-041 | 01-SPF-RFC7208.md:77 | checkbox | Handle no SPF record: return `None` | 2 | src/spf/parser.rs:6 | - | DONE |
-| CHK-042 | 01-SPF-RFC7208.md:78 | checkbox | DNS TempFail during TXT query: return `TempError` | 2 | src/spf/parser.rs:6 | - | DONE |
-| CHK-043 | 01-SPF-RFC7208.md:82 | checkbox | Parse version: `"v=spf1"` (case-insensitive) | 2 | src/spf/parser.rs:12 | - | DONE |
-| CHK-044 | 01-SPF-RFC7208.md:83 | checkbox | Parse directives: `[qualifier] mechanism` | 2 | src/spf/parser.rs:29 | - | DONE |
-| CHK-045 | 01-SPF-RFC7208.md:84 | checkbox | Default qualifier is `+` (Pass) if omitted | 2 | src/spf/parser.rs:152 | - | DONE |
-| CHK-046 | 01-SPF-RFC7208.md:85 | checkbox | Parse modifiers: `name=value` (only `redirect` and `exp` defined) | 2 | src/spf/parser.rs:38 | - | DONE |
-| CHK-047 | 01-SPF-RFC7208.md:86 | checkbox | Handle unknown mechanisms: `PermError` (NOT silently skip) | 2 | src/spf/parser.rs:139 | - | DONE |
-| CHK-048 | 01-SPF-RFC7208.md:87 | checkbox | Handle unknown modifiers: ignore (forward compatibility) | 2 | src/spf/parser.rs:51 | - | DONE |
-| CHK-049 | 01-SPF-RFC7208.md:88 | checkbox | Handle duplicate redirect or exp modifiers: `PermError` | 2 | src/spf/parser.rs:41 | - | DONE |
-| CHK-050 | 01-SPF-RFC7208.md:89 | checkbox | Whitespace between terms: one or more spaces, trimmed | 2 | src/spf/parser.rs:7 | - | DONE |
-| CHK-051 | 01-SPF-RFC7208.md:93 | checkbox | `all` — no arguments | 2 | src/spf/parser.rs:116 | - | DONE |
-| CHK-052 | 01-SPF-RFC7208.md:94 | checkbox | `include:<domain>` — domain spec required | 2 | src/spf/parser.rs:120 | - | DONE |
-| CHK-053 | 01-SPF-RFC7208.md:95 | checkbox | `a` / `a:<domain>` / `a:<domain>/<cidr4>` / `a:<domain>//<cidr6>` / `a:<domain>/<cidr4>//<cidr6>` | 2 | src/spf/parser.rs:187 | - | DONE |
-| CHK-054 | 01-SPF-RFC7208.md:96 | checkbox | `mx` — same argument patterns as `a` | 2 | src/spf/parser.rs:187 | - | DONE |
-| CHK-055 | 01-SPF-RFC7208.md:97 | checkbox | `ptr` / `ptr:<domain>` — optional domain | 2 | src/spf/parser.rs:131 | - | DONE |
-| CHK-056 | 01-SPF-RFC7208.md:98 | checkbox | `ip4:<ip4-network>` — address with optional `/prefix` (default /32) | 2 | src/spf/parser.rs:241 | - | DONE |
-| CHK-057 | 01-SPF-RFC7208.md:99 | checkbox | `ip6:<ip6-network>` — address with optional `/prefix` (default /128) | 2 | src/spf/parser.rs:258 | - | DONE |
-| CHK-058 | 01-SPF-RFC7208.md:100 | checkbox | `exists:<domain>` — domain spec with macros | 2 | src/spf/parser.rs:135 | - | DONE |
+| CHK-038 | 01-SPF-RFC7208.md:74 | checkbox | Query DNS TXT records for domain | 2 | src/spf/lookup.rs:49 | - | DONE |
+| CHK-039 | 01-SPF-RFC7208.md:75 | checkbox | Filter records starting with "v=spf1" followed by space or end-of-string (case-insensitive) | 2 | src/spf/parser.rs:12 | 6b1ee0f | DONE |
+| CHK-040 | 01-SPF-RFC7208.md:76 | checkbox | Handle multiple TXT records: MUST be exactly one SPF record, else `PermError` | 2 | src/spf/lookup.rs:71 | - | DONE |
+| CHK-041 | 01-SPF-RFC7208.md:77 | checkbox | Handle no SPF record: return `None` | 2 | src/spf/lookup.rs:83 | - | DONE |
+| CHK-042 | 01-SPF-RFC7208.md:78 | checkbox | DNS TempFail during TXT query: return `TempError` | 2 | src/spf/lookup.rs:99 | - | DONE |
+| CHK-043 | 01-SPF-RFC7208.md:82 | checkbox | Parse version: `"v=spf1"` (case-insensitive) | 2 | src/spf/parser.rs:12 | 6b1ee0f | DONE |
+| CHK-044 | 01-SPF-RFC7208.md:83 | checkbox | Parse directives: `[qualifier] mechanism` | 2 | src/spf/parser.rs:29 | 6b1ee0f | DONE |
+| CHK-045 | 01-SPF-RFC7208.md:84 | checkbox | Default qualifier is `+` (Pass) if omitted | 2 | src/spf/parser.rs:152 | 6b1ee0f | DONE |
+| CHK-046 | 01-SPF-RFC7208.md:85 | checkbox | Parse modifiers: `name=value` (only `redirect` and `exp` defined) | 2 | src/spf/parser.rs:38 | 6b1ee0f | DONE |
+| CHK-047 | 01-SPF-RFC7208.md:86 | checkbox | Handle unknown mechanisms: `PermError` (NOT silently skip) | 2 | src/spf/parser.rs:139 | 6b1ee0f | DONE |
+| CHK-048 | 01-SPF-RFC7208.md:87 | checkbox | Handle unknown modifiers: ignore (forward compatibility) | 2 | src/spf/parser.rs:51 | 6b1ee0f | DONE |
+| CHK-049 | 01-SPF-RFC7208.md:88 | checkbox | Handle duplicate redirect or exp modifiers: `PermError` | 2 | src/spf/parser.rs:41 | 6b1ee0f | DONE |
+| CHK-050 | 01-SPF-RFC7208.md:89 | checkbox | Whitespace between terms: one or more spaces, trimmed | 2 | src/spf/parser.rs:7 | 6b1ee0f | DONE |
+| CHK-051 | 01-SPF-RFC7208.md:93 | checkbox | `all` — no arguments | 2 | src/spf/parser.rs:116 | 6b1ee0f | DONE |
+| CHK-052 | 01-SPF-RFC7208.md:94 | checkbox | `include:<domain>` — domain spec required | 2 | src/spf/parser.rs:120 | 6b1ee0f | DONE |
+| CHK-053 | 01-SPF-RFC7208.md:95 | checkbox | `a` / `a:<domain>` / `a:<domain>/<cidr4>` / `a:<domain>//<cidr6>` / `a:<domain>/<cidr4>//<cidr6>` | 2 | src/spf/parser.rs:187 | 6b1ee0f | DONE |
+| CHK-054 | 01-SPF-RFC7208.md:96 | checkbox | `mx` — same argument patterns as `a` | 2 | src/spf/parser.rs:187 | 6b1ee0f | DONE |
+| CHK-055 | 01-SPF-RFC7208.md:97 | checkbox | `ptr` / `ptr:<domain>` — optional domain | 2 | src/spf/parser.rs:131 | 6b1ee0f | DONE |
+| CHK-056 | 01-SPF-RFC7208.md:98 | checkbox | `ip4:<ip4-network>` — address with optional `/prefix` (default /32) | 2 | src/spf/parser.rs:241 | 6b1ee0f | DONE |
+| CHK-057 | 01-SPF-RFC7208.md:99 | checkbox | `ip6:<ip6-network>` — address with optional `/prefix` (default /128) | 2 | src/spf/parser.rs:258 | 6b1ee0f | DONE |
+| CHK-058 | 01-SPF-RFC7208.md:100 | checkbox | `exists:<domain>` — domain spec with macros | 2 | src/spf/parser.rs:135 | 6b1ee0f | DONE |
 | CHK-059 | 01-SPF-RFC7208.md:104 | checkbox | Implement macro expander for domain-spec strings | 3 | - | - | PENDING |
 | CHK-060 | 01-SPF-RFC7208.md:105 | checkbox | Macro letters (case determines URL encoding): | 3 | - | - | PENDING |
 | CHK-061 | 01-SPF-RFC7208.md:106 | checkbox | `s` — sender (local-part@domain or postmaster@domain) | 3 | - | - | PENDING |
@@ -183,20 +183,20 @@
 | CHK-178 | 01-SPF-RFC7208.md:316 | checkbox | `TempError` conditions: | 4 | - | - | PENDING |
 | CHK-179 | 01-SPF-RFC7208.md:317 | checkbox | DNS timeout or SERVFAIL | 4 | - | - | PENDING |
 | CHK-180 | 01-SPF-RFC7208.md:318 | checkbox | Transient network errors | 4 | - | - | PENDING |
-| CHK-181 | 01-SPF-RFC7208.md:326 | checkbox | Valid minimal: `v=spf1 -all` | 2 | src/spf/parser.rs:284 | - | DONE |
-| CHK-182 | 01-SPF-RFC7208.md:327 | checkbox | Multiple mechanisms: `v=spf1 ip4:192.0.2.0/24 ip4:198.51.100.0/24 -all` | 2 | src/spf/parser.rs:295 | - | DONE |
-| CHK-183 | 01-SPF-RFC7208.md:328 | checkbox | Include: `v=spf1 include:_spf.google.com -all` | 2 | src/spf/parser.rs:312 | - | DONE |
-| CHK-184 | 01-SPF-RFC7208.md:329 | checkbox | All mechanism types with all argument forms | 2 | src/spf/parser.rs:323 | - | DONE |
-| CHK-185 | 01-SPF-RFC7208.md:330 | checkbox | Macros in domain specs: `exists:%{ir}.sbl.example.com` | 2 | src/spf/parser.rs:379 | - | DONE |
-| CHK-186 | 01-SPF-RFC7208.md:331 | checkbox | Case insensitivity: `V=SPF1 IP4:...` → same as lowercase | 2 | src/spf/parser.rs:389 | - | DONE |
-| CHK-187 | 01-SPF-RFC7208.md:332 | checkbox | Invalid version: `v=spf2` → error | 2 | src/spf/parser.rs:401 | - | DONE |
-| CHK-188 | 01-SPF-RFC7208.md:333 | checkbox | Duplicate modifiers: `redirect=a redirect=b` → PermError | 2 | src/spf/parser.rs:407 | - | DONE |
-| CHK-189 | 01-SPF-RFC7208.md:334 | checkbox | Unknown modifier: `foo=bar` → silently ignored | 2 | src/spf/parser.rs:420 | - | DONE |
-| CHK-190 | 01-SPF-RFC7208.md:335 | checkbox | Unknown mechanism: `custom:example.com` → PermError | 2 | src/spf/parser.rs:428 | - | DONE |
-| CHK-191 | 01-SPF-RFC7208.md:336 | checkbox | Multiple whitespace between terms | 2 | src/spf/parser.rs:435 | - | DONE |
-| CHK-192 | 01-SPF-RFC7208.md:337 | checkbox | Trailing whitespace | 2 | src/spf/parser.rs:442 | - | DONE |
-| CHK-193 | 01-SPF-RFC7208.md:338 | checkbox | A/MX dual CIDR: `a:example.com/24//64` | 2 | src/spf/parser.rs:449 | - | DONE |
-| CHK-194 | 01-SPF-RFC7208.md:339 | checkbox | Prefix edge cases: `a/0`, `a//0` | 2 | src/spf/parser.rs:489 | - | DONE |
+| CHK-181 | 01-SPF-RFC7208.md:326 | checkbox | Valid minimal: `v=spf1 -all` | 2 | src/spf/parser.rs:284 | 6b1ee0f | DONE |
+| CHK-182 | 01-SPF-RFC7208.md:327 | checkbox | Multiple mechanisms: `v=spf1 ip4:192.0.2.0/24 ip4:198.51.100.0/24 -all` | 2 | src/spf/parser.rs:295 | 6b1ee0f | DONE |
+| CHK-183 | 01-SPF-RFC7208.md:328 | checkbox | Include: `v=spf1 include:_spf.google.com -all` | 2 | src/spf/parser.rs:312 | 6b1ee0f | DONE |
+| CHK-184 | 01-SPF-RFC7208.md:329 | checkbox | All mechanism types with all argument forms | 2 | src/spf/parser.rs:323 | 6b1ee0f | DONE |
+| CHK-185 | 01-SPF-RFC7208.md:330 | checkbox | Macros in domain specs: `exists:%{ir}.sbl.example.com` | 2 | src/spf/parser.rs:379 | 6b1ee0f | DONE |
+| CHK-186 | 01-SPF-RFC7208.md:331 | checkbox | Case insensitivity: `V=SPF1 IP4:...` → same as lowercase | 2 | src/spf/parser.rs:389 | 6b1ee0f | DONE |
+| CHK-187 | 01-SPF-RFC7208.md:332 | checkbox | Invalid version: `v=spf2` → error | 2 | src/spf/parser.rs:401 | 6b1ee0f | DONE |
+| CHK-188 | 01-SPF-RFC7208.md:333 | checkbox | Duplicate modifiers: `redirect=a redirect=b` → PermError | 2 | src/spf/parser.rs:407 | 6b1ee0f | DONE |
+| CHK-189 | 01-SPF-RFC7208.md:334 | checkbox | Unknown modifier: `foo=bar` → silently ignored | 2 | src/spf/parser.rs:420 | 6b1ee0f | DONE |
+| CHK-190 | 01-SPF-RFC7208.md:335 | checkbox | Unknown mechanism: `custom:example.com` → PermError | 2 | src/spf/parser.rs:428 | 6b1ee0f | DONE |
+| CHK-191 | 01-SPF-RFC7208.md:336 | checkbox | Multiple whitespace between terms | 2 | src/spf/parser.rs:435 | 6b1ee0f | DONE |
+| CHK-192 | 01-SPF-RFC7208.md:337 | checkbox | Trailing whitespace | 2 | src/spf/parser.rs:442 | 6b1ee0f | DONE |
+| CHK-193 | 01-SPF-RFC7208.md:338 | checkbox | A/MX dual CIDR: `a:example.com/24//64` | 2 | src/spf/parser.rs:449 | 6b1ee0f | DONE |
+| CHK-194 | 01-SPF-RFC7208.md:339 | checkbox | Prefix edge cases: `a/0`, `a//0` | 2 | src/spf/parser.rs:489 | 6b1ee0f | DONE |
 | CHK-195 | 01-SPF-RFC7208.md:343 | checkbox | Simple pass: IP in `ip4` range | 4 | - | - | PENDING |
 | CHK-196 | 01-SPF-RFC7208.md:344 | checkbox | Simple fail: IP not in range, ends `-all` | 4 | - | - | PENDING |
 | CHK-197 | 01-SPF-RFC7208.md:345 | checkbox | Include pass: nested lookup passes | 4 | - | - | PENDING |
@@ -241,13 +241,13 @@
 | CHK-236 | 01-SPF-RFC7208.md:392 | checkbox | DNS caching is caller's responsibility — document this clearly | 4 | - | - | PENDING |
 | CHK-237 | 01-SPF-RFC7208.md:398 | checkbox | DNS caching: out of scope for library. Callers wrap the resolver. | 4 | - | - | PENDING |
 | CHK-238 | 01-SPF-RFC7208.md:399 | checkbox | Short-circuit on first match (left-to-right, stop at first matching directive) | 4 | - | - | PENDING |
-| CHK-239 | 01-SPF-RFC7208.md:400 | checkbox | Pre-compiled parsed records: `SpfRecord::parse` returns owned struct for reuse | 2 | src/spf/types.rs:75 | - | DONE |
+| CHK-239 | 01-SPF-RFC7208.md:400 | checkbox | Pre-compiled parsed records: `SpfRecord::parse` returns owned struct for reuse | 2 | src/spf/types.rs:75 | 6b1ee0f | DONE |
 | CHK-240 | 01-SPF-RFC7208.md:401 | checkbox | A/MX mechanism: query only the address family matching client IP (v4→A, v6→AAAA) | 4 | - | - | PENDING |
 | CHK-241 | 01-SPF-RFC7208.md:461 | checkbox | DNS resolver (async): `hickory-resolver` 0.25 | 1 | Cargo.toml:11 | 992b713 | DONE |
 | CHK-242 | 01-SPF-RFC7208.md:462 | checkbox | IP address handling: `std::net` | 1 | src/common/dns.rs:1 | 992b713 | DONE |
 | CHK-243 | 01-SPF-RFC7208.md:463 | checkbox | CIDR matching: custom implementation (no external crate needed) | 1 | src/common/cidr.rs:38 | 992b713 | DONE |
-| CHK-244 | 01-SPF-RFC7208.md:469 | checkbox | All data types defined with structured enums (not raw strings) | 2 | src/spf/types.rs:5 | - | DONE |
-| CHK-245 | 01-SPF-RFC7208.md:470 | checkbox | Parser complete with all 8 mechanisms and 2 modifiers | 2 | src/spf/parser.rs:6 | - | DONE |
+| CHK-244 | 01-SPF-RFC7208.md:469 | checkbox | All data types defined with structured enums (not raw strings) | 2 | src/spf/types.rs:5 | 6b1ee0f | DONE |
+| CHK-245 | 01-SPF-RFC7208.md:470 | checkbox | Parser complete with all 8 mechanisms and 2 modifiers | 2 | src/spf/parser.rs:6 | 6b1ee0f | DONE |
 | CHK-246 | 01-SPF-RFC7208.md:471 | checkbox | Macro expander complete with all letters, transformers, escapes | 3 | - | - | PENDING |
 | CHK-247 | 01-SPF-RFC7208.md:472 | checkbox | `check_host()` algorithm implemented with recursive include/redirect | 4 | - | - | PENDING |
 | CHK-248 | 01-SPF-RFC7208.md:473 | checkbox | DNS lookup limits enforced (10 DNS, 2 void) | 4 | - | - | PENDING |
