@@ -484,8 +484,8 @@
 | CHK-479 | 02-DKIM-RFC6376.md:456 | checkbox | Over-signed headers: contribute empty value (not skipped) | 6 | src/dkim/canon.rs:487 | ea0fa9f | DONE |
 | CHK-480 | 02-DKIM-RFC6376.md:457 | checkbox | b= tag stripping: does NOT affect bh= tag | 6 | src/dkim/canon.rs:533 | ea0fa9f | DONE |
 | CHK-481 | 02-DKIM-RFC6376.md:461 | checkbox | Valid Ed25519 signature → Pass | 7 | src/dkim/verify.rs:712 | b1f9430 | DONE |
-| CHK-482 | 02-DKIM-RFC6376.md:462 | checkbox | Valid RSA-SHA256 signature → Pass (**pre-computed fixture**: sign with `rsa` crate or openssl, embed signed message + SPKI public key in test — cannot rely on sign→verify round-trip alone) | 7 | src/dkim/verify.rs:1157 | b1f9430 | DONE |
-| CHK-483 | 02-DKIM-RFC6376.md:463 | checkbox | Valid RSA-SHA1 signature → Pass (**pre-computed fixture required**: ring 0.17 cannot sign SHA-1. Sign once externally, embed fixture with raw message bytes + signature + public key) | 7 | src/dkim/verify.rs:1157 | b1f9430 | DONE |
+| CHK-482 | 02-DKIM-RFC6376.md:462 | checkbox | Valid RSA-SHA256 signature → Pass (**pre-computed fixture**: sign with `rsa` crate or openssl, embed signed message + SPKI public key in test — cannot rely on sign→verify round-trip alone) | 7 | src/dkim/verify.rs:1142 | a390668 | DONE |
+| CHK-483 | 02-DKIM-RFC6376.md:463 | checkbox | Valid RSA-SHA1 signature → Pass (**pre-computed fixture required**: ring 0.17 cannot sign SHA-1. Sign once externally, embed fixture with raw message bytes + signature + public key) | 7 | src/dkim/verify.rs:1184 | a390668 | DONE |
 | CHK-484 | 02-DKIM-RFC6376.md:464 | checkbox | Tampered body → Fail (BodyHashMismatch) | 7 | src/dkim/verify.rs:770 | b1f9430 | DONE |
 | CHK-485 | 02-DKIM-RFC6376.md:465 | checkbox | Tampered header → Fail (SignatureVerificationFailed) | 7 | src/dkim/verify.rs:818 | b1f9430 | DONE |
 | CHK-486 | 02-DKIM-RFC6376.md:466 | checkbox | Expired signature → PermFail (ExpiredSignature) | 7 | src/dkim/verify.rs:692 | b1f9430 | DONE |
@@ -531,10 +531,10 @@
 | CHK-526 | 02-DKIM-RFC6376.md:597 | checkbox | Bare LF → CRLF normalization | 6 | src/dkim/canon.rs:439 | ea0fa9f | DONE |
 | CHK-527 | 02-DKIM-RFC6376.md:598 | checkbox | b= tag stripping (safe against bh=) | 6 | src/dkim/canon.rs:579 | ea0fa9f | DONE |
 | CHK-528 | 02-DKIM-RFC6376.md:599 | checkbox | Verification algorithm complete with all constraint checks | 7 | src/dkim/verify.rs:1014 | b1f9430 | DONE |
-| CHK-529 | 02-DKIM-RFC6376.md:600 | checkbox | RSA-SHA256 + RSA-SHA1 + Ed25519 verification working | 7 | src/dkim/verify.rs:385 | b1f9430 | DONE |
+| CHK-529 | 02-DKIM-RFC6376.md:600 | checkbox | RSA-SHA256 + RSA-SHA1 + Ed25519 verification working | 7 | src/dkim/verify.rs:1142 | a390668 | DONE |
 | CHK-530 | 02-DKIM-RFC6376.md:601 | checkbox | Signing algorithm complete (RSA-SHA256 + Ed25519) | 8 | - | - | PENDING |
 | CHK-531 | 02-DKIM-RFC6376.md:602 | checkbox | Ground-truth tests (bypass signer, construct signatures manually) | 7 | src/dkim/verify.rs:1014 | b1f9430 | DONE |
-| CHK-532 | 02-DKIM-RFC6376.md:603 | checkbox | RSA-SHA1 verification tested | 7 | src/dkim/verify.rs:1157 | b1f9430 | DONE |
+| CHK-532 | 02-DKIM-RFC6376.md:603 | checkbox | RSA-SHA1 verification tested | 7 | src/dkim/verify.rs:1184 | a390668 | DONE |
 | CHK-533 | 02-DKIM-RFC6376.md:604 | checkbox | DNS key lookup working with TXT string concatenation | 7 | src/dkim/verify.rs:149 | b1f9430 | DONE |
 | CHK-534 | 02-DKIM-RFC6376.md:605 | checkbox | No unwrap/expect in library code (tests only) | 7 | src/dkim/verify.rs:1157 | b1f9430 | DONE |
 | CHK-535 | 03-DMARC-RFC7489.md:19 | checkbox | Define `DmarcRecord` struct: | 9 | - | - | PENDING |

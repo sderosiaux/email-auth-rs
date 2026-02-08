@@ -290,18 +290,15 @@ fn compute_header_hash_input(
 
     // Append DKIM-Signature header with b= stripped, canonicalized, NO trailing CRLF
     let stripped = strip_b_tag_value(&sig.raw_header);
-    let canon_sig = canonicalize_header(
-        sig.header_canonicalization,
-        "dkim-signature",
-        &stripped,
-    );
-
-    // For simple canonicalization, preserve original header name
     let canon_sig = if sig.header_canonicalization == CanonicalizationMethod::Simple {
-        let stripped_full = strip_b_tag_value(&sig.raw_header);
-        format!("DKIM-Signature:{}", stripped_full)
+        // Simple: preserve original header name casing
+        format!("DKIM-Signature:{}", stripped)
     } else {
-        canon_sig
+        canonicalize_header(
+            sig.header_canonicalization,
+            "dkim-signature",
+            &stripped,
+        )
     };
 
     hash_input.extend_from_slice(canon_sig.as_bytes());
@@ -1134,6 +1131,99 @@ mod tests {
     // ─── CHK-510..CHK-517: Security ─────────────────────────────────
     // (Most security properties are verified by the constraint/verification tests above)
 
+    // ─── CHK-482: RSA-SHA256 pre-computed fixture ─────────────────
+    // Generated with OpenSSL RSA-2048 key. This is a TRUE pre-computed fixture:
+    // signing was done externally (openssl dgst -sha256 -sign), not by this library.
+    // The SPKI public key exercises strip_spki_wrapper with real ASN.1 data.
+
+    const RSA_FIXTURE_SPKI_B64: &str = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0zzOtswuqB21FtQ+W5cgh7DiaJ+4TMQBmSm3V6gKYSq/WPbg0vaSdlru6PBbdocwBrn4di2bNpdy5Co1ujLtogyg6+f4A9K36CygLWqOhygt6A/Rl94daXwew1S/7oSksuAGnSg2+XMuU2An+IHSYnx/qAiGnnzkhGgsTnUnJxZ2mitvKemPjTDIB2dz1hJAmnJS0ffUADnSXgS55f8aXAdRRDQwYlTwBRLrdpcQzVRKU+L/hm4EzePVkvXUgeuBKqhIosNHl28fuN1nac3zuosWorJQ7Ox2MKKdVB5FkT85mZp/i7L0+/JMVXJeNHnlFe3OqFUEKmYpgL37oTGCdQIDAQAB";
+
+    #[tokio::test]
+    async fn rsa_sha256_precomputed_fixture_pass() {
+        let body = b"Test body for RSA verification\r\n";
+        let sig_value = concat!(
+            " v=1; a=rsa-sha256; b=zm5IJ/e9WakQhZ+pmKQafoSc2iZE2xGfYA7sbWF+O8vhES09D7HyUo",
+            "sQVnG4fm6mHOc6pHLtTaQDe/4r0tOjjI7peVO8BCi3KSQtKZIORJ8wrs3PQLpZtZdK/zlfIZywW0",
+            "n5DMxbHU+uqjkR4y191xYg/fWZaC14d/4V5RvzKb8ZV7qYzpi5EWDlXTCbJTryuJydjRVYIa1F+6",
+            "cI3ROJn8U9GcyGcJJQo5HrrWYKAiPGhR3sXjKbBEOah7CH5XQv22j4Q3q2LhNjtTnXrS77rvw8lu",
+            "b+H0e8vEB4Ps4Y9y81QPGqs9Xse2MakBVER44/1M4XvlpS+5bD4bUZfYG5cQ==; bh=A82pV6ef4",
+            "eO/+6HFHShh58CZ7NYOh4gNm0JUpCe9AJU=; c=relaxed/relaxed; d=example.com; h=fro",
+            "m:to:subject; s=rsa2048",
+        );
+
+        let mut resolver = MockResolver::new();
+        setup_mock_key(
+            &mut resolver,
+            "rsa2048",
+            "example.com",
+            &format!("v=DKIM1; k=rsa; p={}", RSA_FIXTURE_SPKI_B64),
+        );
+
+        let verifier = DkimVerifier::new(resolver);
+        let headers: Vec<(&str, &str)> = vec![
+            ("From", " user@example.com"),
+            ("To", " recipient@example.com"),
+            ("Subject", " RSA test"),
+            ("DKIM-Signature", sig_value),
+        ];
+
+        let results = verifier.verify_message(&headers, body).await;
+        match &results[0] {
+            DkimResult::Pass { domain, selector, .. } => {
+                assert_eq!(domain, "example.com");
+                assert_eq!(selector, "rsa2048");
+            }
+            other => panic!("RSA-SHA256 fixture: expected Pass, got {:?}", other),
+        }
+    }
+
+    // ─── CHK-483: RSA-SHA1 pre-computed fixture ─────────────────────
+    // ring 0.17 cannot sign SHA-1. This fixture was signed externally with openssl dgst -sha1 -sign.
+
+    #[tokio::test]
+    async fn rsa_sha1_precomputed_fixture_pass() {
+        let body = b"Test body for RSA verification\r\n";
+        let sig_value = concat!(
+            " v=1; a=rsa-sha1; b=Y9CjLLQ3d8kw7z7FnjDF7YDbD5jV8F4nmNN2IP7HcIIJFMmEdvE2+mMH",
+            "OulTI26Kp7x+r0aubcmOAvOUh1eFX2t7359bnVL9n1MEKIcxdZO3fIU5LhXBAfrkILe/caA5hQgU",
+            "94HdPiOyGUNIQdGIG4ECZ6zdcW1K4TVYQmGawJzwKyKo1m4MqT99bJot5MUEmK/7jX9aROrDtwok",
+            "qtFAysXpmqWj3lOg+IJSmiKzD0DvbvU1G/LE4T95zjnot+rBtC0/jJ/ooq0ZBBOvC5KHQ0pwDxCC",
+            "ENR18UkcyZG/6FRLFGGzReJPQViJ4XqBNpDOovEXj3v4q9tdBmNt5zNKzQ==; bh=wIO7ahU/Pub",
+            "98XWknH1rIcruxRc=; c=relaxed/relaxed; d=example.com; h=from:to:subject; s=rs",
+            "a2048",
+        );
+
+        let mut resolver = MockResolver::new();
+        setup_mock_key(
+            &mut resolver,
+            "rsa2048",
+            "example.com",
+            &format!("v=DKIM1; k=rsa; p={}", RSA_FIXTURE_SPKI_B64),
+        );
+
+        let verifier = DkimVerifier::new(resolver);
+        let headers: Vec<(&str, &str)> = vec![
+            ("From", " user@example.com"),
+            ("To", " recipient@example.com"),
+            ("Subject", " RSA test"),
+            ("DKIM-Signature", sig_value),
+        ];
+
+        let results = verifier.verify_message(&headers, body).await;
+        match &results[0] {
+            DkimResult::Pass { domain, selector, .. } => {
+                assert_eq!(domain, "example.com");
+                assert_eq!(selector, "rsa2048");
+            }
+            other => panic!("RSA-SHA1 fixture: expected Pass, got {:?}", other),
+        }
+    }
+
+    // ─── CHK-529: All three algorithms verified ─────────────────────
+    // Ed25519: ed25519_pass_ground_truth
+    // RSA-SHA256: rsa_sha256_precomputed_fixture_pass
+    // RSA-SHA1: rsa_sha1_precomputed_fixture_pass
+
     // ─── SPKI stripping unit tests ──────────────────────────────────
 
     #[test]
@@ -1149,32 +1239,20 @@ mod tests {
         assert_eq!(strip_spki_wrapper(&data), data.as_slice());
     }
 
-    // ─── Additional integration tests ───────────────────────────────
+    #[test]
+    fn strip_spki_real_rsa_2048_key() {
+        // Test SPKI stripping with the real RSA-2048 SPKI key used in fixtures
+        let spki_der = base64::engine::general_purpose::STANDARD
+            .decode(RSA_FIXTURE_SPKI_B64)
+            .unwrap();
+        assert_eq!(spki_der.len(), 294); // 2048-bit RSA SPKI
 
-    // CHK-376: DNS caching caller responsibility
-    // (Documented in DnsResolver trait, no test needed beyond design verification)
-
-    // CHK-534: No unwrap/expect in library code
-    // (Verified by code review — only tests use unwrap)
-
-    // CHK-414: Pass result
-    // (Covered by ed25519_pass_ground_truth)
-
-    // CHK-415: BodyHashMismatch
-    // (Covered by ed25519_tampered_body)
-
-    // CHK-416: SigVerificationFailed
-    // (Covered by ed25519_tampered_header)
-
-    // CHK-417: KeyNotFound
-    // (Covered by key_not_found_nxdomain)
-
-    // CHK-418: KeyRevoked
-    // (Covered by key_revoked_empty_p)
-
-    // CHK-419: DNS TempFail
-    // (Covered by dns_temp_failure)
-
-    // CHK-420: Other → PermFail
-    // (Covered by various constraint tests)
+        let pkcs1 = strip_spki_wrapper(&spki_der);
+        // PKCS#1 should be shorter (SPKI header stripped)
+        assert!(pkcs1.len() < spki_der.len());
+        // PKCS#1 RSAPublicKey starts with SEQUENCE tag 0x30
+        assert_eq!(pkcs1[0], 0x30);
+        // The stripped key should be usable by ring (verified by the RSA fixture tests above)
+        assert!(pkcs1.len() > 250); // 2048-bit modulus is ~256 bytes
+    }
 }
