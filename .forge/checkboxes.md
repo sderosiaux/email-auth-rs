@@ -32,14 +32,14 @@
 | CHK-027 | 01-SPF-RFC7208.md:53 | checkbox | `None` — no SPF record found | 2 | src/spf/types.rs:15 | 6b1ee0f | DONE |
 | CHK-028 | 01-SPF-RFC7208.md:54 | checkbox | `TempError` — transient DNS error | 2 | src/spf/types.rs:17 | 6b1ee0f | DONE |
 | CHK-029 | 01-SPF-RFC7208.md:55 | checkbox | `PermError` — permanent error (syntax, too many lookups, etc.) | 2 | src/spf/types.rs:19 | 6b1ee0f | DONE |
-| CHK-030 | 01-SPF-RFC7208.md:59 | checkbox | Define `MacroContext` struct for macro expansion: | 3 | src/spf/macros.rs:5 | - | DONE |
-| CHK-031 | 01-SPF-RFC7208.md:60 | checkbox | `sender: String` — full sender address (local-part@domain) | 3 | src/spf/macros.rs:8 | - | DONE |
-| CHK-032 | 01-SPF-RFC7208.md:61 | checkbox | `local_part: String` — local-part of sender | 3 | src/spf/macros.rs:10 | - | DONE |
-| CHK-033 | 01-SPF-RFC7208.md:62 | checkbox | `sender_domain: String` — domain of sender | 3 | src/spf/macros.rs:12 | - | DONE |
-| CHK-034 | 01-SPF-RFC7208.md:63 | checkbox | `client_ip: IpAddr` — connecting server IP | 3 | src/spf/macros.rs:14 | - | DONE |
-| CHK-035 | 01-SPF-RFC7208.md:64 | checkbox | `helo: String` — HELO/EHLO identity | 3 | src/spf/macros.rs:16 | - | DONE |
-| CHK-036 | 01-SPF-RFC7208.md:65 | checkbox | `domain: String` — current domain being evaluated | 3 | src/spf/macros.rs:18 | - | DONE |
-| CHK-037 | 01-SPF-RFC7208.md:66 | checkbox | `receiver: String` — receiving domain name (for `%{r}` macro) | 3 | src/spf/macros.rs:20 | - | DONE |
+| CHK-030 | 01-SPF-RFC7208.md:59 | checkbox | Define `MacroContext` struct for macro expansion: | 3 | src/spf/macros.rs:5 | b7bcd10 | DONE |
+| CHK-031 | 01-SPF-RFC7208.md:60 | checkbox | `sender: String` — full sender address (local-part@domain) | 3 | src/spf/macros.rs:8 | b7bcd10 | DONE |
+| CHK-032 | 01-SPF-RFC7208.md:61 | checkbox | `local_part: String` — local-part of sender | 3 | src/spf/macros.rs:10 | b7bcd10 | DONE |
+| CHK-033 | 01-SPF-RFC7208.md:62 | checkbox | `sender_domain: String` — domain of sender | 3 | src/spf/macros.rs:12 | b7bcd10 | DONE |
+| CHK-034 | 01-SPF-RFC7208.md:63 | checkbox | `client_ip: IpAddr` — connecting server IP | 3 | src/spf/macros.rs:14 | b7bcd10 | DONE |
+| CHK-035 | 01-SPF-RFC7208.md:64 | checkbox | `helo: String` — HELO/EHLO identity | 3 | src/spf/macros.rs:16 | b7bcd10 | DONE |
+| CHK-036 | 01-SPF-RFC7208.md:65 | checkbox | `domain: String` — current domain being evaluated | 3 | src/spf/macros.rs:18 | b7bcd10 | DONE |
+| CHK-037 | 01-SPF-RFC7208.md:66 | checkbox | `receiver: String` — receiving domain name (for `%{r}` macro) | 3 | src/spf/macros.rs:20 | b7bcd10 | DONE |
 | CHK-038 | 01-SPF-RFC7208.md:74 | checkbox | Query DNS TXT records for domain | 2 | src/spf/lookup.rs:49 | 8cbb285 | DONE |
 | CHK-039 | 01-SPF-RFC7208.md:75 | checkbox | Filter records starting with "v=spf1" followed by space or end-of-string (case-insensitive) | 2 | src/spf/parser.rs:12 | 6b1ee0f | DONE |
 | CHK-040 | 01-SPF-RFC7208.md:76 | checkbox | Handle multiple TXT records: MUST be exactly one SPF record, else `PermError` | 2 | src/spf/lookup.rs:71 | 8cbb285 | DONE |
@@ -61,104 +61,104 @@
 | CHK-056 | 01-SPF-RFC7208.md:98 | checkbox | `ip4:<ip4-network>` — address with optional `/prefix` (default /32) | 2 | src/spf/parser.rs:241 | 6b1ee0f | DONE |
 | CHK-057 | 01-SPF-RFC7208.md:99 | checkbox | `ip6:<ip6-network>` — address with optional `/prefix` (default /128) | 2 | src/spf/parser.rs:258 | 6b1ee0f | DONE |
 | CHK-058 | 01-SPF-RFC7208.md:100 | checkbox | `exists:<domain>` — domain spec with macros | 2 | src/spf/parser.rs:135 | 6b1ee0f | DONE |
-| CHK-059 | 01-SPF-RFC7208.md:104 | checkbox | Implement macro expander for domain-spec strings | 3 | src/spf/macros.rs:26 | - | DONE |
-| CHK-060 | 01-SPF-RFC7208.md:105 | checkbox | Macro letters (case determines URL encoding): | 3 | src/spf/macros.rs:107 | - | DONE |
-| CHK-061 | 01-SPF-RFC7208.md:106 | checkbox | `s` — sender (local-part@domain or postmaster@domain) | 3 | src/spf/macros.rs:292 | - | DONE |
-| CHK-062 | 01-SPF-RFC7208.md:107 | checkbox | `l` — local-part of sender | 3 | src/spf/macros.rs:299 | - | DONE |
-| CHK-063 | 01-SPF-RFC7208.md:108 | checkbox | `o` — domain of sender | 3 | src/spf/macros.rs:299 | - | DONE |
-| CHK-064 | 01-SPF-RFC7208.md:109 | checkbox | `d` — current domain being evaluated | 3 | src/spf/macros.rs:307 | - | DONE |
-| CHK-065 | 01-SPF-RFC7208.md:110 | checkbox | `i` — client IP (dotted for v4, dot-separated nibbles for v6: 32 hex chars separated by dots) | 3 | src/spf/macros.rs:314 | - | DONE |
-| CHK-066 | 01-SPF-RFC7208.md:111 | checkbox | `p` — validated domain name of client IP (PTR). Return "unknown" if PTR validation not performed. | 3 | src/spf/macros.rs:351 | - | DONE |
-| CHK-067 | 01-SPF-RFC7208.md:112 | checkbox | `v` — IP version string ("in-addr" for v4, "ip6" for v6) | 3 | src/spf/macros.rs:331 | - | DONE |
-| CHK-068 | 01-SPF-RFC7208.md:113 | checkbox | `h` — HELO/EHLO domain | 3 | src/spf/macros.rs:344 | - | DONE |
-| CHK-069 | 01-SPF-RFC7208.md:114 | checkbox | Explanation-only macro letters (ONLY valid in `exp=` TXT expansion): | 3 | src/spf/macros.rs:125 | - | DONE |
-| CHK-070 | 01-SPF-RFC7208.md:115 | checkbox | `c` — SMTP client IP in human-readable format (plain dotted-decimal/colon-hex) | 3 | src/spf/macros.rs:412 | - | DONE |
-| CHK-071 | 01-SPF-RFC7208.md:116 | checkbox | `r` — receiving MTA domain name | 3 | src/spf/macros.rs:419 | - | DONE |
-| CHK-072 | 01-SPF-RFC7208.md:117 | checkbox | `t` — current Unix timestamp as decimal string | 3 | src/spf/macros.rs:426 | - | DONE |
-| CHK-073 | 01-SPF-RFC7208.md:118 | checkbox | MUST reject `c`, `r`, `t` when expanding in non-exp context | 3 | src/spf/macros.rs:436 | - | DONE |
-| CHK-074 | 01-SPF-RFC7208.md:119 | checkbox | Uppercase macro letter → URL-encode the expanded value | 3 | src/spf/macros.rs:403 | - | DONE |
-| CHK-075 | 01-SPF-RFC7208.md:120 | checkbox | Delimiter transformers: `{<letter><digits>r<delimiters>}` | 3 | src/spf/macros.rs:164 | - | DONE |
-| CHK-076 | 01-SPF-RFC7208.md:121 | checkbox | Digits: take rightmost N parts (0 means all) | 3 | src/spf/macros.rs:211 | - | DONE |
-| CHK-077 | 01-SPF-RFC7208.md:122 | checkbox | `r`: reverse order of parts | 3 | src/spf/macros.rs:211 | - | DONE |
-| CHK-078 | 01-SPF-RFC7208.md:123 | checkbox | Delimiters: split characters (default ".") | 3 | src/spf/macros.rs:164 | - | DONE |
-| CHK-079 | 01-SPF-RFC7208.md:124 | checkbox | Escapes: `%%` (literal %), `%_` (space), `%-` (URL-encoded space `%20`) | 3 | src/spf/macros.rs:445 | - | DONE |
-| CHK-080 | 01-SPF-RFC7208.md:147 | checkbox | Empty MAIL FROM: use `postmaster@<helo_domain>` as sender | 4 | - | - | PENDING |
-| CHK-081 | 01-SPF-RFC7208.md:148 | checkbox | MAIL FROM without `@`: use `postmaster@<helo_domain>` as sender | 4 | - | - | PENDING |
-| CHK-082 | 01-SPF-RFC7208.md:152 | checkbox | Track DNS lookup count across entire evaluation (including recursive include/redirect) | 4 | - | - | PENDING |
-| CHK-083 | 01-SPF-RFC7208.md:153 | checkbox | Limit: max 10 DNS-querying mechanism lookups (A, MX, PTR, include, redirect, exists) | 4 | - | - | PENDING |
-| CHK-084 | 01-SPF-RFC7208.md:154 | checkbox | `ip4`, `ip6`, `all` do NOT count toward limit | 4 | - | - | PENDING |
-| CHK-085 | 01-SPF-RFC7208.md:155 | checkbox | Exceeding limit → `PermError` | 4 | - | - | PENDING |
-| CHK-086 | 01-SPF-RFC7208.md:156 | checkbox | Track void lookups (NxDomain or empty response on DNS-querying mechanisms): max 2 void lookups → `PermError` | 4 | - | - | PENDING |
-| CHK-087 | 01-SPF-RFC7208.md:157 | checkbox | Use shared mutable `EvalContext` struct across recursive calls: | 4 | - | - | PENDING |
-| CHK-088 | 01-SPF-RFC7208.md:168 | checkbox | Track visited domains in `EvalContext.visited_domains` (normalized: lowercase, no trailing dot) | 4 | - | - | PENDING |
-| CHK-089 | 01-SPF-RFC7208.md:169 | checkbox | Before each recursive `check_host` call (include or redirect): check if domain already visited | 4 | - | - | PENDING |
-| CHK-090 | 01-SPF-RFC7208.md:170 | checkbox | If visited: return `PermError` immediately | 4 | - | - | PENDING |
-| CHK-091 | 01-SPF-RFC7208.md:171 | checkbox | The DNS lookup limit (10) provides a secondary safety net but is NOT sufficient alone — a 2-domain cycle with 1-mechanism SPF records would execute up to 10 iterations before stopping | 4 | - | - | PENDING |
-| CHK-092 | 01-SPF-RFC7208.md:175 | checkbox | Evaluate directives left-to-right | 4 | - | - | PENDING |
-| CHK-093 | 01-SPF-RFC7208.md:176 | checkbox | First match determines result (qualifier → result mapping) | 4 | - | - | PENDING |
-| CHK-094 | 01-SPF-RFC7208.md:177 | checkbox | If no match and no `redirect`: return `Neutral` | 4 | - | - | PENDING |
-| CHK-095 | 01-SPF-RFC7208.md:178 | checkbox | If `redirect` modifier present: evaluate target domain instead | 4 | - | - | PENDING |
-| CHK-096 | 01-SPF-RFC7208.md:183 | checkbox | Always matches | 4 | - | - | PENDING |
-| CHK-097 | 01-SPF-RFC7208.md:184 | checkbox | Typically last directive (e.g., `-all`, `~all`) | 4 | - | - | PENDING |
-| CHK-098 | 01-SPF-RFC7208.md:187 | checkbox | Increment DNS lookup counter | 4 | - | - | PENDING |
-| CHK-099 | 01-SPF-RFC7208.md:188 | checkbox | Check visited domains → `PermError` if cycle detected | 4 | - | - | PENDING |
-| CHK-100 | 01-SPF-RFC7208.md:189 | checkbox | Expand macros in domain | 4 | - | - | PENDING |
-| CHK-101 | 01-SPF-RFC7208.md:190 | checkbox | Recursively call `check_host()` with new domain | 4 | - | - | PENDING |
-| CHK-102 | 01-SPF-RFC7208.md:191 | checkbox | Map child results: | 4 | - | - | PENDING |
-| CHK-103 | 01-SPF-RFC7208.md:192 | checkbox | `Pass` → match (use parent qualifier) | 4 | - | - | PENDING |
-| CHK-104 | 01-SPF-RFC7208.md:193 | checkbox | `Fail`, `SoftFail`, `Neutral`, `None` → no match (continue) | 4 | - | - | PENDING |
-| CHK-105 | 01-SPF-RFC7208.md:194 | checkbox | `TempError` → propagate `TempError` | 4 | - | - | PENDING |
-| CHK-106 | 01-SPF-RFC7208.md:195 | checkbox | `PermError` → propagate `PermError` | 4 | - | - | PENDING |
-| CHK-107 | 01-SPF-RFC7208.md:198 | checkbox | Increment DNS lookup counter | 4 | - | - | PENDING |
-| CHK-108 | 01-SPF-RFC7208.md:199 | checkbox | Expand macros in domain (default: current domain) | 4 | - | - | PENDING |
-| CHK-109 | 01-SPF-RFC7208.md:200 | checkbox | Query A records (if client is IPv4) or AAAA (if IPv6) — query only the address family that matches client IP | 4 | - | - | PENDING |
-| CHK-110 | 01-SPF-RFC7208.md:201 | checkbox | Apply CIDR mask (default /32 for v4, /128 for v6) | 4 | - | - | PENDING |
-| CHK-111 | 01-SPF-RFC7208.md:202 | checkbox | Match if client IP within any returned network | 4 | - | - | PENDING |
-| CHK-112 | 01-SPF-RFC7208.md:203 | checkbox | NxDomain → void lookup, no match | 4 | - | - | PENDING |
-| CHK-113 | 01-SPF-RFC7208.md:204 | checkbox | TempFail → `TempError` | 4 | - | - | PENDING |
-| CHK-114 | 01-SPF-RFC7208.md:207 | checkbox | Increment DNS lookup counter | 4 | - | - | PENDING |
-| CHK-115 | 01-SPF-RFC7208.md:208 | checkbox | Expand macros in domain | 4 | - | - | PENDING |
-| CHK-116 | 01-SPF-RFC7208.md:209 | checkbox | Query MX records, sort by preference | 4 | - | - | PENDING |
-| CHK-117 | 01-SPF-RFC7208.md:210 | checkbox | Limit to first 10 MX records | 4 | - | - | PENDING |
-| CHK-118 | 01-SPF-RFC7208.md:211 | checkbox | For each MX host: query A/AAAA, apply CIDR mask | 4 | - | - | PENDING |
-| CHK-119 | 01-SPF-RFC7208.md:212 | checkbox | Match if client IP within any resolved address | 4 | - | - | PENDING |
-| CHK-120 | 01-SPF-RFC7208.md:213 | checkbox | DNS errors on individual MX hosts: skip that host (not fatal) | 4 | - | - | PENDING |
-| CHK-121 | 01-SPF-RFC7208.md:216 | checkbox | Increment DNS lookup counter | 4 | - | - | PENDING |
-| CHK-122 | 01-SPF-RFC7208.md:217 | checkbox | Reverse lookup client IP → hostnames | 4 | - | - | PENDING |
-| CHK-123 | 01-SPF-RFC7208.md:218 | checkbox | Limit to 10 PTR names | 4 | - | - | PENDING |
-| CHK-124 | 01-SPF-RFC7208.md:219 | checkbox | For each hostname: forward lookup → IPs | 4 | - | - | PENDING |
-| CHK-125 | 01-SPF-RFC7208.md:220 | checkbox | Confirm client IP in forward results (validated hostname) | 4 | - | - | PENDING |
-| CHK-126 | 01-SPF-RFC7208.md:221 | checkbox | Match if any validated hostname equals or is subdomain of target domain | 4 | - | - | PENDING |
-| CHK-127 | 01-SPF-RFC7208.md:222 | checkbox | Expensive: avoid in production records, but MUST evaluate correctly | 4 | - | - | PENDING |
-| CHK-128 | 01-SPF-RFC7208.md:225 | checkbox | Parse IPv4 address and optional prefix length (default /32) | 4 | - | - | PENDING |
-| CHK-129 | 01-SPF-RFC7208.md:226 | checkbox | Match if client is IPv4 AND within CIDR range | 4 | - | - | PENDING |
-| CHK-130 | 01-SPF-RFC7208.md:227 | checkbox | IPv6 client: never matches ip4 | 4 | - | - | PENDING |
-| CHK-131 | 01-SPF-RFC7208.md:228 | checkbox | No DNS lookup, no counter increment | 4 | - | - | PENDING |
-| CHK-132 | 01-SPF-RFC7208.md:231 | checkbox | Parse IPv6 address and optional prefix length (default /128) | 4 | - | - | PENDING |
-| CHK-133 | 01-SPF-RFC7208.md:232 | checkbox | Match if client is IPv6 AND within CIDR range | 4 | - | - | PENDING |
-| CHK-134 | 01-SPF-RFC7208.md:233 | checkbox | IPv4 client: never matches ip6 | 4 | - | - | PENDING |
-| CHK-135 | 01-SPF-RFC7208.md:234 | checkbox | No DNS lookup, no counter increment | 4 | - | - | PENDING |
-| CHK-136 | 01-SPF-RFC7208.md:237 | checkbox | Increment DNS lookup counter | 4 | - | - | PENDING |
-| CHK-137 | 01-SPF-RFC7208.md:238 | checkbox | Expand macros in domain | 4 | - | - | PENDING |
-| CHK-138 | 01-SPF-RFC7208.md:239 | checkbox | Query A record: any result = match, NxDomain = no match | 4 | - | - | PENDING |
-| CHK-139 | 01-SPF-RFC7208.md:240 | checkbox | TempFail → `TempError` | 4 | - | - | PENDING |
-| CHK-140 | 01-SPF-RFC7208.md:245 | checkbox | Only processed if no directive matched | 4 | - | - | PENDING |
-| CHK-141 | 01-SPF-RFC7208.md:246 | checkbox | Increment DNS lookup counter | 4 | - | - | PENDING |
-| CHK-142 | 01-SPF-RFC7208.md:247 | checkbox | Check visited domains → `PermError` if cycle | 4 | - | - | PENDING |
-| CHK-143 | 01-SPF-RFC7208.md:248 | checkbox | Expand macros in domain | 4 | - | - | PENDING |
-| CHK-144 | 01-SPF-RFC7208.md:249 | checkbox | Empty expanded domain → `PermError` | 4 | - | - | PENDING |
-| CHK-145 | 01-SPF-RFC7208.md:250 | checkbox | Recursively `check_host()` on target | 4 | - | - | PENDING |
-| CHK-146 | 01-SPF-RFC7208.md:251 | checkbox | Target returns `None` → `PermError` (redirect to domain without SPF) | 4 | - | - | PENDING |
-| CHK-147 | 01-SPF-RFC7208.md:252 | checkbox | All other results passed through unchanged | 4 | - | - | PENDING |
-| CHK-148 | 01-SPF-RFC7208.md:255 | checkbox | Only evaluated when final result is `Fail` | 4 | - | - | PENDING |
-| CHK-149 | 01-SPF-RFC7208.md:256 | checkbox | Expand macros in exp domain | 4 | - | - | PENDING |
-| CHK-150 | 01-SPF-RFC7208.md:257 | checkbox | Query TXT record at expanded domain | 4 | - | - | PENDING |
-| CHK-151 | 01-SPF-RFC7208.md:258 | checkbox | Expand macros in TXT result (including explanation-only macros: `c`, `r`, `t`) | 4 | - | - | PENDING |
-| CHK-152 | 01-SPF-RFC7208.md:259 | checkbox | Attach expanded explanation to `Fail { explanation: Some(text) }` | 4 | - | - | PENDING |
-| CHK-153 | 01-SPF-RFC7208.md:260 | checkbox | Failure to retrieve/expand explanation: silently ignore, return Fail without explanation | 4 | - | - | PENDING |
-| CHK-154 | 01-SPF-RFC7208.md:282 | checkbox | `check_host_inner` must use `Box::pin` for async recursion (include/redirect chains) | 4 | - | - | PENDING |
-| CHK-155 | 01-SPF-RFC7208.md:283 | checkbox | Signature: returns `Pin<Box<dyn Future<Output = SpfResult> + Send + 'a>>` | 4 | - | - | PENDING |
-| CHK-156 | 01-SPF-RFC7208.md:284 | checkbox | `EvalContext` is `&mut` — passed through the recursive chain | 4 | - | - | PENDING |
+| CHK-059 | 01-SPF-RFC7208.md:104 | checkbox | Implement macro expander for domain-spec strings | 3 | src/spf/macros.rs:26 | b7bcd10 | DONE |
+| CHK-060 | 01-SPF-RFC7208.md:105 | checkbox | Macro letters (case determines URL encoding): | 3 | src/spf/macros.rs:107 | b7bcd10 | DONE |
+| CHK-061 | 01-SPF-RFC7208.md:106 | checkbox | `s` — sender (local-part@domain or postmaster@domain) | 3 | src/spf/macros.rs:292 | b7bcd10 | DONE |
+| CHK-062 | 01-SPF-RFC7208.md:107 | checkbox | `l` — local-part of sender | 3 | src/spf/macros.rs:299 | b7bcd10 | DONE |
+| CHK-063 | 01-SPF-RFC7208.md:108 | checkbox | `o` — domain of sender | 3 | src/spf/macros.rs:299 | b7bcd10 | DONE |
+| CHK-064 | 01-SPF-RFC7208.md:109 | checkbox | `d` — current domain being evaluated | 3 | src/spf/macros.rs:307 | b7bcd10 | DONE |
+| CHK-065 | 01-SPF-RFC7208.md:110 | checkbox | `i` — client IP (dotted for v4, dot-separated nibbles for v6: 32 hex chars separated by dots) | 3 | src/spf/macros.rs:314 | b7bcd10 | DONE |
+| CHK-066 | 01-SPF-RFC7208.md:111 | checkbox | `p` — validated domain name of client IP (PTR). Return "unknown" if PTR validation not performed. | 3 | src/spf/macros.rs:351 | b7bcd10 | DONE |
+| CHK-067 | 01-SPF-RFC7208.md:112 | checkbox | `v` — IP version string ("in-addr" for v4, "ip6" for v6) | 3 | src/spf/macros.rs:331 | b7bcd10 | DONE |
+| CHK-068 | 01-SPF-RFC7208.md:113 | checkbox | `h` — HELO/EHLO domain | 3 | src/spf/macros.rs:344 | b7bcd10 | DONE |
+| CHK-069 | 01-SPF-RFC7208.md:114 | checkbox | Explanation-only macro letters (ONLY valid in `exp=` TXT expansion): | 3 | src/spf/macros.rs:125 | b7bcd10 | DONE |
+| CHK-070 | 01-SPF-RFC7208.md:115 | checkbox | `c` — SMTP client IP in human-readable format (plain dotted-decimal/colon-hex) | 3 | src/spf/macros.rs:412 | b7bcd10 | DONE |
+| CHK-071 | 01-SPF-RFC7208.md:116 | checkbox | `r` — receiving MTA domain name | 3 | src/spf/macros.rs:419 | b7bcd10 | DONE |
+| CHK-072 | 01-SPF-RFC7208.md:117 | checkbox | `t` — current Unix timestamp as decimal string | 3 | src/spf/macros.rs:426 | b7bcd10 | DONE |
+| CHK-073 | 01-SPF-RFC7208.md:118 | checkbox | MUST reject `c`, `r`, `t` when expanding in non-exp context | 3 | src/spf/macros.rs:436 | b7bcd10 | DONE |
+| CHK-074 | 01-SPF-RFC7208.md:119 | checkbox | Uppercase macro letter → URL-encode the expanded value | 3 | src/spf/macros.rs:403 | b7bcd10 | DONE |
+| CHK-075 | 01-SPF-RFC7208.md:120 | checkbox | Delimiter transformers: `{<letter><digits>r<delimiters>}` | 3 | src/spf/macros.rs:164 | b7bcd10 | DONE |
+| CHK-076 | 01-SPF-RFC7208.md:121 | checkbox | Digits: take rightmost N parts (0 means all) | 3 | src/spf/macros.rs:211 | b7bcd10 | DONE |
+| CHK-077 | 01-SPF-RFC7208.md:122 | checkbox | `r`: reverse order of parts | 3 | src/spf/macros.rs:211 | b7bcd10 | DONE |
+| CHK-078 | 01-SPF-RFC7208.md:123 | checkbox | Delimiters: split characters (default ".") | 3 | src/spf/macros.rs:164 | b7bcd10 | DONE |
+| CHK-079 | 01-SPF-RFC7208.md:124 | checkbox | Escapes: `%%` (literal %), `%_` (space), `%-` (URL-encoded space `%20`) | 3 | src/spf/macros.rs:445 | b7bcd10 | DONE |
+| CHK-080 | 01-SPF-RFC7208.md:147 | checkbox | Empty MAIL FROM: use `postmaster@<helo_domain>` as sender | 4 | src/spf/eval.rs:73 | 99d7d91 | DONE |
+| CHK-081 | 01-SPF-RFC7208.md:148 | checkbox | MAIL FROM without `@`: use `postmaster@<helo_domain>` as sender | 4 | src/spf/eval.rs:73 | 99d7d91 | DONE |
+| CHK-082 | 01-SPF-RFC7208.md:152 | checkbox | Track DNS lookup count across entire evaluation (including recursive include/redirect) | 4 | src/spf/eval.rs:31 | 99d7d91 | DONE |
+| CHK-083 | 01-SPF-RFC7208.md:153 | checkbox | Limit: max 10 DNS-querying mechanism lookups (A, MX, PTR, include, redirect, exists) | 4 | src/spf/eval.rs:31 | 99d7d91 | DONE |
+| CHK-084 | 01-SPF-RFC7208.md:154 | checkbox | `ip4`, `ip6`, `all` do NOT count toward limit | 4 | src/spf/eval.rs:172 | 99d7d91 | DONE |
+| CHK-085 | 01-SPF-RFC7208.md:155 | checkbox | Exceeding limit → `PermError` | 4 | src/spf/eval.rs:35 | 99d7d91 | DONE |
+| CHK-086 | 01-SPF-RFC7208.md:156 | checkbox | Track void lookups (NxDomain or empty response on DNS-querying mechanisms): max 2 void lookups → `PermError` | 4 | src/spf/eval.rs:41 | 99d7d91 | DONE |
+| CHK-087 | 01-SPF-RFC7208.md:157 | checkbox | Use shared mutable `EvalContext` struct across recursive calls: | 4 | src/spf/eval.rs:15 | 99d7d91 | DONE |
+| CHK-088 | 01-SPF-RFC7208.md:168 | checkbox | Track visited domains in `EvalContext.visited_domains` (normalized: lowercase, no trailing dot) | 4 | src/spf/eval.rs:18 | 99d7d91 | DONE |
+| CHK-089 | 01-SPF-RFC7208.md:169 | checkbox | Before each recursive `check_host` call (include or redirect): check if domain already visited | 4 | src/spf/eval.rs:51 | 99d7d91 | DONE |
+| CHK-090 | 01-SPF-RFC7208.md:170 | checkbox | If visited: return `PermError` immediately | 4 | src/spf/eval.rs:54 | 99d7d91 | DONE |
+| CHK-091 | 01-SPF-RFC7208.md:171 | checkbox | The DNS lookup limit (10) provides a secondary safety net but is NOT sufficient alone — a 2-domain cycle with 1-mechanism SPF records would execute up to 10 iterations before stopping | 4 | src/spf/eval.rs:31 | 99d7d91 | DONE |
+| CHK-092 | 01-SPF-RFC7208.md:175 | checkbox | Evaluate directives left-to-right | 4 | src/spf/eval.rs:119 | 99d7d91 | DONE |
+| CHK-093 | 01-SPF-RFC7208.md:176 | checkbox | First match determines result (qualifier → result mapping) | 4 | src/spf/eval.rs:120 | 99d7d91 | DONE |
+| CHK-094 | 01-SPF-RFC7208.md:177 | checkbox | If no match and no `redirect`: return `Neutral` | 4 | src/spf/eval.rs:145 | 99d7d91 | DONE |
+| CHK-095 | 01-SPF-RFC7208.md:178 | checkbox | If `redirect` modifier present: evaluate target domain instead | 4 | src/spf/eval.rs:142 | 99d7d91 | DONE |
+| CHK-096 | 01-SPF-RFC7208.md:183 | checkbox | Always matches | 4 | src/spf/eval.rs:165 | 99d7d91 | DONE |
+| CHK-097 | 01-SPF-RFC7208.md:184 | checkbox | Typically last directive (e.g., `-all`, `~all`) | 4 | src/spf/eval.rs:165 | 99d7d91 | DONE |
+| CHK-098 | 01-SPF-RFC7208.md:187 | checkbox | Increment DNS lookup counter | 4 | src/spf/eval.rs:202 | 99d7d91 | DONE |
+| CHK-099 | 01-SPF-RFC7208.md:188 | checkbox | Check visited domains → `PermError` if cycle detected | 4 | src/spf/eval.rs:207 | 99d7d91 | DONE |
+| CHK-100 | 01-SPF-RFC7208.md:189 | checkbox | Expand macros in domain | 4 | src/spf/eval.rs:204 | 99d7d91 | DONE |
+| CHK-101 | 01-SPF-RFC7208.md:190 | checkbox | Recursively call `check_host()` with new domain | 4 | src/spf/eval.rs:209 | 99d7d91 | DONE |
+| CHK-102 | 01-SPF-RFC7208.md:191 | checkbox | Map child results: | 4 | src/spf/eval.rs:211 | 99d7d91 | DONE |
+| CHK-103 | 01-SPF-RFC7208.md:192 | checkbox | `Pass` → match (use parent qualifier) | 4 | src/spf/eval.rs:212 | 99d7d91 | DONE |
+| CHK-104 | 01-SPF-RFC7208.md:193 | checkbox | `Fail`, `SoftFail`, `Neutral`, `None` → no match (continue) | 4 | src/spf/eval.rs:213 | 99d7d91 | DONE |
+| CHK-105 | 01-SPF-RFC7208.md:194 | checkbox | `TempError` → propagate `TempError` | 4 | src/spf/eval.rs:216 | 99d7d91 | DONE |
+| CHK-106 | 01-SPF-RFC7208.md:195 | checkbox | `PermError` → propagate `PermError` | 4 | src/spf/eval.rs:217 | 99d7d91 | DONE |
+| CHK-107 | 01-SPF-RFC7208.md:198 | checkbox | Increment DNS lookup counter | 4 | src/spf/eval.rs:229 | 99d7d91 | DONE |
+| CHK-108 | 01-SPF-RFC7208.md:199 | checkbox | Expand macros in domain (default: current domain) | 4 | src/spf/eval.rs:231 | 99d7d91 | DONE |
+| CHK-109 | 01-SPF-RFC7208.md:200 | checkbox | Query A records (if client is IPv4) or AAAA (if IPv6) — query only the address family that matches client IP | 4 | src/spf/eval.rs:236 | 99d7d91 | DONE |
+| CHK-110 | 01-SPF-RFC7208.md:201 | checkbox | Apply CIDR mask (default /32 for v4, /128 for v6) | 4 | src/spf/eval.rs:237 | 99d7d91 | DONE |
+| CHK-111 | 01-SPF-RFC7208.md:202 | checkbox | Match if client IP within any returned network | 4 | src/spf/eval.rs:238 | 99d7d91 | DONE |
+| CHK-112 | 01-SPF-RFC7208.md:203 | checkbox | NxDomain → void lookup, no match | 4 | src/spf/eval.rs:242 | 99d7d91 | DONE |
+| CHK-113 | 01-SPF-RFC7208.md:204 | checkbox | TempFail → `TempError` | 4 | src/spf/eval.rs:246 | 99d7d91 | DONE |
+| CHK-114 | 01-SPF-RFC7208.md:207 | checkbox | Increment DNS lookup counter | 4 | src/spf/eval.rs:276 | 99d7d91 | DONE |
+| CHK-115 | 01-SPF-RFC7208.md:208 | checkbox | Expand macros in domain | 4 | src/spf/eval.rs:278 | 99d7d91 | DONE |
+| CHK-116 | 01-SPF-RFC7208.md:209 | checkbox | Query MX records, sort by preference | 4 | src/spf/eval.rs:291 | 99d7d91 | DONE |
+| CHK-117 | 01-SPF-RFC7208.md:210 | checkbox | Limit to first 10 MX records | 4 | src/spf/eval.rs:292 | 99d7d91 | DONE |
+| CHK-118 | 01-SPF-RFC7208.md:211 | checkbox | For each MX host: query A/AAAA, apply CIDR mask | 4 | src/spf/eval.rs:295 | 99d7d91 | DONE |
+| CHK-119 | 01-SPF-RFC7208.md:212 | checkbox | Match if client IP within any resolved address | 4 | src/spf/eval.rs:298 | 99d7d91 | DONE |
+| CHK-120 | 01-SPF-RFC7208.md:213 | checkbox | DNS errors on individual MX hosts: skip that host (not fatal) | 4 | src/spf/eval.rs:295 | 99d7d91 | DONE |
+| CHK-121 | 01-SPF-RFC7208.md:216 | checkbox | Increment DNS lookup counter | 4 | src/spf/eval.rs:332 | 99d7d91 | DONE |
+| CHK-122 | 01-SPF-RFC7208.md:217 | checkbox | Reverse lookup client IP → hostnames | 4 | src/spf/eval.rs:340 | 99d7d91 | DONE |
+| CHK-123 | 01-SPF-RFC7208.md:218 | checkbox | Limit to 10 PTR names | 4 | src/spf/eval.rs:349 | 99d7d91 | DONE |
+| CHK-124 | 01-SPF-RFC7208.md:219 | checkbox | For each hostname: forward lookup → IPs | 4 | src/spf/eval.rs:353 | 99d7d91 | DONE |
+| CHK-125 | 01-SPF-RFC7208.md:220 | checkbox | Confirm client IP in forward results (validated hostname) | 4 | src/spf/eval.rs:353 | 99d7d91 | DONE |
+| CHK-126 | 01-SPF-RFC7208.md:221 | checkbox | Match if any validated hostname equals or is subdomain of target domain | 4 | src/spf/eval.rs:367 | 99d7d91 | DONE |
+| CHK-127 | 01-SPF-RFC7208.md:222 | checkbox | Expensive: avoid in production records, but MUST evaluate correctly | 4 | src/spf/eval.rs:324 | 99d7d91 | DONE |
+| CHK-128 | 01-SPF-RFC7208.md:225 | checkbox | Parse IPv4 address and optional prefix length (default /32) | 4 | src/spf/eval.rs:173 | 99d7d91 | DONE |
+| CHK-129 | 01-SPF-RFC7208.md:226 | checkbox | Match if client is IPv4 AND within CIDR range | 4 | src/spf/eval.rs:175 | 99d7d91 | DONE |
+| CHK-130 | 01-SPF-RFC7208.md:227 | checkbox | IPv6 client: never matches ip4 | 4 | src/spf/eval.rs:176 | 99d7d91 | DONE |
+| CHK-131 | 01-SPF-RFC7208.md:228 | checkbox | No DNS lookup, no counter increment | 4 | src/spf/eval.rs:172 | 99d7d91 | DONE |
+| CHK-132 | 01-SPF-RFC7208.md:231 | checkbox | Parse IPv6 address and optional prefix length (default /128) | 4 | src/spf/eval.rs:180 | 99d7d91 | DONE |
+| CHK-133 | 01-SPF-RFC7208.md:232 | checkbox | Match if client is IPv6 AND within CIDR range | 4 | src/spf/eval.rs:182 | 99d7d91 | DONE |
+| CHK-134 | 01-SPF-RFC7208.md:233 | checkbox | IPv4 client: never matches ip6 | 4 | src/spf/eval.rs:183 | 99d7d91 | DONE |
+| CHK-135 | 01-SPF-RFC7208.md:234 | checkbox | No DNS lookup, no counter increment | 4 | src/spf/eval.rs:179 | 99d7d91 | DONE |
+| CHK-136 | 01-SPF-RFC7208.md:237 | checkbox | Increment DNS lookup counter | 4 | src/spf/eval.rs:388 | 99d7d91 | DONE |
+| CHK-137 | 01-SPF-RFC7208.md:238 | checkbox | Expand macros in domain | 4 | src/spf/eval.rs:390 | 99d7d91 | DONE |
+| CHK-138 | 01-SPF-RFC7208.md:239 | checkbox | Query A record: any result = match, NxDomain = no match | 4 | src/spf/eval.rs:393 | 99d7d91 | DONE |
+| CHK-139 | 01-SPF-RFC7208.md:240 | checkbox | TempFail → `TempError` | 4 | src/spf/eval.rs:395 | 99d7d91 | DONE |
+| CHK-140 | 01-SPF-RFC7208.md:245 | checkbox | Only processed if no directive matched | 4 | src/spf/eval.rs:142 | 99d7d91 | DONE |
+| CHK-141 | 01-SPF-RFC7208.md:246 | checkbox | Increment DNS lookup counter | 4 | src/spf/eval.rs:407 | 99d7d91 | DONE |
+| CHK-142 | 01-SPF-RFC7208.md:247 | checkbox | Check visited domains → `PermError` if cycle | 4 | src/spf/eval.rs:417 | 99d7d91 | DONE |
+| CHK-143 | 01-SPF-RFC7208.md:248 | checkbox | Expand macros in domain | 4 | src/spf/eval.rs:409 | 99d7d91 | DONE |
+| CHK-144 | 01-SPF-RFC7208.md:249 | checkbox | Empty expanded domain → `PermError` | 4 | src/spf/eval.rs:415 | 99d7d91 | DONE |
+| CHK-145 | 01-SPF-RFC7208.md:250 | checkbox | Recursively `check_host()` on target | 4 | src/spf/eval.rs:419 | 99d7d91 | DONE |
+| CHK-146 | 01-SPF-RFC7208.md:251 | checkbox | Target returns `None` → `PermError` (redirect to domain without SPF) | 4 | src/spf/eval.rs:424 | 99d7d91 | DONE |
+| CHK-147 | 01-SPF-RFC7208.md:252 | checkbox | All other results passed through unchanged | 4 | src/spf/eval.rs:425 | 99d7d91 | DONE |
+| CHK-148 | 01-SPF-RFC7208.md:255 | checkbox | Only evaluated when final result is `Fail` | 4 | src/spf/eval.rs:126 | 99d7d91 | DONE |
+| CHK-149 | 01-SPF-RFC7208.md:256 | checkbox | Expand macros in exp domain | 4 | src/spf/eval.rs:435 | 99d7d91 | DONE |
+| CHK-150 | 01-SPF-RFC7208.md:257 | checkbox | Query TXT record at expanded domain | 4 | src/spf/eval.rs:436 | 99d7d91 | DONE |
+| CHK-151 | 01-SPF-RFC7208.md:258 | checkbox | Expand macros in TXT result (including explanation-only macros: `c`, `r`, `t`) | 4 | src/spf/eval.rs:437 | 99d7d91 | DONE |
+| CHK-152 | 01-SPF-RFC7208.md:259 | checkbox | Attach expanded explanation to `Fail { explanation: Some(text) }` | 4 | src/spf/eval.rs:131 | 99d7d91 | DONE |
+| CHK-153 | 01-SPF-RFC7208.md:260 | checkbox | Failure to retrieve/expand explanation: silently ignore, return Fail without explanation | 4 | src/spf/eval.rs:433 | 99d7d91 | DONE |
+| CHK-154 | 01-SPF-RFC7208.md:282 | checkbox | `check_host_inner` must use `Box::pin` for async recursion (include/redirect chains) | 4 | src/spf/eval.rs:108 | 99d7d91 | DONE |
+| CHK-155 | 01-SPF-RFC7208.md:283 | checkbox | Signature: returns `Pin<Box<dyn Future<Output = SpfResult> + Send + 'a>>` | 4 | src/spf/eval.rs:107 | 99d7d91 | DONE |
+| CHK-156 | 01-SPF-RFC7208.md:284 | checkbox | `EvalContext` is `&mut` — passed through the recursive chain | 4 | src/spf/eval.rs:106 | 99d7d91 | DONE |
 | CHK-157 | 01-SPF-RFC7208.md:290 | checkbox | Abstract DNS resolver trait for testability (defined in M1 common module) | 1 | src/common/dns.rs:189 | 992b713 | DONE |
 | CHK-158 | 01-SPF-RFC7208.md:291 | checkbox | Support async DNS queries | 1 | src/common/dns.rs:189 | 992b713 | DONE |
 | CHK-159 | 01-SPF-RFC7208.md:292 | checkbox | Methods needed: | 1 | src/common/dns.rs:189 | 992b713 | DONE |
@@ -170,19 +170,19 @@
 | CHK-165 | 01-SPF-RFC7208.md:298 | checkbox | `query_exists(domain) -> Result<bool, DnsError>` (A-record existence check) | 1 | src/common/dns.rs:233 | 992b713 | DONE |
 | CHK-166 | 01-SPF-RFC7208.md:299 | checkbox | DnsError MUST distinguish: NxDomain vs NoRecords vs TempFail | 1 | src/common/dns.rs:243 | 992b713 | DONE |
 | CHK-167 | 01-SPF-RFC7208.md:300 | checkbox | DNS caching: CALLER responsibility (resolver layer), not library scope. Document this. | 1 | src/common/dns.rs:39 | 992b713 | DONE |
-| CHK-168 | 01-SPF-RFC7208.md:306 | checkbox | `PermError` conditions: | 4 | - | - | PENDING |
-| CHK-169 | 01-SPF-RFC7208.md:307 | checkbox | Multiple SPF records for same domain | 4 | - | - | PENDING |
-| CHK-170 | 01-SPF-RFC7208.md:308 | checkbox | Syntax errors in record | 4 | - | - | PENDING |
-| CHK-171 | 01-SPF-RFC7208.md:309 | checkbox | Unknown mechanism (NOT unknown modifier) | 4 | - | - | PENDING |
-| CHK-172 | 01-SPF-RFC7208.md:310 | checkbox | DNS lookup limit exceeded (>10) | 4 | - | - | PENDING |
-| CHK-173 | 01-SPF-RFC7208.md:311 | checkbox | Void lookup limit exceeded (>2) | 4 | - | - | PENDING |
-| CHK-174 | 01-SPF-RFC7208.md:312 | checkbox | `redirect` to domain with no SPF | 4 | - | - | PENDING |
-| CHK-175 | 01-SPF-RFC7208.md:313 | checkbox | Circular `include`/`redirect` (detected via visited set) | 4 | - | - | PENDING |
-| CHK-176 | 01-SPF-RFC7208.md:314 | checkbox | Empty expanded domain in redirect | 4 | - | - | PENDING |
-| CHK-177 | 01-SPF-RFC7208.md:315 | checkbox | Duplicate redirect or exp modifier | 4 | - | - | PENDING |
-| CHK-178 | 01-SPF-RFC7208.md:316 | checkbox | `TempError` conditions: | 4 | - | - | PENDING |
-| CHK-179 | 01-SPF-RFC7208.md:317 | checkbox | DNS timeout or SERVFAIL | 4 | - | - | PENDING |
-| CHK-180 | 01-SPF-RFC7208.md:318 | checkbox | Transient network errors | 4 | - | - | PENDING |
+| CHK-168 | 01-SPF-RFC7208.md:306 | checkbox | `PermError` conditions: | 4 | src/spf/eval.rs:35 | 99d7d91 | DONE |
+| CHK-169 | 01-SPF-RFC7208.md:307 | checkbox | Multiple SPF records for same domain | 4 | src/spf/lookup.rs:30 | 99d7d91 | DONE |
+| CHK-170 | 01-SPF-RFC7208.md:308 | checkbox | Syntax errors in record | 4 | src/spf/lookup.rs:31 | 99d7d91 | DONE |
+| CHK-171 | 01-SPF-RFC7208.md:309 | checkbox | Unknown mechanism (NOT unknown modifier) | 4 | src/spf/parser.rs:139 | 99d7d91 | DONE |
+| CHK-172 | 01-SPF-RFC7208.md:310 | checkbox | DNS lookup limit exceeded (>10) | 4 | src/spf/eval.rs:35 | 99d7d91 | DONE |
+| CHK-173 | 01-SPF-RFC7208.md:311 | checkbox | Void lookup limit exceeded (>2) | 4 | src/spf/eval.rs:45 | 99d7d91 | DONE |
+| CHK-174 | 01-SPF-RFC7208.md:312 | checkbox | `redirect` to domain with no SPF | 4 | src/spf/eval.rs:424 | 99d7d91 | DONE |
+| CHK-175 | 01-SPF-RFC7208.md:313 | checkbox | Circular `include`/`redirect` (detected via visited set) | 4 | src/spf/eval.rs:54 | 99d7d91 | DONE |
+| CHK-176 | 01-SPF-RFC7208.md:314 | checkbox | Empty expanded domain in redirect | 4 | src/spf/eval.rs:415 | 99d7d91 | DONE |
+| CHK-177 | 01-SPF-RFC7208.md:315 | checkbox | Duplicate redirect or exp modifier | 4 | src/spf/parser.rs:41 | 99d7d91 | DONE |
+| CHK-178 | 01-SPF-RFC7208.md:316 | checkbox | `TempError` conditions: | 4 | src/spf/eval.rs:246 | 99d7d91 | DONE |
+| CHK-179 | 01-SPF-RFC7208.md:317 | checkbox | DNS timeout or SERVFAIL | 4 | src/spf/eval.rs:246 | 99d7d91 | DONE |
+| CHK-180 | 01-SPF-RFC7208.md:318 | checkbox | Transient network errors | 4 | src/spf/eval.rs:246 | 99d7d91 | DONE |
 | CHK-181 | 01-SPF-RFC7208.md:326 | checkbox | Valid minimal: `v=spf1 -all` | 2 | src/spf/parser.rs:284 | 6b1ee0f | DONE |
 | CHK-182 | 01-SPF-RFC7208.md:327 | checkbox | Multiple mechanisms: `v=spf1 ip4:192.0.2.0/24 ip4:198.51.100.0/24 -all` | 2 | src/spf/parser.rs:295 | 6b1ee0f | DONE |
 | CHK-183 | 01-SPF-RFC7208.md:328 | checkbox | Include: `v=spf1 include:_spf.google.com -all` | 2 | src/spf/parser.rs:312 | 6b1ee0f | DONE |
@@ -197,65 +197,65 @@
 | CHK-192 | 01-SPF-RFC7208.md:337 | checkbox | Trailing whitespace | 2 | src/spf/parser.rs:442 | 6b1ee0f | DONE |
 | CHK-193 | 01-SPF-RFC7208.md:338 | checkbox | A/MX dual CIDR: `a:example.com/24//64` | 2 | src/spf/parser.rs:449 | 6b1ee0f | DONE |
 | CHK-194 | 01-SPF-RFC7208.md:339 | checkbox | Prefix edge cases: `a/0`, `a//0` | 2 | src/spf/parser.rs:489 | 6b1ee0f | DONE |
-| CHK-195 | 01-SPF-RFC7208.md:343 | checkbox | Simple pass: IP in `ip4` range | 4 | - | - | PENDING |
-| CHK-196 | 01-SPF-RFC7208.md:344 | checkbox | Simple fail: IP not in range, ends `-all` | 4 | - | - | PENDING |
-| CHK-197 | 01-SPF-RFC7208.md:345 | checkbox | Include pass: nested lookup passes | 4 | - | - | PENDING |
-| CHK-198 | 01-SPF-RFC7208.md:346 | checkbox | Include fail: nested lookup fails | 4 | - | - | PENDING |
-| CHK-199 | 01-SPF-RFC7208.md:347 | checkbox | Include propagation: child TempError → parent TempError | 4 | - | - | PENDING |
-| CHK-200 | 01-SPF-RFC7208.md:348 | checkbox | Include propagation: child PermError → parent PermError | 4 | - | - | PENDING |
-| CHK-201 | 01-SPF-RFC7208.md:349 | checkbox | Include: child None → no match (continue) | 4 | - | - | PENDING |
-| CHK-202 | 01-SPF-RFC7208.md:350 | checkbox | MX mechanism: IP matches MX host | 4 | - | - | PENDING |
-| CHK-203 | 01-SPF-RFC7208.md:351 | checkbox | A mechanism with CIDR | 4 | - | - | PENDING |
-| CHK-204 | 01-SPF-RFC7208.md:352 | checkbox | PTR mechanism validation | 4 | - | - | PENDING |
-| CHK-205 | 01-SPF-RFC7208.md:353 | checkbox | Redirect modifier | 4 | - | - | PENDING |
-| CHK-206 | 01-SPF-RFC7208.md:354 | checkbox | Redirect to domain without SPF → PermError | 4 | - | - | PENDING |
-| CHK-207 | 01-SPF-RFC7208.md:355 | checkbox | DNS lookup limit (11th lookup → PermError) | 4 | - | - | PENDING |
-| CHK-208 | 01-SPF-RFC7208.md:356 | checkbox | Void lookup limit (3rd void → PermError) | 4 | - | - | PENDING |
-| CHK-209 | 01-SPF-RFC7208.md:357 | checkbox | Circular include between 2 domains → PermError (via visited set, not just DNS limit) | 4 | - | - | PENDING |
-| CHK-210 | 01-SPF-RFC7208.md:358 | checkbox | exp= explanation attached to Fail | 4 | - | - | PENDING |
-| CHK-211 | 01-SPF-RFC7208.md:359 | checkbox | exp= failure → Fail without explanation (not crash) | 4 | - | - | PENDING |
-| CHK-212 | 01-SPF-RFC7208.md:360 | checkbox | Empty MAIL FROM → postmaster@helo | 4 | - | - | PENDING |
-| CHK-213 | 01-SPF-RFC7208.md:361 | checkbox | IPv6 client with ip6 mechanism | 4 | - | - | PENDING |
-| CHK-214 | 01-SPF-RFC7208.md:362 | checkbox | IPv4 client skips ip6 mechanism | 4 | - | - | PENDING |
-| CHK-215 | 01-SPF-RFC7208.md:363 | checkbox | exists mechanism with macro expansion | 4 | - | - | PENDING |
-| CHK-216 | 01-SPF-RFC7208.md:367 | checkbox | `%{s}` sender expansion | 3 | src/spf/macros.rs:292 | - | DONE |
-| CHK-217 | 01-SPF-RFC7208.md:368 | checkbox | `%{l}` local-part, `%{o}` domain | 3 | src/spf/macros.rs:299 | - | DONE |
-| CHK-218 | 01-SPF-RFC7208.md:369 | checkbox | `%{d}` current domain expansion | 3 | src/spf/macros.rs:307 | - | DONE |
-| CHK-219 | 01-SPF-RFC7208.md:370 | checkbox | `%{i}` IP expansion (v4 dotted, v6 dot-separated nibbles: 32 hex chars) | 3 | src/spf/macros.rs:314 | - | DONE |
-| CHK-220 | 01-SPF-RFC7208.md:371 | checkbox | `%{v}` → "in-addr" for v4, "ip6" for v6 | 3 | src/spf/macros.rs:331 | - | DONE |
-| CHK-221 | 01-SPF-RFC7208.md:372 | checkbox | `%{h}` HELO domain | 3 | src/spf/macros.rs:344 | - | DONE |
-| CHK-222 | 01-SPF-RFC7208.md:373 | checkbox | `%{p}` → "unknown" (stub is acceptable) | 3 | src/spf/macros.rs:351 | - | DONE |
-| CHK-223 | 01-SPF-RFC7208.md:374 | checkbox | `%{ir}.origin.example.com` reversed IP | 3 | src/spf/macros.rs:358 | - | DONE |
-| CHK-224 | 01-SPF-RFC7208.md:375 | checkbox | `%{d2}` rightmost 2 labels, `%{d1r}` reversed first label | 3 | src/spf/macros.rs:372 | - | DONE |
-| CHK-225 | 01-SPF-RFC7208.md:376 | checkbox | `%{l-}` local-part with hyphen delimiter | 3 | src/spf/macros.rs:392 | - | DONE |
-| CHK-226 | 01-SPF-RFC7208.md:377 | checkbox | URL encoding with uppercase: `%{S}` URL-encodes sender | 3 | src/spf/macros.rs:403 | - | DONE |
-| CHK-227 | 01-SPF-RFC7208.md:378 | checkbox | Explanation-only macros `%{c}`, `%{r}`, `%{t}` in exp= context → succeed | 3 | src/spf/macros.rs:412 | - | DONE |
-| CHK-228 | 01-SPF-RFC7208.md:379 | checkbox | Reject `%{c}`, `%{r}`, `%{t}` outside exp= context → error | 3 | src/spf/macros.rs:436 | - | DONE |
-| CHK-229 | 01-SPF-RFC7208.md:380 | checkbox | Escapes: `%%` → `%`, `%_` → space, `%-` → `%20` | 3 | src/spf/macros.rs:445 | - | DONE |
-| CHK-230 | 01-SPF-RFC7208.md:381 | checkbox | `%{d0}` → entire domain (0 means all parts) | 3 | src/spf/macros.rs:458 | - | DONE |
-| CHK-231 | 01-SPF-RFC7208.md:387 | checkbox | Prevent infinite loops in `include`/`redirect` via visited-domain HashSet | 4 | - | - | PENDING |
-| CHK-232 | 01-SPF-RFC7208.md:388 | checkbox | Enforce DNS lookup limits strictly (max 10) | 4 | - | - | PENDING |
-| CHK-233 | 01-SPF-RFC7208.md:389 | checkbox | Enforce void lookup limits (max 2) | 4 | - | - | PENDING |
-| CHK-234 | 01-SPF-RFC7208.md:390 | checkbox | Validate all DNS responses — handle NxDomain vs empty vs error distinctly | 4 | - | - | PENDING |
-| CHK-235 | 01-SPF-RFC7208.md:391 | checkbox | Don't trust PTR without forward confirmation | 4 | - | - | PENDING |
-| CHK-236 | 01-SPF-RFC7208.md:392 | checkbox | DNS caching is caller's responsibility — document this clearly | 4 | - | - | PENDING |
-| CHK-237 | 01-SPF-RFC7208.md:398 | checkbox | DNS caching: out of scope for library. Callers wrap the resolver. | 4 | - | - | PENDING |
-| CHK-238 | 01-SPF-RFC7208.md:399 | checkbox | Short-circuit on first match (left-to-right, stop at first matching directive) | 4 | - | - | PENDING |
+| CHK-195 | 01-SPF-RFC7208.md:343 | checkbox | Simple pass: IP in `ip4` range | 4 | src/spf/eval.rs:468 | 99d7d91 | DONE |
+| CHK-196 | 01-SPF-RFC7208.md:344 | checkbox | Simple fail: IP not in range, ends `-all` | 4 | src/spf/eval.rs:479 | 99d7d91 | DONE |
+| CHK-197 | 01-SPF-RFC7208.md:345 | checkbox | Include pass: nested lookup passes | 4 | src/spf/eval.rs:490 | 99d7d91 | DONE |
+| CHK-198 | 01-SPF-RFC7208.md:346 | checkbox | Include fail: nested lookup fails | 4 | src/spf/eval.rs:503 | 99d7d91 | DONE |
+| CHK-199 | 01-SPF-RFC7208.md:347 | checkbox | Include propagation: child TempError → parent TempError | 4 | src/spf/eval.rs:517 | 99d7d91 | DONE |
+| CHK-200 | 01-SPF-RFC7208.md:348 | checkbox | Include propagation: child PermError → parent PermError | 4 | src/spf/eval.rs:530 | 99d7d91 | DONE |
+| CHK-201 | 01-SPF-RFC7208.md:349 | checkbox | Include: child None → no match (continue) | 4 | src/spf/eval.rs:543 | 99d7d91 | DONE |
+| CHK-202 | 01-SPF-RFC7208.md:350 | checkbox | MX mechanism: IP matches MX host | 4 | src/spf/eval.rs:558 | 99d7d91 | DONE |
+| CHK-203 | 01-SPF-RFC7208.md:351 | checkbox | A mechanism with CIDR | 4 | src/spf/eval.rs:574 | 99d7d91 | DONE |
+| CHK-204 | 01-SPF-RFC7208.md:352 | checkbox | PTR mechanism validation | 4 | src/spf/eval.rs:587 | 99d7d91 | DONE |
+| CHK-205 | 01-SPF-RFC7208.md:353 | checkbox | Redirect modifier | 4 | src/spf/eval.rs:601 | 99d7d91 | DONE |
+| CHK-206 | 01-SPF-RFC7208.md:354 | checkbox | Redirect to domain without SPF → PermError | 4 | src/spf/eval.rs:614 | 99d7d91 | DONE |
+| CHK-207 | 01-SPF-RFC7208.md:355 | checkbox | DNS lookup limit (11th lookup → PermError) | 4 | src/spf/eval.rs:627 | 99d7d91 | DONE |
+| CHK-208 | 01-SPF-RFC7208.md:356 | checkbox | Void lookup limit (3rd void → PermError) | 4 | src/spf/eval.rs:644 | 99d7d91 | DONE |
+| CHK-209 | 01-SPF-RFC7208.md:357 | checkbox | Circular include between 2 domains → PermError (via visited set, not just DNS limit) | 4 | src/spf/eval.rs:659 | 99d7d91 | DONE |
+| CHK-210 | 01-SPF-RFC7208.md:358 | checkbox | exp= explanation attached to Fail | 4 | src/spf/eval.rs:672 | 99d7d91 | DONE |
+| CHK-211 | 01-SPF-RFC7208.md:359 | checkbox | exp= failure → Fail without explanation (not crash) | 4 | src/spf/eval.rs:687 | 99d7d91 | DONE |
+| CHK-212 | 01-SPF-RFC7208.md:360 | checkbox | Empty MAIL FROM → postmaster@helo | 4 | src/spf/eval.rs:700 | 99d7d91 | DONE |
+| CHK-213 | 01-SPF-RFC7208.md:361 | checkbox | IPv6 client with ip6 mechanism | 4 | src/spf/eval.rs:711 | 99d7d91 | DONE |
+| CHK-214 | 01-SPF-RFC7208.md:362 | checkbox | IPv4 client skips ip6 mechanism | 4 | src/spf/eval.rs:722 | 99d7d91 | DONE |
+| CHK-215 | 01-SPF-RFC7208.md:363 | checkbox | exists mechanism with macro expansion | 4 | src/spf/eval.rs:733 | 99d7d91 | DONE |
+| CHK-216 | 01-SPF-RFC7208.md:367 | checkbox | `%{s}` sender expansion | 3 | src/spf/macros.rs:292 | b7bcd10 | DONE |
+| CHK-217 | 01-SPF-RFC7208.md:368 | checkbox | `%{l}` local-part, `%{o}` domain | 3 | src/spf/macros.rs:299 | b7bcd10 | DONE |
+| CHK-218 | 01-SPF-RFC7208.md:369 | checkbox | `%{d}` current domain expansion | 3 | src/spf/macros.rs:307 | b7bcd10 | DONE |
+| CHK-219 | 01-SPF-RFC7208.md:370 | checkbox | `%{i}` IP expansion (v4 dotted, v6 dot-separated nibbles: 32 hex chars) | 3 | src/spf/macros.rs:314 | b7bcd10 | DONE |
+| CHK-220 | 01-SPF-RFC7208.md:371 | checkbox | `%{v}` → "in-addr" for v4, "ip6" for v6 | 3 | src/spf/macros.rs:331 | b7bcd10 | DONE |
+| CHK-221 | 01-SPF-RFC7208.md:372 | checkbox | `%{h}` HELO domain | 3 | src/spf/macros.rs:344 | b7bcd10 | DONE |
+| CHK-222 | 01-SPF-RFC7208.md:373 | checkbox | `%{p}` → "unknown" (stub is acceptable) | 3 | src/spf/macros.rs:351 | b7bcd10 | DONE |
+| CHK-223 | 01-SPF-RFC7208.md:374 | checkbox | `%{ir}.origin.example.com` reversed IP | 3 | src/spf/macros.rs:358 | b7bcd10 | DONE |
+| CHK-224 | 01-SPF-RFC7208.md:375 | checkbox | `%{d2}` rightmost 2 labels, `%{d1r}` reversed first label | 3 | src/spf/macros.rs:372 | b7bcd10 | DONE |
+| CHK-225 | 01-SPF-RFC7208.md:376 | checkbox | `%{l-}` local-part with hyphen delimiter | 3 | src/spf/macros.rs:392 | b7bcd10 | DONE |
+| CHK-226 | 01-SPF-RFC7208.md:377 | checkbox | URL encoding with uppercase: `%{S}` URL-encodes sender | 3 | src/spf/macros.rs:403 | b7bcd10 | DONE |
+| CHK-227 | 01-SPF-RFC7208.md:378 | checkbox | Explanation-only macros `%{c}`, `%{r}`, `%{t}` in exp= context → succeed | 3 | src/spf/macros.rs:412 | b7bcd10 | DONE |
+| CHK-228 | 01-SPF-RFC7208.md:379 | checkbox | Reject `%{c}`, `%{r}`, `%{t}` outside exp= context → error | 3 | src/spf/macros.rs:436 | b7bcd10 | DONE |
+| CHK-229 | 01-SPF-RFC7208.md:380 | checkbox | Escapes: `%%` → `%`, `%_` → space, `%-` → `%20` | 3 | src/spf/macros.rs:445 | b7bcd10 | DONE |
+| CHK-230 | 01-SPF-RFC7208.md:381 | checkbox | `%{d0}` → entire domain (0 means all parts) | 3 | src/spf/macros.rs:458 | b7bcd10 | DONE |
+| CHK-231 | 01-SPF-RFC7208.md:387 | checkbox | Prevent infinite loops in `include`/`redirect` via visited-domain HashSet | 4 | src/spf/eval.rs:51 | 99d7d91 | DONE |
+| CHK-232 | 01-SPF-RFC7208.md:388 | checkbox | Enforce DNS lookup limits strictly (max 10) | 4 | src/spf/eval.rs:31 | 99d7d91 | DONE |
+| CHK-233 | 01-SPF-RFC7208.md:389 | checkbox | Enforce void lookup limits (max 2) | 4 | src/spf/eval.rs:41 | 99d7d91 | DONE |
+| CHK-234 | 01-SPF-RFC7208.md:390 | checkbox | Validate all DNS responses — handle NxDomain vs empty vs error distinctly | 4 | src/spf/eval.rs:236 | 99d7d91 | DONE |
+| CHK-235 | 01-SPF-RFC7208.md:391 | checkbox | Don't trust PTR without forward confirmation | 4 | src/spf/eval.rs:353 | 99d7d91 | DONE |
+| CHK-236 | 01-SPF-RFC7208.md:392 | checkbox | DNS caching is caller's responsibility — document this clearly | 4 | src/spf/eval.rs:64 | 99d7d91 | DONE |
+| CHK-237 | 01-SPF-RFC7208.md:398 | checkbox | DNS caching: out of scope for library. Callers wrap the resolver. | 4 | src/spf/eval.rs:64 | 99d7d91 | DONE |
+| CHK-238 | 01-SPF-RFC7208.md:399 | checkbox | Short-circuit on first match (left-to-right, stop at first matching directive) | 4 | src/spf/eval.rs:120 | 99d7d91 | DONE |
 | CHK-239 | 01-SPF-RFC7208.md:400 | checkbox | Pre-compiled parsed records: `SpfRecord::parse` returns owned struct for reuse | 2 | src/spf/types.rs:75 | 6b1ee0f | DONE |
-| CHK-240 | 01-SPF-RFC7208.md:401 | checkbox | A/MX mechanism: query only the address family matching client IP (v4→A, v6→AAAA) | 4 | - | - | PENDING |
+| CHK-240 | 01-SPF-RFC7208.md:401 | checkbox | A/MX mechanism: query only the address family matching client IP (v4→A, v6→AAAA) | 4 | src/spf/eval.rs:236 | 99d7d91 | DONE |
 | CHK-241 | 01-SPF-RFC7208.md:461 | checkbox | DNS resolver (async): `hickory-resolver` 0.25 | 1 | Cargo.toml:11 | 992b713 | DONE |
 | CHK-242 | 01-SPF-RFC7208.md:462 | checkbox | IP address handling: `std::net` | 1 | src/common/dns.rs:1 | 992b713 | DONE |
 | CHK-243 | 01-SPF-RFC7208.md:463 | checkbox | CIDR matching: custom implementation (no external crate needed) | 1 | src/common/cidr.rs:38 | 992b713 | DONE |
 | CHK-244 | 01-SPF-RFC7208.md:469 | checkbox | All data types defined with structured enums (not raw strings) | 2 | src/spf/types.rs:5 | 6b1ee0f | DONE |
 | CHK-245 | 01-SPF-RFC7208.md:470 | checkbox | Parser complete with all 8 mechanisms and 2 modifiers | 2 | src/spf/parser.rs:6 | 6b1ee0f | DONE |
-| CHK-246 | 01-SPF-RFC7208.md:471 | checkbox | Macro expander complete with all letters, transformers, escapes | 3 | src/spf/macros.rs:26 | - | DONE |
-| CHK-247 | 01-SPF-RFC7208.md:472 | checkbox | `check_host()` algorithm implemented with recursive include/redirect | 4 | - | - | PENDING |
-| CHK-248 | 01-SPF-RFC7208.md:473 | checkbox | DNS lookup limits enforced (10 DNS, 2 void) | 4 | - | - | PENDING |
-| CHK-249 | 01-SPF-RFC7208.md:474 | checkbox | Circular include/redirect detection via visited-domain set | 4 | - | - | PENDING |
-| CHK-250 | 01-SPF-RFC7208.md:475 | checkbox | exp= evaluation produces explanation on Fail | 4 | - | - | PENDING |
-| CHK-251 | 01-SPF-RFC7208.md:476 | checkbox | All 7 result types returned correctly | 4 | - | - | PENDING |
-| CHK-252 | 01-SPF-RFC7208.md:477 | checkbox | Unit tests cover parsing, evaluation, macros, limits, cycles | 4 | - | - | PENDING |
-| CHK-253 | 01-SPF-RFC7208.md:478 | checkbox | No unwrap/expect in library code (tests only) | 4 | - | - | PENDING |
+| CHK-246 | 01-SPF-RFC7208.md:471 | checkbox | Macro expander complete with all letters, transformers, escapes | 3 | src/spf/macros.rs:26 | b7bcd10 | DONE |
+| CHK-247 | 01-SPF-RFC7208.md:472 | checkbox | `check_host()` algorithm implemented with recursive include/redirect | 4 | src/spf/eval.rs:64 | 99d7d91 | DONE |
+| CHK-248 | 01-SPF-RFC7208.md:473 | checkbox | DNS lookup limits enforced (10 DNS, 2 void) | 4 | src/spf/eval.rs:31 | 99d7d91 | DONE |
+| CHK-249 | 01-SPF-RFC7208.md:474 | checkbox | Circular include/redirect detection via visited-domain set | 4 | src/spf/eval.rs:51 | 99d7d91 | DONE |
+| CHK-250 | 01-SPF-RFC7208.md:475 | checkbox | exp= evaluation produces explanation on Fail | 4 | src/spf/eval.rs:433 | 99d7d91 | DONE |
+| CHK-251 | 01-SPF-RFC7208.md:476 | checkbox | All 7 result types returned correctly | 4 | src/spf/eval.rs:445 | 99d7d91 | DONE |
+| CHK-252 | 01-SPF-RFC7208.md:477 | checkbox | Unit tests cover parsing, evaluation, macros, limits, cycles | 4 | src/spf/eval.rs:456 | 99d7d91 | DONE |
+| CHK-253 | 01-SPF-RFC7208.md:478 | checkbox | No unwrap/expect in library code (tests only) | 4 | src/spf/eval.rs:1 | 99d7d91 | DONE |
 | CHK-254 | 02-DKIM-RFC6376.md:15 | checkbox | Define `DkimSignature` struct (tag-value pairs from DKIM-Signature header): | 5 | - | - | PENDING |
 | CHK-255 | 02-DKIM-RFC6376.md:16 | checkbox | `version: u8` — version (must be 1) | 5 | - | - | PENDING |
 | CHK-256 | 02-DKIM-RFC6376.md:17 | checkbox | `algorithm: Algorithm` — signing algorithm | 5 | - | - | PENDING |

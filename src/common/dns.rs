@@ -35,14 +35,16 @@ pub struct MxRecord {
 ///
 /// DNS caching is the caller's responsibility. Implement this trait
 /// with a caching layer at the resolver level.
-#[allow(async_fn_in_trait)]
+///
+/// Methods return `impl Future + Send` to allow use in `Pin<Box<dyn Future + Send>>` contexts
+/// (required for SPF async recursion via include/redirect).
 pub trait DnsResolver: Send + Sync {
-    async fn query_txt(&self, name: &str) -> Result<Vec<String>, DnsError>;
-    async fn query_a(&self, name: &str) -> Result<Vec<Ipv4Addr>, DnsError>;
-    async fn query_aaaa(&self, name: &str) -> Result<Vec<Ipv6Addr>, DnsError>;
-    async fn query_mx(&self, name: &str) -> Result<Vec<MxRecord>, DnsError>;
-    async fn query_ptr(&self, ip: &IpAddr) -> Result<Vec<String>, DnsError>;
-    async fn query_exists(&self, name: &str) -> Result<bool, DnsError>;
+    fn query_txt(&self, name: &str) -> impl std::future::Future<Output = Result<Vec<String>, DnsError>> + Send;
+    fn query_a(&self, name: &str) -> impl std::future::Future<Output = Result<Vec<Ipv4Addr>, DnsError>> + Send;
+    fn query_aaaa(&self, name: &str) -> impl std::future::Future<Output = Result<Vec<Ipv6Addr>, DnsError>> + Send;
+    fn query_mx(&self, name: &str) -> impl std::future::Future<Output = Result<Vec<MxRecord>, DnsError>> + Send;
+    fn query_ptr(&self, ip: &IpAddr) -> impl std::future::Future<Output = Result<Vec<String>, DnsError>> + Send;
+    fn query_exists(&self, name: &str) -> impl std::future::Future<Output = Result<bool, DnsError>> + Send;
 }
 
 /// Blanket impl: allow passing `&R` where `R: DnsResolver` is expected.
