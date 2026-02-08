@@ -340,35 +340,35 @@
 | CHK-335 | 02-DKIM-RFC6376.md:127 | checkbox | `h=` must include "from" (case-insensitive) → PermFail if missing | 5 | src/dkim/parser.rs:340 | 77373aa | DONE |
 | CHK-336 | 02-DKIM-RFC6376.md:128 | checkbox | `i=` not subdomain of `d=` → PermFail | 5 | src/dkim/parser.rs:418 | 77373aa | DONE |
 | CHK-337 | 02-DKIM-RFC6376.md:129 | checkbox | Store raw header value in `DkimSignature.raw_header` for b= stripping during verification | 5 | src/dkim/parser.rs:428 | 77373aa | DONE |
-| CHK-338 | 02-DKIM-RFC6376.md:138 | checkbox | No changes to header content | 6 | - | - | PENDING |
-| CHK-339 | 02-DKIM-RFC6376.md:139 | checkbox | Output: `name:value\r\n` exactly as it appears | 6 | - | - | PENDING |
-| CHK-340 | 02-DKIM-RFC6376.md:140 | checkbox | Header names case-preserved in output, but selected case-insensitively from message | 6 | - | - | PENDING |
-| CHK-341 | 02-DKIM-RFC6376.md:143 | checkbox | Convert header name to lowercase | 6 | - | - | PENDING |
-| CHK-342 | 02-DKIM-RFC6376.md:144 | checkbox | Unfold headers (remove CRLF before whitespace) | 6 | - | - | PENDING |
-| CHK-343 | 02-DKIM-RFC6376.md:145 | checkbox | Collapse sequential whitespace (SP/HTAB) to single SP | 6 | - | - | PENDING |
-| CHK-344 | 02-DKIM-RFC6376.md:146 | checkbox | Remove trailing whitespace from header value | 6 | - | - | PENDING |
-| CHK-345 | 02-DKIM-RFC6376.md:147 | checkbox | Remove whitespace before and after colon (NO space between name and value in output) | 6 | - | - | PENDING |
-| CHK-346 | 02-DKIM-RFC6376.md:148 | checkbox | Output: `lowercasename:trimmed_collapsed_value\r\n` | 6 | - | - | PENDING |
-| CHK-347 | 02-DKIM-RFC6376.md:153 | checkbox | Remove all trailing empty lines at end of body | 6 | - | - | PENDING |
-| CHK-348 | 02-DKIM-RFC6376.md:154 | checkbox | If body is empty after stripping: treat as single CRLF (body is `\r\n`) | 6 | - | - | PENDING |
-| CHK-349 | 02-DKIM-RFC6376.md:155 | checkbox | Ensure body ends with CRLF | 6 | - | - | PENDING |
-| CHK-350 | 02-DKIM-RFC6376.md:158 | checkbox | Remove trailing whitespace (SP/HTAB) from each line | 6 | - | - | PENDING |
-| CHK-351 | 02-DKIM-RFC6376.md:159 | checkbox | Collapse sequential whitespace within lines to single SP | 6 | - | - | PENDING |
-| CHK-352 | 02-DKIM-RFC6376.md:160 | checkbox | Remove all trailing empty lines at end of body | 6 | - | - | PENDING |
-| CHK-353 | 02-DKIM-RFC6376.md:161 | checkbox | If body is empty after stripping: body is empty (NOT CRLF — differs from simple!) | 6 | - | - | PENDING |
-| CHK-354 | 02-DKIM-RFC6376.md:164 | checkbox | Convert bare LF (`\n`) to CRLF (`\r\n`) BEFORE canonicalization | 6 | - | - | PENDING |
-| CHK-355 | 02-DKIM-RFC6376.md:165 | checkbox | This is critical: real-world messages may have mixed line endings | 6 | - | - | PENDING |
-| CHK-356 | 02-DKIM-RFC6376.md:168 | checkbox | Truncate canonicalized body to `l=` bytes before hashing | 6 | - | - | PENDING |
-| CHK-357 | 02-DKIM-RFC6376.md:169 | checkbox | `l=` is a security concern (body truncation attacks) — process it but note in result | 6 | - | - | PENDING |
-| CHK-358 | 02-DKIM-RFC6376.md:173 | checkbox | Headers in `h=` selected case-insensitively from message | 6 | - | - | PENDING |
-| CHK-359 | 02-DKIM-RFC6376.md:174 | checkbox | Multiple same-name headers: bottom-up selection (last occurrence consumed first) | 6 | - | - | PENDING |
-| CHK-360 | 02-DKIM-RFC6376.md:175 | checkbox | Track consumed instances per header name using a counter | 6 | - | - | PENDING |
-| CHK-361 | 02-DKIM-RFC6376.md:176 | checkbox | Over-signing: if `h=` lists a header name more times than it exists in message, extra entries contribute an EMPTY canonicalized header to the hash input: | 6 | - | - | PENDING |
-| CHK-362 | 02-DKIM-RFC6376.md:179 | checkbox | Over-signed headers MUST NOT be silently skipped — they are security-critical (prevent header injection) | 6 | - | - | PENDING |
-| CHK-363 | 02-DKIM-RFC6376.md:183 | checkbox | Remove the VALUE of the b= tag from DKIM-Signature header, keeping `b=` with empty value | 6 | - | - | PENDING |
-| CHK-364 | 02-DKIM-RFC6376.md:184 | checkbox | MUST NOT affect the bh= tag (careful: naive "b=" search could match "bh=") | 6 | - | - | PENDING |
-| CHK-365 | 02-DKIM-RFC6376.md:185 | checkbox | Implementation: find `b=` that is NOT preceded by `b` (i.e., not `bh=`), then strip value up to next `;` or end | 6 | - | - | PENDING |
-| CHK-366 | 02-DKIM-RFC6376.md:186 | checkbox | The DKIM-Signature header is appended to hash input WITHOUT trailing CRLF | 6 | - | - | PENDING |
+| CHK-338 | 02-DKIM-RFC6376.md:138 | checkbox | No changes to header content | 6 | src/dkim/canon.rs:268 | ea0fa9f | DONE |
+| CHK-339 | 02-DKIM-RFC6376.md:139 | checkbox | Output: `name:value\r\n` exactly as it appears | 6 | src/dkim/canon.rs:275 | ea0fa9f | DONE |
+| CHK-340 | 02-DKIM-RFC6376.md:140 | checkbox | Header names case-preserved in output, but selected case-insensitively from message | 6 | src/dkim/canon.rs:282 | ea0fa9f | DONE |
+| CHK-341 | 02-DKIM-RFC6376.md:143 | checkbox | Convert header name to lowercase | 6 | src/dkim/canon.rs:292 | ea0fa9f | DONE |
+| CHK-342 | 02-DKIM-RFC6376.md:144 | checkbox | Unfold headers (remove CRLF before whitespace) | 6 | src/dkim/canon.rs:301 | ea0fa9f | DONE |
+| CHK-343 | 02-DKIM-RFC6376.md:145 | checkbox | Collapse sequential whitespace (SP/HTAB) to single SP | 6 | src/dkim/canon.rs:311 | ea0fa9f | DONE |
+| CHK-344 | 02-DKIM-RFC6376.md:146 | checkbox | Remove trailing whitespace from header value | 6 | src/dkim/canon.rs:321 | ea0fa9f | DONE |
+| CHK-345 | 02-DKIM-RFC6376.md:147 | checkbox | Remove whitespace before and after colon (NO space between name and value in output) | 6 | src/dkim/canon.rs:329 | ea0fa9f | DONE |
+| CHK-346 | 02-DKIM-RFC6376.md:148 | checkbox | Output: `lowercasename:trimmed_collapsed_value\r\n` | 6 | src/dkim/canon.rs:337 | ea0fa9f | DONE |
+| CHK-347 | 02-DKIM-RFC6376.md:153 | checkbox | Remove all trailing empty lines at end of body | 6 | src/dkim/canon.rs:355 | ea0fa9f | DONE |
+| CHK-348 | 02-DKIM-RFC6376.md:154 | checkbox | If body is empty after stripping: treat as single CRLF (body is `\r\n`) | 6 | src/dkim/canon.rs:363 | ea0fa9f | DONE |
+| CHK-349 | 02-DKIM-RFC6376.md:155 | checkbox | Ensure body ends with CRLF | 6 | src/dkim/canon.rs:369 | ea0fa9f | DONE |
+| CHK-350 | 02-DKIM-RFC6376.md:158 | checkbox | Remove trailing whitespace (SP/HTAB) from each line | 6 | src/dkim/canon.rs:384 | ea0fa9f | DONE |
+| CHK-351 | 02-DKIM-RFC6376.md:159 | checkbox | Collapse sequential whitespace within lines to single SP | 6 | src/dkim/canon.rs:392 | ea0fa9f | DONE |
+| CHK-352 | 02-DKIM-RFC6376.md:160 | checkbox | Remove all trailing empty lines at end of body | 6 | src/dkim/canon.rs:400 | ea0fa9f | DONE |
+| CHK-353 | 02-DKIM-RFC6376.md:161 | checkbox | If body is empty after stripping: body is empty (NOT CRLF — differs from simple!) | 6 | src/dkim/canon.rs:408 | ea0fa9f | DONE |
+| CHK-354 | 02-DKIM-RFC6376.md:164 | checkbox | Convert bare LF (`\n`) to CRLF (`\r\n`) BEFORE canonicalization | 6 | src/dkim/canon.rs:425 | ea0fa9f | DONE |
+| CHK-355 | 02-DKIM-RFC6376.md:165 | checkbox | This is critical: real-world messages may have mixed line endings | 6 | src/dkim/canon.rs:433 | ea0fa9f | DONE |
+| CHK-356 | 02-DKIM-RFC6376.md:168 | checkbox | Truncate canonicalized body to `l=` bytes before hashing | 6 | src/dkim/canon.rs:449 | ea0fa9f | DONE |
+| CHK-357 | 02-DKIM-RFC6376.md:169 | checkbox | `l=` is a security concern (body truncation attacks) — process it but note in result | 6 | src/dkim/canon.rs:506 | ea0fa9f | DONE |
+| CHK-358 | 02-DKIM-RFC6376.md:173 | checkbox | Headers in `h=` selected case-insensitively from message | 6 | src/dkim/canon.rs:468 | ea0fa9f | DONE |
+| CHK-359 | 02-DKIM-RFC6376.md:174 | checkbox | Multiple same-name headers: bottom-up selection (last occurrence consumed first) | 6 | src/dkim/canon.rs:478 | ea0fa9f | DONE |
+| CHK-360 | 02-DKIM-RFC6376.md:175 | checkbox | Track consumed instances per header name using a counter | 6 | src/dkim/canon.rs:494 | ea0fa9f | DONE |
+| CHK-361 | 02-DKIM-RFC6376.md:176 | checkbox | Over-signing: if `h=` lists a header name more times than it exists in message, extra entries contribute an EMPTY canonicalized header to the hash input: | 6 | src/dkim/canon.rs:508 | ea0fa9f | DONE |
+| CHK-362 | 02-DKIM-RFC6376.md:179 | checkbox | Over-signed headers MUST NOT be silently skipped — they are security-critical (prevent header injection) | 6 | src/dkim/canon.rs:523 | ea0fa9f | DONE |
+| CHK-363 | 02-DKIM-RFC6376.md:183 | checkbox | Remove the VALUE of the b= tag from DKIM-Signature header, keeping `b=` with empty value | 6 | src/dkim/canon.rs:543 | ea0fa9f | DONE |
+| CHK-364 | 02-DKIM-RFC6376.md:184 | checkbox | MUST NOT affect the bh= tag (careful: naive "b=" search could match "bh=") | 6 | src/dkim/canon.rs:553 | ea0fa9f | DONE |
+| CHK-365 | 02-DKIM-RFC6376.md:185 | checkbox | Implementation: find `b=` that is NOT preceded by `b` (i.e., not `bh=`), then strip value up to next `;` or end | 6 | src/dkim/canon.rs:561 | ea0fa9f | DONE |
+| CHK-366 | 02-DKIM-RFC6376.md:186 | checkbox | The DKIM-Signature header is appended to hash input WITHOUT trailing CRLF | 6 | src/dkim/canon.rs:572 | ea0fa9f | DONE |
 | CHK-367 | 02-DKIM-RFC6376.md:194 | checkbox | Find all DKIM-Signature headers in message (case-insensitive name match) | 7 | - | - | PENDING |
 | CHK-368 | 02-DKIM-RFC6376.md:195 | checkbox | Parse each signature | 7 | - | - | PENDING |
 | CHK-369 | 02-DKIM-RFC6376.md:196 | checkbox | Malformed signatures → PermFail with MalformedSignature kind | 7 | - | - | PENDING |
@@ -474,15 +474,15 @@
 | CHK-469 | 02-DKIM-RFC6376.md:443 | checkbox | Ed25519 key (32 bytes) | 5 | src/dkim/key.rs:259 | 77373aa | DONE |
 | CHK-470 | 02-DKIM-RFC6376.md:444 | checkbox | RSA 1024-bit key | 5 | src/dkim/key.rs:268 | 77373aa | DONE |
 | CHK-471 | 02-DKIM-RFC6376.md:445 | checkbox | RSA 2048-bit key | 5 | src/dkim/key.rs:278 | 77373aa | DONE |
-| CHK-472 | 02-DKIM-RFC6376.md:449 | checkbox | Simple header: output unchanged (preserving case) | 6 | - | - | PENDING |
-| CHK-473 | 02-DKIM-RFC6376.md:450 | checkbox | Relaxed header: lowercase name, collapse whitespace, remove trailing WSP, no space around colon | 6 | - | - | PENDING |
-| CHK-474 | 02-DKIM-RFC6376.md:451 | checkbox | Simple body: trailing blank lines removed, empty body → `\r\n` | 6 | - | - | PENDING |
-| CHK-475 | 02-DKIM-RFC6376.md:452 | checkbox | Relaxed body: whitespace normalized, empty body → empty (not `\r\n`) | 6 | - | - | PENDING |
-| CHK-476 | 02-DKIM-RFC6376.md:453 | checkbox | Body length limit truncation | 6 | - | - | PENDING |
-| CHK-477 | 02-DKIM-RFC6376.md:454 | checkbox | Bare LF → CRLF conversion | 6 | - | - | PENDING |
-| CHK-478 | 02-DKIM-RFC6376.md:455 | checkbox | Header selection: bottom-up for multiple same-name headers | 6 | - | - | PENDING |
-| CHK-479 | 02-DKIM-RFC6376.md:456 | checkbox | Over-signed headers: contribute empty value (not skipped) | 6 | - | - | PENDING |
-| CHK-480 | 02-DKIM-RFC6376.md:457 | checkbox | b= tag stripping: does NOT affect bh= tag | 6 | - | - | PENDING |
+| CHK-472 | 02-DKIM-RFC6376.md:449 | checkbox | Simple header: output unchanged (preserving case) | 6 | src/dkim/canon.rs:260 | ea0fa9f | DONE |
+| CHK-473 | 02-DKIM-RFC6376.md:450 | checkbox | Relaxed header: lowercase name, collapse whitespace, remove trailing WSP, no space around colon | 6 | src/dkim/canon.rs:290 | ea0fa9f | DONE |
+| CHK-474 | 02-DKIM-RFC6376.md:451 | checkbox | Simple body: trailing blank lines removed, empty body → `\r\n` | 6 | src/dkim/canon.rs:347 | ea0fa9f | DONE |
+| CHK-475 | 02-DKIM-RFC6376.md:452 | checkbox | Relaxed body: whitespace normalized, empty body → empty (not `\r\n`) | 6 | src/dkim/canon.rs:377 | ea0fa9f | DONE |
+| CHK-476 | 02-DKIM-RFC6376.md:453 | checkbox | Body length limit truncation | 6 | src/dkim/canon.rs:441 | ea0fa9f | DONE |
+| CHK-477 | 02-DKIM-RFC6376.md:454 | checkbox | Bare LF → CRLF conversion | 6 | src/dkim/canon.rs:419 | ea0fa9f | DONE |
+| CHK-478 | 02-DKIM-RFC6376.md:455 | checkbox | Header selection: bottom-up for multiple same-name headers | 6 | src/dkim/canon.rs:457 | ea0fa9f | DONE |
+| CHK-479 | 02-DKIM-RFC6376.md:456 | checkbox | Over-signed headers: contribute empty value (not skipped) | 6 | src/dkim/canon.rs:487 | ea0fa9f | DONE |
+| CHK-480 | 02-DKIM-RFC6376.md:457 | checkbox | b= tag stripping: does NOT affect bh= tag | 6 | src/dkim/canon.rs:533 | ea0fa9f | DONE |
 | CHK-481 | 02-DKIM-RFC6376.md:461 | checkbox | Valid Ed25519 signature → Pass | 7 | - | - | PENDING |
 | CHK-482 | 02-DKIM-RFC6376.md:462 | checkbox | Valid RSA-SHA256 signature → Pass (**pre-computed fixture**: sign with `rsa` crate or openssl, embed signed message + SPKI public key in test — cannot rely on sign→verify round-trip alone) | 7 | - | - | PENDING |
 | CHK-483 | 02-DKIM-RFC6376.md:463 | checkbox | Valid RSA-SHA1 signature → Pass (**pre-computed fixture required**: ring 0.17 cannot sign SHA-1. Sign once externally, embed fixture with raw message bytes + signature + public key) | 7 | - | - | PENDING |
@@ -526,10 +526,10 @@
 | CHK-521 | 02-DKIM-RFC6376.md:592 | checkbox | All data types defined with typed enums (FailureKind, PermFailKind, not raw strings) | 5 | src/dkim/parser.rs:355 | 77373aa | DONE |
 | CHK-522 | 02-DKIM-RFC6376.md:593 | checkbox | Signature parsing complete with all required and optional tags | 5 | src/dkim/parser.rs:460 | 77373aa | DONE |
 | CHK-523 | 02-DKIM-RFC6376.md:594 | checkbox | Key record parsing complete with constraint fields (h=, s=, t=) | 5 | src/dkim/key.rs:323 | 77373aa | DONE |
-| CHK-524 | 02-DKIM-RFC6376.md:595 | checkbox | Both canonicalization methods implemented (simple and relaxed, header and body) | 6 | - | - | PENDING |
-| CHK-525 | 02-DKIM-RFC6376.md:596 | checkbox | Header selection with bottom-up and over-signing | 6 | - | - | PENDING |
-| CHK-526 | 02-DKIM-RFC6376.md:597 | checkbox | Bare LF → CRLF normalization | 6 | - | - | PENDING |
-| CHK-527 | 02-DKIM-RFC6376.md:598 | checkbox | b= tag stripping (safe against bh=) | 6 | - | - | PENDING |
+| CHK-524 | 02-DKIM-RFC6376.md:595 | checkbox | Both canonicalization methods implemented (simple and relaxed, header and body) | 6 | src/dkim/canon.rs:582 | ea0fa9f | DONE |
+| CHK-525 | 02-DKIM-RFC6376.md:596 | checkbox | Header selection with bottom-up and over-signing | 6 | src/dkim/canon.rs:530 | ea0fa9f | DONE |
+| CHK-526 | 02-DKIM-RFC6376.md:597 | checkbox | Bare LF → CRLF normalization | 6 | src/dkim/canon.rs:439 | ea0fa9f | DONE |
+| CHK-527 | 02-DKIM-RFC6376.md:598 | checkbox | b= tag stripping (safe against bh=) | 6 | src/dkim/canon.rs:579 | ea0fa9f | DONE |
 | CHK-528 | 02-DKIM-RFC6376.md:599 | checkbox | Verification algorithm complete with all constraint checks | 7 | - | - | PENDING |
 | CHK-529 | 02-DKIM-RFC6376.md:600 | checkbox | RSA-SHA256 + RSA-SHA1 + Ed25519 verification working | 7 | - | - | PENDING |
 | CHK-530 | 02-DKIM-RFC6376.md:601 | checkbox | Signing algorithm complete (RSA-SHA256 + Ed25519) | 8 | - | - | PENDING |
