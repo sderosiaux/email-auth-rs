@@ -773,7 +773,7 @@
 | CHK-768 | 03-DMARC-RFC7489.md:598 | checkbox | Non-existent subdomain detection (A + AAAA + MX queries, parallelized) | 10 | src/dmarc/eval.rs:165 | 3590bfe | DONE |
 | CHK-769 | 03-DMARC-RFC7489.md:599 | checkbox | Percentage sampling with deterministic testing support | 10 | src/dmarc/eval.rs:206 | 3590bfe | DONE |
 | CHK-770 | 03-DMARC-RFC7489.md:600 | checkbox | DmarcResult is structured (disposition, alignment bools, policy, record) | 10 | src/dmarc/eval.rs:98 | 3590bfe | DONE |
-| CHK-771 | 03-DMARC-RFC7489.md:601 | checkbox | Combined EmailAuthenticator with From extraction | 17 | - | - | PENDING |
+| CHK-771 | 03-DMARC-RFC7489.md:601 | checkbox | Combined EmailAuthenticator with From extraction | 17 | EmailAuthenticator::authenticate, extract_from_domain, split_message, parse_headers | 26 tests (auth module) | DONE |
 | CHK-772 | 03-DMARC-RFC7489.md:602 | checkbox | Unit tests cover: parsing, alignment, policy, org domain, discovery, TempFail | 10 | src/dmarc/eval.rs:232 | 3590bfe | DONE |
 | CHK-773 | 03-DMARC-RFC7489.md:603 | checkbox | No unwrap/expect in library code (tests only) | 10 | src/dmarc/eval.rs:1 | 3590bfe | DONE |
 | CHK-774 | 04-ARC-RFC8617.md:19 | checkbox | `ArcAuthenticationResults` (AAR) — authentication snapshot on arrival | 12 | - | - | DONE |
