@@ -4,4 +4,5 @@
 //! a `DnsResolver` trait — implement it with caching at the resolver layer.
 
 pub mod common;
+pub mod dkim;
 pub mod spf;

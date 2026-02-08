@@ -256,90 +256,90 @@
 | CHK-251 | 01-SPF-RFC7208.md:476 | checkbox | All 7 result types returned correctly | 4 | src/spf/eval.rs:445 | 99d7d91 | DONE |
 | CHK-252 | 01-SPF-RFC7208.md:477 | checkbox | Unit tests cover parsing, evaluation, macros, limits, cycles | 4 | src/spf/eval.rs:456 | 99d7d91 | DONE |
 | CHK-253 | 01-SPF-RFC7208.md:478 | checkbox | No unwrap/expect in library code (tests only) | 4 | src/spf/eval.rs:1 | 99d7d91 | DONE |
-| CHK-254 | 02-DKIM-RFC6376.md:15 | checkbox | Define `DkimSignature` struct (tag-value pairs from DKIM-Signature header): | 5 | - | - | PENDING |
-| CHK-255 | 02-DKIM-RFC6376.md:16 | checkbox | `version: u8` — version (must be 1) | 5 | - | - | PENDING |
-| CHK-256 | 02-DKIM-RFC6376.md:17 | checkbox | `algorithm: Algorithm` — signing algorithm | 5 | - | - | PENDING |
-| CHK-257 | 02-DKIM-RFC6376.md:18 | checkbox | `signature: Vec<u8>` — signature data (decoded from base64) | 5 | - | - | PENDING |
-| CHK-258 | 02-DKIM-RFC6376.md:19 | checkbox | `body_hash: Vec<u8>` — body hash (decoded from base64) | 5 | - | - | PENDING |
-| CHK-259 | 02-DKIM-RFC6376.md:20 | checkbox | `header_canonicalization: CanonicalizationMethod` — header canon | 5 | - | - | PENDING |
-| CHK-260 | 02-DKIM-RFC6376.md:21 | checkbox | `body_canonicalization: CanonicalizationMethod` — body canon | 5 | - | - | PENDING |
-| CHK-261 | 02-DKIM-RFC6376.md:22 | checkbox | `domain: String` — signing domain (SDID, d= tag) | 5 | - | - | PENDING |
-| CHK-262 | 02-DKIM-RFC6376.md:23 | checkbox | `signed_headers: Vec<String>` — signed header field names (h= tag) | 5 | - | - | PENDING |
-| CHK-263 | 02-DKIM-RFC6376.md:24 | checkbox | `auid: String` — agent/user identifier (i= tag, default `@<d=>`) | 5 | - | - | PENDING |
-| CHK-264 | 02-DKIM-RFC6376.md:25 | checkbox | `body_length: Option<u64>` — body length limit (l= tag) | 5 | - | - | PENDING |
-| CHK-265 | 02-DKIM-RFC6376.md:26 | checkbox | `selector: String` — selector (s= tag) | 5 | - | - | PENDING |
-| CHK-266 | 02-DKIM-RFC6376.md:27 | checkbox | `timestamp: Option<u64>` — signature timestamp (t= tag) | 5 | - | - | PENDING |
-| CHK-267 | 02-DKIM-RFC6376.md:28 | checkbox | `expiration: Option<u64>` — signature expiration (x= tag) | 5 | - | - | PENDING |
-| CHK-268 | 02-DKIM-RFC6376.md:29 | checkbox | `copied_headers: Option<Vec<String>>` — copied header fields (z= tag) | 5 | - | - | PENDING |
-| CHK-269 | 02-DKIM-RFC6376.md:30 | checkbox | `raw_header: String` — original header value for verification (needed for b= stripping) | 5 | - | - | PENDING |
-| CHK-270 | 02-DKIM-RFC6376.md:34 | checkbox | Define `Algorithm` enum: | 5 | - | - | PENDING |
-| CHK-271 | 02-DKIM-RFC6376.md:35 | checkbox | `RsaSha1` — RSA with SHA-1 (MUST support for verify, MUST NOT use for signing) | 5 | - | - | PENDING |
-| CHK-272 | 02-DKIM-RFC6376.md:36 | checkbox | `RsaSha256` — RSA with SHA-256 (MUST support, preferred) | 5 | - | - | PENDING |
-| CHK-273 | 02-DKIM-RFC6376.md:37 | checkbox | `Ed25519Sha256` — Ed25519 (RFC 8463, modern) | 5 | - | - | PENDING |
-| CHK-274 | 02-DKIM-RFC6376.md:38 | checkbox | Parsing: "rsa-sha1", "rsa-sha256", "ed25519-sha256" (case-insensitive) | 5 | - | - | PENDING |
-| CHK-275 | 02-DKIM-RFC6376.md:39 | checkbox | Unknown algorithm → PermFail | 5 | - | - | PENDING |
-| CHK-276 | 02-DKIM-RFC6376.md:43 | checkbox | Define `CanonicalizationMethod` enum: | 5 | - | - | PENDING |
-| CHK-277 | 02-DKIM-RFC6376.md:44 | checkbox | `Simple` — minimal transformation | 5 | - | - | PENDING |
-| CHK-278 | 02-DKIM-RFC6376.md:45 | checkbox | `Relaxed` — tolerates whitespace changes | 5 | - | - | PENDING |
-| CHK-279 | 02-DKIM-RFC6376.md:46 | checkbox | c= tag format: `header/body` or just `header` (body defaults to Simple) | 5 | - | - | PENDING |
-| CHK-280 | 02-DKIM-RFC6376.md:47 | checkbox | Default when c= absent: `simple/simple` | 5 | - | - | PENDING |
-| CHK-281 | 02-DKIM-RFC6376.md:51 | checkbox | Define `DkimPublicKey` struct (from DNS TXT record): | 5 | - | - | PENDING |
-| CHK-282 | 02-DKIM-RFC6376.md:52 | checkbox | `key_type: KeyType` — key type (default "rsa") | 5 | - | - | PENDING |
-| CHK-283 | 02-DKIM-RFC6376.md:53 | checkbox | `public_key: Vec<u8>` — public key data (base64 decoded) | 5 | - | - | PENDING |
-| CHK-284 | 02-DKIM-RFC6376.md:54 | checkbox | `revoked: bool` — true if p= is empty | 5 | - | - | PENDING |
-| CHK-285 | 02-DKIM-RFC6376.md:55 | checkbox | `hash_algorithms: Option<Vec<HashAlgorithm>>` — if present, restricts which hashes can be used | 5 | - | - | PENDING |
-| CHK-286 | 02-DKIM-RFC6376.md:56 | checkbox | `service_types: Option<Vec<String>>` — service types (default "*") | 5 | - | - | PENDING |
-| CHK-287 | 02-DKIM-RFC6376.md:57 | checkbox | `flags: Vec<KeyFlag>` — flags | 5 | - | - | PENDING |
-| CHK-288 | 02-DKIM-RFC6376.md:58 | checkbox | `notes: Option<String>` — human-readable notes | 5 | - | - | PENDING |
-| CHK-289 | 02-DKIM-RFC6376.md:60 | checkbox | Define `KeyType` enum: `Rsa`, `Ed25519` | 5 | - | - | PENDING |
-| CHK-290 | 02-DKIM-RFC6376.md:61 | checkbox | Define `HashAlgorithm` enum: `Sha1`, `Sha256` | 5 | - | - | PENDING |
-| CHK-291 | 02-DKIM-RFC6376.md:62 | checkbox | Define `KeyFlag` enum: `Testing` (t=y), `Strict` (t=s) | 5 | - | - | PENDING |
-| CHK-292 | 02-DKIM-RFC6376.md:66 | checkbox | Define `DkimResult` enum: | 5 | - | - | PENDING |
-| CHK-293 | 02-DKIM-RFC6376.md:67 | checkbox | `Pass { domain: String, selector: String, testing: bool }` — valid signature, carries signing domain, selector, and key testing flag | 5 | - | - | PENDING |
-| CHK-294 | 02-DKIM-RFC6376.md:68 | checkbox | `Fail { kind: FailureKind, detail: String }` — cryptographic verification failed | 5 | - | - | PENDING |
-| CHK-295 | 02-DKIM-RFC6376.md:69 | checkbox | `PermFail { kind: PermFailKind, detail: String }` — permanent structural/configuration error | 5 | - | - | PENDING |
-| CHK-296 | 02-DKIM-RFC6376.md:70 | checkbox | `TempFail { reason: String }` — transient error (DNS timeout) | 5 | - | - | PENDING |
-| CHK-297 | 02-DKIM-RFC6376.md:71 | checkbox | `None` — no DKIM-Signature header present | 5 | - | - | PENDING |
-| CHK-298 | 02-DKIM-RFC6376.md:73 | checkbox | Define `FailureKind` enum: | 5 | - | - | PENDING |
-| CHK-299 | 02-DKIM-RFC6376.md:74 | checkbox | `BodyHashMismatch` — computed body hash ≠ bh= value | 5 | - | - | PENDING |
-| CHK-300 | 02-DKIM-RFC6376.md:75 | checkbox | `SignatureVerificationFailed` — crypto signature check failed | 5 | - | - | PENDING |
-| CHK-301 | 02-DKIM-RFC6376.md:77 | checkbox | Define `PermFailKind` enum: | 5 | - | - | PENDING |
-| CHK-302 | 02-DKIM-RFC6376.md:78 | checkbox | `MalformedSignature` — parse error in DKIM-Signature header | 5 | - | - | PENDING |
-| CHK-303 | 02-DKIM-RFC6376.md:79 | checkbox | `KeyRevoked` — empty p= in DNS key record | 5 | - | - | PENDING |
-| CHK-304 | 02-DKIM-RFC6376.md:80 | checkbox | `KeyNotFound` — DNS NXDOMAIN for key record | 5 | - | - | PENDING |
-| CHK-305 | 02-DKIM-RFC6376.md:81 | checkbox | `ExpiredSignature` — past x= timestamp + clock skew | 5 | - | - | PENDING |
-| CHK-306 | 02-DKIM-RFC6376.md:82 | checkbox | `AlgorithmMismatch` — key type incompatible with signature algorithm | 5 | - | - | PENDING |
-| CHK-307 | 02-DKIM-RFC6376.md:83 | checkbox | `HashNotPermitted` — key h= tag rejects signature's hash | 5 | - | - | PENDING |
-| CHK-308 | 02-DKIM-RFC6376.md:84 | checkbox | `ServiceTypeMismatch` — key s= tag doesn't include "email" or "*" | 5 | - | - | PENDING |
-| CHK-309 | 02-DKIM-RFC6376.md:85 | checkbox | `StrictModeViolation` — key t=s but i= domain ≠ d= | 5 | - | - | PENDING |
-| CHK-310 | 02-DKIM-RFC6376.md:86 | checkbox | `DomainMismatch` — i= not subdomain of d= | 5 | - | - | PENDING |
-| CHK-311 | 02-DKIM-RFC6376.md:94 | checkbox | Parse as tag=value pairs, separated by semicolons | 5 | - | - | PENDING |
-| CHK-312 | 02-DKIM-RFC6376.md:95 | checkbox | Handle folded headers (CRLF + whitespace) | 5 | - | - | PENDING |
-| CHK-313 | 02-DKIM-RFC6376.md:96 | checkbox | Strip whitespace around tags and values | 5 | - | - | PENDING |
-| CHK-314 | 02-DKIM-RFC6376.md:97 | checkbox | Handle base64 values with embedded whitespace (strip all whitespace before decoding) | 5 | - | - | PENDING |
-| CHK-315 | 02-DKIM-RFC6376.md:101 | checkbox | `v=` — version (MUST be "1", as integer) | 5 | - | - | PENDING |
-| CHK-316 | 02-DKIM-RFC6376.md:102 | checkbox | `a=` — algorithm (rsa-sha1, rsa-sha256, ed25519-sha256) | 5 | - | - | PENDING |
-| CHK-317 | 02-DKIM-RFC6376.md:103 | checkbox | `b=` — signature (base64, strip whitespace before decode) | 5 | - | - | PENDING |
-| CHK-318 | 02-DKIM-RFC6376.md:104 | checkbox | `bh=` — body hash (base64, strip whitespace before decode) | 5 | - | - | PENDING |
-| CHK-319 | 02-DKIM-RFC6376.md:105 | checkbox | `d=` — signing domain | 5 | - | - | PENDING |
-| CHK-320 | 02-DKIM-RFC6376.md:106 | checkbox | `h=` — signed headers (colon-separated list) | 5 | - | - | PENDING |
-| CHK-321 | 02-DKIM-RFC6376.md:107 | checkbox | `s=` — selector | 5 | - | - | PENDING |
-| CHK-322 | 02-DKIM-RFC6376.md:108 | checkbox | Missing any required tag → `PermFail { kind: MalformedSignature }` | 5 | - | - | PENDING |
-| CHK-323 | 02-DKIM-RFC6376.md:112 | checkbox | `c=` — canonicalization (default: simple/simple) | 5 | - | - | PENDING |
-| CHK-324 | 02-DKIM-RFC6376.md:113 | checkbox | Format: `header/body` or just `header` (body defaults to simple) | 5 | - | - | PENDING |
-| CHK-325 | 02-DKIM-RFC6376.md:114 | checkbox | `i=` — AUID (default: `@<d=>`) | 5 | - | - | PENDING |
-| CHK-326 | 02-DKIM-RFC6376.md:115 | checkbox | Must be subdomain of or equal to `d=` → PermFail if not | 5 | - | - | PENDING |
-| CHK-327 | 02-DKIM-RFC6376.md:116 | checkbox | `l=` — body length (decimal, unsigned) | 5 | - | - | PENDING |
-| CHK-328 | 02-DKIM-RFC6376.md:117 | checkbox | `q=` — query method (default: dns/txt, only defined value) | 5 | - | - | PENDING |
-| CHK-329 | 02-DKIM-RFC6376.md:118 | checkbox | `t=` — timestamp (Unix epoch) | 5 | - | - | PENDING |
-| CHK-330 | 02-DKIM-RFC6376.md:119 | checkbox | `x=` — expiration (Unix epoch, must be >= t if both present) | 5 | - | - | PENDING |
-| CHK-331 | 02-DKIM-RFC6376.md:120 | checkbox | `z=` — copied headers (pipe-separated) | 5 | - | - | PENDING |
-| CHK-332 | 02-DKIM-RFC6376.md:124 | checkbox | Unknown tags: ignore (forward compatibility) | 5 | - | - | PENDING |
-| CHK-333 | 02-DKIM-RFC6376.md:125 | checkbox | Duplicate tags: PermFail | 5 | - | - | PENDING |
-| CHK-334 | 02-DKIM-RFC6376.md:126 | checkbox | Missing required tags: PermFail | 5 | - | - | PENDING |
-| CHK-335 | 02-DKIM-RFC6376.md:127 | checkbox | `h=` must include "from" (case-insensitive) → PermFail if missing | 5 | - | - | PENDING |
-| CHK-336 | 02-DKIM-RFC6376.md:128 | checkbox | `i=` not subdomain of `d=` → PermFail | 5 | - | - | PENDING |
-| CHK-337 | 02-DKIM-RFC6376.md:129 | checkbox | Store raw header value in `DkimSignature.raw_header` for b= stripping during verification | 5 | - | - | PENDING |
+| CHK-254 | 02-DKIM-RFC6376.md:15 | checkbox | Define `DkimSignature` struct (tag-value pairs from DKIM-Signature header): | 5 | src/dkim/types.rs:54 | 77373aa | DONE |
+| CHK-255 | 02-DKIM-RFC6376.md:16 | checkbox | `version: u8` — version (must be 1) | 5 | src/dkim/types.rs:55 | 77373aa | DONE |
+| CHK-256 | 02-DKIM-RFC6376.md:17 | checkbox | `algorithm: Algorithm` — signing algorithm | 5 | src/dkim/types.rs:56 | 77373aa | DONE |
+| CHK-257 | 02-DKIM-RFC6376.md:18 | checkbox | `signature: Vec<u8>` — signature data (decoded from base64) | 5 | src/dkim/types.rs:57 | 77373aa | DONE |
+| CHK-258 | 02-DKIM-RFC6376.md:19 | checkbox | `body_hash: Vec<u8>` — body hash (decoded from base64) | 5 | src/dkim/types.rs:58 | 77373aa | DONE |
+| CHK-259 | 02-DKIM-RFC6376.md:20 | checkbox | `header_canonicalization: CanonicalizationMethod` — header canon | 5 | src/dkim/types.rs:59 | 77373aa | DONE |
+| CHK-260 | 02-DKIM-RFC6376.md:21 | checkbox | `body_canonicalization: CanonicalizationMethod` — body canon | 5 | src/dkim/types.rs:60 | 77373aa | DONE |
+| CHK-261 | 02-DKIM-RFC6376.md:22 | checkbox | `domain: String` — signing domain (SDID, d= tag) | 5 | src/dkim/types.rs:61 | 77373aa | DONE |
+| CHK-262 | 02-DKIM-RFC6376.md:23 | checkbox | `signed_headers: Vec<String>` — signed header field names (h= tag) | 5 | src/dkim/types.rs:62 | 77373aa | DONE |
+| CHK-263 | 02-DKIM-RFC6376.md:24 | checkbox | `auid: String` — agent/user identifier (i= tag, default `@<d=>`) | 5 | src/dkim/types.rs:63 | 77373aa | DONE |
+| CHK-264 | 02-DKIM-RFC6376.md:25 | checkbox | `body_length: Option<u64>` — body length limit (l= tag) | 5 | src/dkim/types.rs:64 | 77373aa | DONE |
+| CHK-265 | 02-DKIM-RFC6376.md:26 | checkbox | `selector: String` — selector (s= tag) | 5 | src/dkim/types.rs:65 | 77373aa | DONE |
+| CHK-266 | 02-DKIM-RFC6376.md:27 | checkbox | `timestamp: Option<u64>` — signature timestamp (t= tag) | 5 | src/dkim/types.rs:66 | 77373aa | DONE |
+| CHK-267 | 02-DKIM-RFC6376.md:28 | checkbox | `expiration: Option<u64>` — signature expiration (x= tag) | 5 | src/dkim/types.rs:67 | 77373aa | DONE |
+| CHK-268 | 02-DKIM-RFC6376.md:29 | checkbox | `copied_headers: Option<Vec<String>>` — copied header fields (z= tag) | 5 | src/dkim/types.rs:68 | 77373aa | DONE |
+| CHK-269 | 02-DKIM-RFC6376.md:30 | checkbox | `raw_header: String` — original header value for verification (needed for b= stripping) | 5 | src/dkim/types.rs:69 | 77373aa | DONE |
+| CHK-270 | 02-DKIM-RFC6376.md:34 | checkbox | Define `Algorithm` enum: | 5 | src/dkim/types.rs:8 | 77373aa | DONE |
+| CHK-271 | 02-DKIM-RFC6376.md:35 | checkbox | `RsaSha1` — RSA with SHA-1 (MUST support for verify, MUST NOT use for signing) | 5 | src/dkim/types.rs:10 | 77373aa | DONE |
+| CHK-272 | 02-DKIM-RFC6376.md:36 | checkbox | `RsaSha256` — RSA with SHA-256 (MUST support, preferred) | 5 | src/dkim/types.rs:12 | 77373aa | DONE |
+| CHK-273 | 02-DKIM-RFC6376.md:37 | checkbox | `Ed25519Sha256` — Ed25519 (RFC 8463, modern) | 5 | src/dkim/types.rs:14 | 77373aa | DONE |
+| CHK-274 | 02-DKIM-RFC6376.md:38 | checkbox | Parsing: "rsa-sha1", "rsa-sha256", "ed25519-sha256" (case-insensitive) | 5 | src/dkim/parser.rs:341 | 77373aa | DONE |
+| CHK-275 | 02-DKIM-RFC6376.md:39 | checkbox | Unknown algorithm → PermFail | 5 | src/dkim/parser.rs:347 | 77373aa | DONE |
+| CHK-276 | 02-DKIM-RFC6376.md:43 | checkbox | Define `CanonicalizationMethod` enum: | 5 | src/dkim/types.rs:38 | 77373aa | DONE |
+| CHK-277 | 02-DKIM-RFC6376.md:44 | checkbox | `Simple` — minimal transformation | 5 | src/dkim/types.rs:39 | 77373aa | DONE |
+| CHK-278 | 02-DKIM-RFC6376.md:45 | checkbox | `Relaxed` — tolerates whitespace changes | 5 | src/dkim/types.rs:40 | 77373aa | DONE |
+| CHK-279 | 02-DKIM-RFC6376.md:46 | checkbox | c= tag format: `header/body` or just `header` (body defaults to Simple) | 5 | src/dkim/parser.rs:284 | 77373aa | DONE |
+| CHK-280 | 02-DKIM-RFC6376.md:47 | checkbox | Default when c= absent: `simple/simple` | 5 | src/dkim/parser.rs:290 | 77373aa | DONE |
+| CHK-281 | 02-DKIM-RFC6376.md:51 | checkbox | Define `DkimPublicKey` struct (from DNS TXT record): | 5 | src/dkim/key.rs:10 | 77373aa | DONE |
+| CHK-282 | 02-DKIM-RFC6376.md:52 | checkbox | `key_type: KeyType` — key type (default "rsa") | 5 | src/dkim/key.rs:11 | 77373aa | DONE |
+| CHK-283 | 02-DKIM-RFC6376.md:53 | checkbox | `public_key: Vec<u8>` — public key data (base64 decoded) | 5 | src/dkim/key.rs:12 | 77373aa | DONE |
+| CHK-284 | 02-DKIM-RFC6376.md:54 | checkbox | `revoked: bool` — true if p= is empty | 5 | src/dkim/key.rs:13 | 77373aa | DONE |
+| CHK-285 | 02-DKIM-RFC6376.md:55 | checkbox | `hash_algorithms: Option<Vec<HashAlgorithm>>` — if present, restricts which hashes can be used | 5 | src/dkim/key.rs:14 | 77373aa | DONE |
+| CHK-286 | 02-DKIM-RFC6376.md:56 | checkbox | `service_types: Option<Vec<String>>` — service types (default "*") | 5 | src/dkim/key.rs:15 | 77373aa | DONE |
+| CHK-287 | 02-DKIM-RFC6376.md:57 | checkbox | `flags: Vec<KeyFlag>` — flags | 5 | src/dkim/key.rs:16 | 77373aa | DONE |
+| CHK-288 | 02-DKIM-RFC6376.md:58 | checkbox | `notes: Option<String>` — human-readable notes | 5 | src/dkim/key.rs:17 | 77373aa | DONE |
+| CHK-289 | 02-DKIM-RFC6376.md:60 | checkbox | Define `KeyType` enum: `Rsa`, `Ed25519` | 5 | src/dkim/types.rs:74 | 77373aa | DONE |
+| CHK-290 | 02-DKIM-RFC6376.md:61 | checkbox | Define `HashAlgorithm` enum: `Sha1`, `Sha256` | 5 | src/dkim/types.rs:83 | 77373aa | DONE |
+| CHK-291 | 02-DKIM-RFC6376.md:62 | checkbox | Define `KeyFlag` enum: `Testing` (t=y), `Strict` (t=s) | 5 | src/dkim/types.rs:94 | 77373aa | DONE |
+| CHK-292 | 02-DKIM-RFC6376.md:66 | checkbox | Define `DkimResult` enum: | 5 | src/dkim/types.rs:101 | 77373aa | DONE |
+| CHK-293 | 02-DKIM-RFC6376.md:67 | checkbox | `Pass { domain: String, selector: String, testing: bool }` — valid signature, carries signing domain, selector, and key testing flag | 5 | src/dkim/types.rs:103 | 77373aa | DONE |
+| CHK-294 | 02-DKIM-RFC6376.md:68 | checkbox | `Fail { kind: FailureKind, detail: String }` — cryptographic verification failed | 5 | src/dkim/types.rs:108 | 77373aa | DONE |
+| CHK-295 | 02-DKIM-RFC6376.md:69 | checkbox | `PermFail { kind: PermFailKind, detail: String }` — permanent structural/configuration error | 5 | src/dkim/types.rs:112 | 77373aa | DONE |
+| CHK-296 | 02-DKIM-RFC6376.md:70 | checkbox | `TempFail { reason: String }` — transient error (DNS timeout) | 5 | src/dkim/types.rs:116 | 77373aa | DONE |
+| CHK-297 | 02-DKIM-RFC6376.md:71 | checkbox | `None` — no DKIM-Signature header present | 5 | src/dkim/types.rs:119 | 77373aa | DONE |
+| CHK-298 | 02-DKIM-RFC6376.md:73 | checkbox | Define `FailureKind` enum: | 5 | src/dkim/types.rs:123 | 77373aa | DONE |
+| CHK-299 | 02-DKIM-RFC6376.md:74 | checkbox | `BodyHashMismatch` — computed body hash ≠ bh= value | 5 | src/dkim/types.rs:124 | 77373aa | DONE |
+| CHK-300 | 02-DKIM-RFC6376.md:75 | checkbox | `SignatureVerificationFailed` — crypto signature check failed | 5 | src/dkim/types.rs:125 | 77373aa | DONE |
+| CHK-301 | 02-DKIM-RFC6376.md:77 | checkbox | Define `PermFailKind` enum: | 5 | src/dkim/types.rs:129 | 77373aa | DONE |
+| CHK-302 | 02-DKIM-RFC6376.md:78 | checkbox | `MalformedSignature` — parse error in DKIM-Signature header | 5 | src/dkim/types.rs:130 | 77373aa | DONE |
+| CHK-303 | 02-DKIM-RFC6376.md:79 | checkbox | `KeyRevoked` — empty p= in DNS key record | 5 | src/dkim/types.rs:131 | 77373aa | DONE |
+| CHK-304 | 02-DKIM-RFC6376.md:80 | checkbox | `KeyNotFound` — DNS NXDOMAIN for key record | 5 | src/dkim/types.rs:132 | 77373aa | DONE |
+| CHK-305 | 02-DKIM-RFC6376.md:81 | checkbox | `ExpiredSignature` — past x= timestamp + clock skew | 5 | src/dkim/types.rs:133 | 77373aa | DONE |
+| CHK-306 | 02-DKIM-RFC6376.md:82 | checkbox | `AlgorithmMismatch` — key type incompatible with signature algorithm | 5 | src/dkim/types.rs:134 | 77373aa | DONE |
+| CHK-307 | 02-DKIM-RFC6376.md:83 | checkbox | `HashNotPermitted` — key h= tag rejects signature's hash | 5 | src/dkim/types.rs:135 | 77373aa | DONE |
+| CHK-308 | 02-DKIM-RFC6376.md:84 | checkbox | `ServiceTypeMismatch` — key s= tag doesn't include "email" or "*" | 5 | src/dkim/types.rs:136 | 77373aa | DONE |
+| CHK-309 | 02-DKIM-RFC6376.md:85 | checkbox | `StrictModeViolation` — key t=s but i= domain ≠ d= | 5 | src/dkim/types.rs:137 | 77373aa | DONE |
+| CHK-310 | 02-DKIM-RFC6376.md:86 | checkbox | `DomainMismatch` — i= not subdomain of d= | 5 | src/dkim/types.rs:138 | 77373aa | DONE |
+| CHK-311 | 02-DKIM-RFC6376.md:94 | checkbox | Parse as tag=value pairs, separated by semicolons | 5 | src/dkim/parser.rs:371 | 77373aa | DONE |
+| CHK-312 | 02-DKIM-RFC6376.md:95 | checkbox | Handle folded headers (CRLF + whitespace) | 5 | src/dkim/parser.rs:378 | 77373aa | DONE |
+| CHK-313 | 02-DKIM-RFC6376.md:96 | checkbox | Strip whitespace around tags and values | 5 | src/dkim/parser.rs:390 | 77373aa | DONE |
+| CHK-314 | 02-DKIM-RFC6376.md:97 | checkbox | Handle base64 values with embedded whitespace (strip all whitespace before decoding) | 5 | src/dkim/parser.rs:397 | 77373aa | DONE |
+| CHK-315 | 02-DKIM-RFC6376.md:101 | checkbox | `v=` — version (MUST be "1", as integer) | 5 | src/dkim/parser.rs:404 | 77373aa | DONE |
+| CHK-316 | 02-DKIM-RFC6376.md:102 | checkbox | `a=` — algorithm (rsa-sha1, rsa-sha256, ed25519-sha256) | 5 | src/dkim/parser.rs:340 | 77373aa | DONE |
+| CHK-317 | 02-DKIM-RFC6376.md:103 | checkbox | `b=` — signature (base64, strip whitespace before decode) | 5 | src/dkim/parser.rs:263 | 77373aa | DONE |
+| CHK-318 | 02-DKIM-RFC6376.md:104 | checkbox | `bh=` — body hash (base64, strip whitespace before decode) | 5 | src/dkim/parser.rs:324 | 77373aa | DONE |
+| CHK-319 | 02-DKIM-RFC6376.md:105 | checkbox | `d=` — signing domain | 5 | src/dkim/parser.rs:298 | 77373aa | DONE |
+| CHK-320 | 02-DKIM-RFC6376.md:106 | checkbox | `h=` — signed headers (colon-separated list) | 5 | src/dkim/parser.rs:422 | 77373aa | DONE |
+| CHK-321 | 02-DKIM-RFC6376.md:107 | checkbox | `s=` — selector | 5 | src/dkim/parser.rs:252 | 77373aa | DONE |
+| CHK-322 | 02-DKIM-RFC6376.md:108 | checkbox | Missing any required tag → `PermFail { kind: MalformedSignature }` | 5 | src/dkim/parser.rs:241 | 77373aa | DONE |
+| CHK-323 | 02-DKIM-RFC6376.md:112 | checkbox | `c=` — canonicalization (default: simple/simple) | 5 | src/dkim/parser.rs:284 | 77373aa | DONE |
+| CHK-324 | 02-DKIM-RFC6376.md:113 | checkbox | Format: `header/body` or just `header` (body defaults to simple) | 5 | src/dkim/parser.rs:284 | 77373aa | DONE |
+| CHK-325 | 02-DKIM-RFC6376.md:114 | checkbox | `i=` — AUID (default: `@<d=>`) | 5 | src/dkim/parser.rs:412 | 77373aa | DONE |
+| CHK-326 | 02-DKIM-RFC6376.md:115 | checkbox | Must be subdomain of or equal to `d=` → PermFail if not | 5 | src/dkim/parser.rs:418 | 77373aa | DONE |
+| CHK-327 | 02-DKIM-RFC6376.md:116 | checkbox | `l=` — body length (decimal, unsigned) | 5 | src/dkim/parser.rs:432 | 77373aa | DONE |
+| CHK-328 | 02-DKIM-RFC6376.md:117 | checkbox | `q=` — query method (default: dns/txt, only defined value) | 5 | src/dkim/parser.rs:148 | 77373aa | DONE |
+| CHK-329 | 02-DKIM-RFC6376.md:118 | checkbox | `t=` — timestamp (Unix epoch) | 5 | src/dkim/parser.rs:439 | 77373aa | DONE |
+| CHK-330 | 02-DKIM-RFC6376.md:119 | checkbox | `x=` — expiration (Unix epoch, must be >= t if both present) | 5 | src/dkim/parser.rs:439 | 77373aa | DONE |
+| CHK-331 | 02-DKIM-RFC6376.md:120 | checkbox | `z=` — copied headers (pipe-separated) | 5 | src/dkim/parser.rs:445 | 77373aa | DONE |
+| CHK-332 | 02-DKIM-RFC6376.md:124 | checkbox | Unknown tags: ignore (forward compatibility) | 5 | src/dkim/parser.rs:454 | 77373aa | DONE |
+| CHK-333 | 02-DKIM-RFC6376.md:125 | checkbox | Duplicate tags: PermFail | 5 | src/dkim/parser.rs:307 | 77373aa | DONE |
+| CHK-334 | 02-DKIM-RFC6376.md:126 | checkbox | Missing required tags: PermFail | 5 | src/dkim/parser.rs:241 | 77373aa | DONE |
+| CHK-335 | 02-DKIM-RFC6376.md:127 | checkbox | `h=` must include "from" (case-insensitive) → PermFail if missing | 5 | src/dkim/parser.rs:340 | 77373aa | DONE |
+| CHK-336 | 02-DKIM-RFC6376.md:128 | checkbox | `i=` not subdomain of `d=` → PermFail | 5 | src/dkim/parser.rs:418 | 77373aa | DONE |
+| CHK-337 | 02-DKIM-RFC6376.md:129 | checkbox | Store raw header value in `DkimSignature.raw_header` for b= stripping during verification | 5 | src/dkim/parser.rs:428 | 77373aa | DONE |
 | CHK-338 | 02-DKIM-RFC6376.md:138 | checkbox | No changes to header content | 6 | - | - | PENDING |
 | CHK-339 | 02-DKIM-RFC6376.md:139 | checkbox | Output: `name:value\r\n` exactly as it appears | 6 | - | - | PENDING |
 | CHK-340 | 02-DKIM-RFC6376.md:140 | checkbox | Header names case-preserved in output, but selected case-insensitively from message | 6 | - | - | PENDING |
@@ -436,44 +436,44 @@
 | CHK-431 | 02-DKIM-RFC6376.md:337 | checkbox | If `expiration_seconds` configured: set `x=` to `t + expiration_seconds` | 8 | - | - | PENDING |
 | CHK-432 | 02-DKIM-RFC6376.md:341 | checkbox | Sign-then-verify round-trip: `sign(message) → verify(message + signature)` must Pass | 8 | - | - | PENDING |
 | CHK-433 | 02-DKIM-RFC6376.md:342 | checkbox | ALSO test with ground-truth fixtures that bypass DkimSigner (use ring primitives directly) to catch self-consistent bugs | 8 | - | - | PENDING |
-| CHK-434 | 02-DKIM-RFC6376.md:350 | checkbox | Query: `<selector>._domainkey.<domain>` TXT record | 5 | - | - | PENDING |
-| CHK-435 | 02-DKIM-RFC6376.md:351 | checkbox | Selector allows multiple keys per domain | 5 | - | - | PENDING |
-| CHK-436 | 02-DKIM-RFC6376.md:352 | checkbox | Multiple TXT strings in one record: concatenate before parsing | 5 | - | - | PENDING |
-| CHK-437 | 02-DKIM-RFC6376.md:356 | checkbox | `v=` — version (should be "DKIM1", optional — if present must be exactly "DKIM1") | 5 | - | - | PENDING |
-| CHK-438 | 02-DKIM-RFC6376.md:357 | checkbox | `h=` — acceptable hash algorithms (colon-separated). If present: signature's hash must be in list | 5 | - | - | PENDING |
-| CHK-439 | 02-DKIM-RFC6376.md:358 | checkbox | `k=` — key type (default: "rsa"). Support "rsa" and "ed25519" | 5 | - | - | PENDING |
-| CHK-440 | 02-DKIM-RFC6376.md:359 | checkbox | `n=` — notes (human-readable, ignored by verifier) | 5 | - | - | PENDING |
-| CHK-441 | 02-DKIM-RFC6376.md:360 | checkbox | `p=` — public key base64 (required, empty = key revoked) | 5 | - | - | PENDING |
-| CHK-442 | 02-DKIM-RFC6376.md:361 | checkbox | `s=` — service type (colon-separated, default: "*"). Must include "email" or "*" | 5 | - | - | PENDING |
-| CHK-443 | 02-DKIM-RFC6376.md:362 | checkbox | `t=` — flags (colon-separated): | 5 | - | - | PENDING |
-| CHK-444 | 02-DKIM-RFC6376.md:363 | checkbox | `y` — testing mode (key valid, but results are informational) | 5 | - | - | PENDING |
-| CHK-445 | 02-DKIM-RFC6376.md:364 | checkbox | `s` — strict mode (i= domain must exactly match d=, not subdomain) | 5 | - | - | PENDING |
-| CHK-446 | 02-DKIM-RFC6376.md:365 | checkbox | Unknown tags: ignore (forward compatibility) | 5 | - | - | PENDING |
-| CHK-447 | 02-DKIM-RFC6376.md:369 | checkbox | RSA: SubjectPublicKeyInfo DER format, base64 encoded | 5 | - | - | PENDING |
-| CHK-448 | 02-DKIM-RFC6376.md:370 | checkbox | Ed25519: raw 32-byte public key, base64 encoded | 5 | - | - | PENDING |
-| CHK-449 | 02-DKIM-RFC6376.md:371 | checkbox | Malformed/undecodable keys → PermFail | 5 | - | - | PENDING |
-| CHK-450 | 02-DKIM-RFC6376.md:421 | checkbox | Minimal valid signature (all required tags only) | 5 | - | - | PENDING |
-| CHK-451 | 02-DKIM-RFC6376.md:422 | checkbox | All optional tags present | 5 | - | - | PENDING |
-| CHK-452 | 02-DKIM-RFC6376.md:423 | checkbox | Folded header value (multiline with continuation) | 5 | - | - | PENDING |
-| CHK-453 | 02-DKIM-RFC6376.md:424 | checkbox | Base64 with embedded whitespace | 5 | - | - | PENDING |
-| CHK-454 | 02-DKIM-RFC6376.md:425 | checkbox | Missing required tag → PermFail | 5 | - | - | PENDING |
-| CHK-455 | 02-DKIM-RFC6376.md:426 | checkbox | Duplicate tag → PermFail | 5 | - | - | PENDING |
-| CHK-456 | 02-DKIM-RFC6376.md:427 | checkbox | Unknown tag → ignored | 5 | - | - | PENDING |
-| CHK-457 | 02-DKIM-RFC6376.md:428 | checkbox | Invalid algorithm → PermFail | 5 | - | - | PENDING |
-| CHK-458 | 02-DKIM-RFC6376.md:429 | checkbox | Case-insensitive algorithm: `a=RSA-SHA256` → parsed identical to `a=rsa-sha256` (applies `.to_ascii_lowercase()` before matching) | 5 | - | - | PENDING |
-| CHK-459 | 02-DKIM-RFC6376.md:430 | checkbox | h= missing "from" → PermFail | 5 | - | - | PENDING |
-| CHK-460 | 02-DKIM-RFC6376.md:431 | checkbox | i= not subdomain of d= → PermFail | 5 | - | - | PENDING |
-| CHK-461 | 02-DKIM-RFC6376.md:432 | checkbox | c= parsing: "relaxed/relaxed", "simple", "relaxed" (body defaults to simple) | 5 | - | - | PENDING |
-| CHK-462 | 02-DKIM-RFC6376.md:436 | checkbox | Minimal key: `p=<base64>` | 5 | - | - | PENDING |
-| CHK-463 | 02-DKIM-RFC6376.md:437 | checkbox | Full key with all tags | 5 | - | - | PENDING |
-| CHK-464 | 02-DKIM-RFC6376.md:438 | checkbox | Revoked key: `p=` (empty) | 5 | - | - | PENDING |
-| CHK-465 | 02-DKIM-RFC6376.md:439 | checkbox | h= tag with sha256 only | 5 | - | - | PENDING |
-| CHK-466 | 02-DKIM-RFC6376.md:440 | checkbox | s= tag with "email" vs "*" vs "other" | 5 | - | - | PENDING |
-| CHK-467 | 02-DKIM-RFC6376.md:441 | checkbox | t= flags: testing, strict, both | 5 | - | - | PENDING |
-| CHK-468 | 02-DKIM-RFC6376.md:442 | checkbox | Unknown key type | 5 | - | - | PENDING |
-| CHK-469 | 02-DKIM-RFC6376.md:443 | checkbox | Ed25519 key (32 bytes) | 5 | - | - | PENDING |
-| CHK-470 | 02-DKIM-RFC6376.md:444 | checkbox | RSA 1024-bit key | 5 | - | - | PENDING |
-| CHK-471 | 02-DKIM-RFC6376.md:445 | checkbox | RSA 2048-bit key | 5 | - | - | PENDING |
+| CHK-434 | 02-DKIM-RFC6376.md:350 | checkbox | Query: `<selector>._domainkey.<domain>` TXT record | 5 | src/dkim/key.rs:212 | 77373aa | DONE |
+| CHK-435 | 02-DKIM-RFC6376.md:351 | checkbox | Selector allows multiple keys per domain | 5 | src/dkim/key.rs:221 | 77373aa | DONE |
+| CHK-436 | 02-DKIM-RFC6376.md:352 | checkbox | Multiple TXT strings in one record: concatenate before parsing | 5 | src/dkim/key.rs:230 | 77373aa | DONE |
+| CHK-437 | 02-DKIM-RFC6376.md:356 | checkbox | `v=` — version (should be "DKIM1", optional — if present must be exactly "DKIM1") | 5 | src/dkim/key.rs:239 | 77373aa | DONE |
+| CHK-438 | 02-DKIM-RFC6376.md:357 | checkbox | `h=` — acceptable hash algorithms (colon-separated). If present: signature's hash must be in list | 5 | src/dkim/key.rs:257 | 77373aa | DONE |
+| CHK-439 | 02-DKIM-RFC6376.md:358 | checkbox | `k=` — key type (default: "rsa"). Support "rsa" and "ed25519" | 5 | src/dkim/key.rs:267 | 77373aa | DONE |
+| CHK-440 | 02-DKIM-RFC6376.md:359 | checkbox | `n=` — notes (human-readable, ignored by verifier) | 5 | src/dkim/key.rs:278 | 77373aa | DONE |
+| CHK-441 | 02-DKIM-RFC6376.md:360 | checkbox | `p=` — public key base64 (required, empty = key revoked) | 5 | src/dkim/key.rs:285 | 77373aa | DONE |
+| CHK-442 | 02-DKIM-RFC6376.md:361 | checkbox | `s=` — service type (colon-separated, default: "*"). Must include "email" or "*" | 5 | src/dkim/key.rs:292 | 77373aa | DONE |
+| CHK-443 | 02-DKIM-RFC6376.md:362 | checkbox | `t=` — flags (colon-separated): | 5 | src/dkim/key.rs:150 | 77373aa | DONE |
+| CHK-444 | 02-DKIM-RFC6376.md:363 | checkbox | `y` — testing mode (key valid, but results are informational) | 5 | src/dkim/key.rs:156 | 77373aa | DONE |
+| CHK-445 | 02-DKIM-RFC6376.md:364 | checkbox | `s` — strict mode (i= domain must exactly match d=, not subdomain) | 5 | src/dkim/key.rs:164 | 77373aa | DONE |
+| CHK-446 | 02-DKIM-RFC6376.md:365 | checkbox | Unknown tags: ignore (forward compatibility) | 5 | src/dkim/key.rs:247 | 77373aa | DONE |
+| CHK-447 | 02-DKIM-RFC6376.md:369 | checkbox | RSA: SubjectPublicKeyInfo DER format, base64 encoded | 5 | src/dkim/key.rs:303 | 77373aa | DONE |
+| CHK-448 | 02-DKIM-RFC6376.md:370 | checkbox | Ed25519: raw 32-byte public key, base64 encoded | 5 | src/dkim/key.rs:310 | 77373aa | DONE |
+| CHK-449 | 02-DKIM-RFC6376.md:371 | checkbox | Malformed/undecodable keys → PermFail | 5 | src/dkim/key.rs:317 | 77373aa | DONE |
+| CHK-450 | 02-DKIM-RFC6376.md:421 | checkbox | Minimal valid signature (all required tags only) | 5 | src/dkim/parser.rs:222 | 77373aa | DONE |
+| CHK-451 | 02-DKIM-RFC6376.md:422 | checkbox | All optional tags present | 5 | src/dkim/parser.rs:252 | 77373aa | DONE |
+| CHK-452 | 02-DKIM-RFC6376.md:423 | checkbox | Folded header value (multiline with continuation) | 5 | src/dkim/parser.rs:270 | 77373aa | DONE |
+| CHK-453 | 02-DKIM-RFC6376.md:424 | checkbox | Base64 with embedded whitespace | 5 | src/dkim/parser.rs:280 | 77373aa | DONE |
+| CHK-454 | 02-DKIM-RFC6376.md:425 | checkbox | Missing required tag → PermFail | 5 | src/dkim/parser.rs:293 | 77373aa | DONE |
+| CHK-455 | 02-DKIM-RFC6376.md:426 | checkbox | Duplicate tag → PermFail | 5 | src/dkim/parser.rs:307 | 77373aa | DONE |
+| CHK-456 | 02-DKIM-RFC6376.md:427 | checkbox | Unknown tag → ignored | 5 | src/dkim/parser.rs:318 | 77373aa | DONE |
+| CHK-457 | 02-DKIM-RFC6376.md:428 | checkbox | Invalid algorithm → PermFail | 5 | src/dkim/parser.rs:328 | 77373aa | DONE |
+| CHK-458 | 02-DKIM-RFC6376.md:429 | checkbox | Case-insensitive algorithm: `a=RSA-SHA256` → parsed identical to `a=rsa-sha256` (applies `.to_ascii_lowercase()` before matching) | 5 | src/dkim/parser.rs:340 | 77373aa | DONE |
+| CHK-459 | 02-DKIM-RFC6376.md:430 | checkbox | h= missing "from" → PermFail | 5 | src/dkim/parser.rs:351 | 77373aa | DONE |
+| CHK-460 | 02-DKIM-RFC6376.md:431 | checkbox | i= not subdomain of d= → PermFail | 5 | src/dkim/parser.rs:362 | 77373aa | DONE |
+| CHK-461 | 02-DKIM-RFC6376.md:432 | checkbox | c= parsing: "relaxed/relaxed", "simple", "relaxed" (body defaults to simple) | 5 | src/dkim/parser.rs:284 | 77373aa | DONE |
+| CHK-462 | 02-DKIM-RFC6376.md:436 | checkbox | Minimal key: `p=<base64>` | 5 | src/dkim/key.rs:142 | 77373aa | DONE |
+| CHK-463 | 02-DKIM-RFC6376.md:437 | checkbox | Full key with all tags | 5 | src/dkim/key.rs:155 | 77373aa | DONE |
+| CHK-464 | 02-DKIM-RFC6376.md:438 | checkbox | Revoked key: `p=` (empty) | 5 | src/dkim/key.rs:175 | 77373aa | DONE |
+| CHK-465 | 02-DKIM-RFC6376.md:439 | checkbox | h= tag with sha256 only | 5 | src/dkim/key.rs:183 | 77373aa | DONE |
+| CHK-466 | 02-DKIM-RFC6376.md:440 | checkbox | s= tag with "email" vs "*" vs "other" | 5 | src/dkim/key.rs:193 | 77373aa | DONE |
+| CHK-467 | 02-DKIM-RFC6376.md:441 | checkbox | t= flags: testing, strict, both | 5 | src/dkim/key.rs:222 | 77373aa | DONE |
+| CHK-468 | 02-DKIM-RFC6376.md:442 | checkbox | Unknown key type | 5 | src/dkim/key.rs:250 | 77373aa | DONE |
+| CHK-469 | 02-DKIM-RFC6376.md:443 | checkbox | Ed25519 key (32 bytes) | 5 | src/dkim/key.rs:259 | 77373aa | DONE |
+| CHK-470 | 02-DKIM-RFC6376.md:444 | checkbox | RSA 1024-bit key | 5 | src/dkim/key.rs:268 | 77373aa | DONE |
+| CHK-471 | 02-DKIM-RFC6376.md:445 | checkbox | RSA 2048-bit key | 5 | src/dkim/key.rs:278 | 77373aa | DONE |
 | CHK-472 | 02-DKIM-RFC6376.md:449 | checkbox | Simple header: output unchanged (preserving case) | 6 | - | - | PENDING |
 | CHK-473 | 02-DKIM-RFC6376.md:450 | checkbox | Relaxed header: lowercase name, collapse whitespace, remove trailing WSP, no space around colon | 6 | - | - | PENDING |
 | CHK-474 | 02-DKIM-RFC6376.md:451 | checkbox | Simple body: trailing blank lines removed, empty body → `\r\n` | 6 | - | - | PENDING |
@@ -523,9 +523,9 @@
 | CHK-518 | 02-DKIM-RFC6376.md:584 | checkbox | Cryptography: `ring` 0.17 (RSA + Ed25519 + SHA) | 1 | Cargo.toml:14 | 992b713 | DONE |
 | CHK-519 | 02-DKIM-RFC6376.md:585 | checkbox | Base64: `base64` 0.22 crate | 1 | Cargo.toml:17 | 992b713 | DONE |
 | CHK-520 | 02-DKIM-RFC6376.md:586 | checkbox | DNS resolver: `hickory-resolver` 0.25 (shared via DnsResolver trait) | 1 | Cargo.toml:11 | 992b713 | DONE |
-| CHK-521 | 02-DKIM-RFC6376.md:592 | checkbox | All data types defined with typed enums (FailureKind, PermFailKind, not raw strings) | 5 | - | - | PENDING |
-| CHK-522 | 02-DKIM-RFC6376.md:593 | checkbox | Signature parsing complete with all required and optional tags | 5 | - | - | PENDING |
-| CHK-523 | 02-DKIM-RFC6376.md:594 | checkbox | Key record parsing complete with constraint fields (h=, s=, t=) | 5 | - | - | PENDING |
+| CHK-521 | 02-DKIM-RFC6376.md:592 | checkbox | All data types defined with typed enums (FailureKind, PermFailKind, not raw strings) | 5 | src/dkim/parser.rs:355 | 77373aa | DONE |
+| CHK-522 | 02-DKIM-RFC6376.md:593 | checkbox | Signature parsing complete with all required and optional tags | 5 | src/dkim/parser.rs:460 | 77373aa | DONE |
+| CHK-523 | 02-DKIM-RFC6376.md:594 | checkbox | Key record parsing complete with constraint fields (h=, s=, t=) | 5 | src/dkim/key.rs:323 | 77373aa | DONE |
 | CHK-524 | 02-DKIM-RFC6376.md:595 | checkbox | Both canonicalization methods implemented (simple and relaxed, header and body) | 6 | - | - | PENDING |
 | CHK-525 | 02-DKIM-RFC6376.md:596 | checkbox | Header selection with bottom-up and over-signing | 6 | - | - | PENDING |
 | CHK-526 | 02-DKIM-RFC6376.md:597 | checkbox | Bare LF → CRLF normalization | 6 | - | - | PENDING |
