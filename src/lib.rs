@@ -3,6 +3,7 @@
 //! DNS caching is the caller's responsibility. This library provides
 //! a `DnsResolver` trait — implement it with caching at the resolver layer.
 
+pub mod arc;
 pub mod common;
 pub mod dkim;
 pub mod dmarc;

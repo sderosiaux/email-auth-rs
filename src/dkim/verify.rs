@@ -163,7 +163,7 @@ fn current_timestamp() -> u64 {
 }
 
 /// Enforce key constraints per spec §4.3 (ordered).
-fn enforce_key_constraints(sig: &DkimSignature, key: &DkimPublicKey) -> Option<DkimResult> {
+pub(crate) fn enforce_key_constraints(sig: &DkimSignature, key: &DkimPublicKey) -> Option<DkimResult> {
     // a. Empty p= → KeyRevoked
     if key.revoked {
         return Some(DkimResult::PermFail {
@@ -230,7 +230,7 @@ fn enforce_key_constraints(sig: &DkimSignature, key: &DkimPublicKey) -> Option<D
 }
 
 /// Verify body hash: canonicalize → hash → constant-time compare with bh=.
-fn verify_body_hash(sig: &DkimSignature, body: &[u8]) -> Option<DkimResult> {
+pub(crate) fn verify_body_hash(sig: &DkimSignature, body: &[u8]) -> Option<DkimResult> {
     let normalized = normalize_line_endings(body);
     let canonicalized = canonicalize_body(sig.body_canonicalization, &normalized);
     let limited = apply_body_length_limit(&canonicalized, sig.body_length);
@@ -249,7 +249,7 @@ fn verify_body_hash(sig: &DkimSignature, body: &[u8]) -> Option<DkimResult> {
 }
 
 /// Compute hash using the algorithm's hash function.
-fn compute_hash(algorithm: Algorithm, data: &[u8]) -> Vec<u8> {
+pub(crate) fn compute_hash(algorithm: Algorithm, data: &[u8]) -> Vec<u8> {
     match algorithm.hash_algorithm() {
         HashAlgorithm::Sha256 => {
             let digest = ring::digest::digest(&ring::digest::SHA256, data);
@@ -310,7 +310,7 @@ fn compute_header_hash_input(
 /// Strip SPKI wrapper from RSA public key to get PKCS#1 format.
 /// DKIM p= stores SPKI DER. ring expects PKCS#1 for RSA.
 /// If already PKCS#1, returns as-is.
-fn strip_spki_wrapper(spki_der: &[u8]) -> &[u8] {
+pub(crate) fn strip_spki_wrapper(spki_der: &[u8]) -> &[u8] {
     // SPKI structure: SEQUENCE { SEQUENCE { OID, NULL }, BIT STRING { RSAPublicKey } }
     // Check for SPKI prefix: starts with 0x30 (SEQUENCE), contains RSA OID
     // OID 1.2.840.113549.1.1.1 = 06 09 2a 86 48 86 f7 0d 01 01 01
@@ -373,7 +373,7 @@ fn parse_asn1_length(data: &[u8]) -> (usize, usize) {
 }
 
 /// Verify the cryptographic signature using ring.
-fn verify_signature(
+pub(crate) fn verify_signature(
     algorithm: &Algorithm,
     key: &DkimPublicKey,
     data: &[u8],

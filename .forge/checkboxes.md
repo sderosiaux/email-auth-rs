@@ -776,84 +776,84 @@
 | CHK-771 | 03-DMARC-RFC7489.md:601 | checkbox | Combined EmailAuthenticator with From extraction | 17 | - | - | PENDING |
 | CHK-772 | 03-DMARC-RFC7489.md:602 | checkbox | Unit tests cover: parsing, alignment, policy, org domain, discovery, TempFail | 10 | src/dmarc/eval.rs:232 | 3590bfe | DONE |
 | CHK-773 | 03-DMARC-RFC7489.md:603 | checkbox | No unwrap/expect in library code (tests only) | 10 | src/dmarc/eval.rs:1 | 3590bfe | DONE |
-| CHK-774 | 04-ARC-RFC8617.md:19 | checkbox | `ArcAuthenticationResults` (AAR) — authentication snapshot on arrival | 12 | - | - | PENDING |
-| CHK-775 | 04-ARC-RFC8617.md:20 | checkbox | `ArcMessageSignature` (AMS) — DKIM-like signature over message headers+body | 12 | - | - | PENDING |
-| CHK-776 | 04-ARC-RFC8617.md:21 | checkbox | `ArcSeal` (AS) — signature over ARC headers only, seals the chain | 12 | - | - | PENDING |
-| CHK-777 | 04-ARC-RFC8617.md:34 | checkbox | `instance: u32` — i= tag (required, 1-50) | 12 | - | - | PENDING |
-| CHK-778 | 04-ARC-RFC8617.md:35 | checkbox | `payload: String` — RFC 8601 Authentication-Results content | 12 | - | - | PENDING |
-| CHK-779 | 04-ARC-RFC8617.md:36 | checkbox | Format: `ARC-Authentication-Results: i=<N>; <authres-payload>` | 12 | - | - | PENDING |
-| CHK-780 | 04-ARC-RFC8617.md:40 | checkbox | `instance: u32` — i= tag (required, NOT the DKIM AUID) | 12 | - | - | PENDING |
-| CHK-781 | 04-ARC-RFC8617.md:41 | checkbox | `algorithm: Algorithm` — a= tag (rsa-sha256 primary) | 12 | - | - | PENDING |
-| CHK-782 | 04-ARC-RFC8617.md:42 | checkbox | `signature: Vec<u8>` — b= tag (base64) | 12 | - | - | PENDING |
-| CHK-783 | 04-ARC-RFC8617.md:43 | checkbox | `body_hash: Vec<u8>` — bh= tag (base64) | 12 | - | - | PENDING |
-| CHK-784 | 04-ARC-RFC8617.md:44 | checkbox | `domain: String` — d= tag | 12 | - | - | PENDING |
-| CHK-785 | 04-ARC-RFC8617.md:45 | checkbox | `selector: String` — s= tag | 12 | - | - | PENDING |
-| CHK-786 | 04-ARC-RFC8617.md:46 | checkbox | `signed_headers: Vec<String>` — h= tag (colon-separated) | 12 | - | - | PENDING |
-| CHK-787 | 04-ARC-RFC8617.md:47 | checkbox | `canonicalization: (CanonicalizationMethod, CanonicalizationMethod)` — c= tag | 12 | - | - | PENDING |
-| CHK-788 | 04-ARC-RFC8617.md:48 | checkbox | `timestamp: Option<u64>` — t= tag | 12 | - | - | PENDING |
-| CHK-789 | 04-ARC-RFC8617.md:49 | checkbox | `body_length: Option<u64>` — l= tag | 12 | - | - | PENDING |
-| CHK-790 | 04-ARC-RFC8617.md:50 | checkbox | **NO v= tag** (unlike DKIM-Signature) | 12 | - | - | PENDING |
-| CHK-791 | 04-ARC-RFC8617.md:51 | checkbox | h= MUST NOT include Authentication-Results or ARC-* headers | 12 | - | - | PENDING |
-| CHK-792 | 04-ARC-RFC8617.md:52 | checkbox | h= SHOULD include existing DKIM-Signature headers | 12 | - | - | PENDING |
-| CHK-793 | 04-ARC-RFC8617.md:56 | checkbox | `instance: u32` — i= tag (required) | 12 | - | - | PENDING |
-| CHK-794 | 04-ARC-RFC8617.md:57 | checkbox | `cv: ChainValidationStatus` — cv= tag (required: "none", "pass", "fail") | 12 | - | - | PENDING |
-| CHK-795 | 04-ARC-RFC8617.md:58 | checkbox | `algorithm: Algorithm` — a= tag | 12 | - | - | PENDING |
-| CHK-796 | 04-ARC-RFC8617.md:59 | checkbox | `signature: Vec<u8>` — b= tag (base64) | 12 | - | - | PENDING |
-| CHK-797 | 04-ARC-RFC8617.md:60 | checkbox | `domain: String` — d= tag | 12 | - | - | PENDING |
-| CHK-798 | 04-ARC-RFC8617.md:61 | checkbox | `selector: String` — s= tag | 12 | - | - | PENDING |
-| CHK-799 | 04-ARC-RFC8617.md:62 | checkbox | `timestamp: Option<u64>` — t= tag | 12 | - | - | PENDING |
-| CHK-800 | 04-ARC-RFC8617.md:63 | checkbox | **Allowed tags ONLY: i, cv, a, b, d, s, t** | 12 | - | - | PENDING |
-| CHK-801 | 04-ARC-RFC8617.md:64 | checkbox | h= tag present → MUST fail validation | 12 | - | - | PENDING |
-| CHK-802 | 04-ARC-RFC8617.md:65 | checkbox | **NO body hash** — AS does not cover message body | 12 | - | - | PENDING |
-| CHK-803 | 04-ARC-RFC8617.md:66 | checkbox | **ONLY relaxed header canonicalization** — no body canonicalization | 12 | - | - | PENDING |
-| CHK-804 | 04-ARC-RFC8617.md:99 | checkbox | Collect all ARC-Authentication-Results, ARC-Message-Signature, ARC-Seal headers | 12 | - | - | PENDING |
-| CHK-805 | 04-ARC-RFC8617.md:100 | checkbox | Group by instance number (i= tag) | 12 | - | - | PENDING |
-| CHK-806 | 04-ARC-RFC8617.md:101 | checkbox | Each instance MUST have exactly one of each header type | 12 | - | - | PENDING |
-| CHK-807 | 04-ARC-RFC8617.md:102 | checkbox | Maximum 50 ARC Sets (exceeding → Fail) | 12 | - | - | PENDING |
-| CHK-808 | 04-ARC-RFC8617.md:103 | checkbox | Instance values MUST form continuous sequence 1..N (no gaps, no duplicates) | 12 | - | - | PENDING |
-| CHK-809 | 04-ARC-RFC8617.md:107 | checkbox | AMS: same tag=value format as DKIM-Signature (reuse `parse_tags`) | 12 | - | - | PENDING |
-| CHK-810 | 04-ARC-RFC8617.md:108 | checkbox | AS: same tag=value format but restricted tag set | 12 | - | - | PENDING |
-| CHK-811 | 04-ARC-RFC8617.md:109 | checkbox | AAR: `i=<N>; <authres-payload>` — parse instance, rest is opaque | 12 | - | - | PENDING |
-| CHK-812 | 04-ARC-RFC8617.md:113 | checkbox | AMS required: i, a, b, bh, d, s, h | 12 | - | - | PENDING |
-| CHK-813 | 04-ARC-RFC8617.md:114 | checkbox | AMS optional: c, t, l | 12 | - | - | PENDING |
-| CHK-814 | 04-ARC-RFC8617.md:115 | checkbox | AS required: i, cv, a, b, d, s | 12 | - | - | PENDING |
-| CHK-815 | 04-ARC-RFC8617.md:116 | checkbox | AS optional: t | 12 | - | - | PENDING |
-| CHK-816 | 04-ARC-RFC8617.md:117 | checkbox | AAR required: i | 12 | - | - | PENDING |
-| CHK-817 | 04-ARC-RFC8617.md:121 | checkbox | Missing required tag | 12 | - | - | PENDING |
-| CHK-818 | 04-ARC-RFC8617.md:122 | checkbox | Duplicate tag | 12 | - | - | PENDING |
-| CHK-819 | 04-ARC-RFC8617.md:123 | checkbox | Instance number outside 1-50 | 12 | - | - | PENDING |
-| CHK-820 | 04-ARC-RFC8617.md:124 | checkbox | Malformed base64 (b=, bh=) | 12 | - | - | PENDING |
-| CHK-821 | 04-ARC-RFC8617.md:125 | checkbox | Unknown algorithm | 12 | - | - | PENDING |
-| CHK-822 | 04-ARC-RFC8617.md:126 | checkbox | AS header with h= tag present | 12 | - | - | PENDING |
-| CHK-823 | 04-ARC-RFC8617.md:127 | checkbox | Multiple headers with same instance and type | 12 | - | - | PENDING |
-| CHK-824 | 04-ARC-RFC8617.md:128 | checkbox | Instance gaps (e.g., 1, 2, 4 — missing 3) | 12 | - | - | PENDING |
-| CHK-825 | 04-ARC-RFC8617.md:138 | checkbox | If none exist → status="none", STOP | 12 | - | - | PENDING |
-| CHK-826 | 04-ARC-RFC8617.md:139 | checkbox | If >50 sets → status="fail", STOP | 12 | - | - | PENDING |
-| CHK-827 | 04-ARC-RFC8617.md:140 | checkbox | Let N = highest instance value | 12 | - | - | PENDING |
-| CHK-828 | 04-ARC-RFC8617.md:144 | checkbox | If AS(N) has cv=fail → status="fail", STOP | 12 | - | - | PENDING |
-| CHK-829 | 04-ARC-RFC8617.md:148 | checkbox | Each ARC Set has exactly one AAR, AMS, AS | 12 | - | - | PENDING |
-| CHK-830 | 04-ARC-RFC8617.md:149 | checkbox | Instances form continuous 1..N | 12 | - | - | PENDING |
-| CHK-831 | 04-ARC-RFC8617.md:150 | checkbox | Instance 1: cv=none | 12 | - | - | PENDING |
-| CHK-832 | 04-ARC-RFC8617.md:151 | checkbox | Instance >1: cv=pass (not "fail" or "none") | 12 | - | - | PENDING |
-| CHK-833 | 04-ARC-RFC8617.md:152 | checkbox | Any violation → status="fail", STOP | 12 | - | - | PENDING |
-| CHK-834 | 04-ARC-RFC8617.md:156 | checkbox | Validate AMS(N) using DKIM verification algorithm (RFC 6376 Section 5) | 12 | - | - | PENDING |
-| CHK-835 | 04-ARC-RFC8617.md:157 | checkbox | DNS key lookup at `<selector>._domainkey.<domain>` | 12 | - | - | PENDING |
-| CHK-836 | 04-ARC-RFC8617.md:158 | checkbox | If fails → status="fail", STOP | 12 | - | - | PENDING |
-| CHK-837 | 04-ARC-RFC8617.md:162 | checkbox | From instance N-1 down to 1: validate each AMS | 12 | - | - | PENDING |
-| CHK-838 | 04-ARC-RFC8617.md:163 | checkbox | If instance M fails → oldest-pass = M+1, go to Step 6 | 12 | - | - | PENDING |
-| CHK-839 | 04-ARC-RFC8617.md:164 | checkbox | If all pass → oldest-pass = 0 | 12 | - | - | PENDING |
-| CHK-840 | 04-ARC-RFC8617.md:168 | checkbox | From instance N down to 1: validate each AS | 12 | - | - | PENDING |
-| CHK-841 | 04-ARC-RFC8617.md:169 | checkbox | Build signature input: all ARC headers from instance 1 to i, in order (AAR, AMS, AS per set) | 12 | - | - | PENDING |
-| CHK-842 | 04-ARC-RFC8617.md:170 | checkbox | Strip b= from AS being validated | 12 | - | - | PENDING |
-| CHK-843 | 04-ARC-RFC8617.md:171 | checkbox | Use **relaxed header canonicalization only** | 12 | - | - | PENDING |
-| CHK-844 | 04-ARC-RFC8617.md:172 | checkbox | If any fails → status="fail", STOP | 12 | - | - | PENDING |
-| CHK-845 | 04-ARC-RFC8617.md:176 | checkbox | status="pass" | 12 | - | - | PENDING |
-| CHK-846 | 04-ARC-RFC8617.md:184 | checkbox | Include ARC Sets 1 through i in increasing order | 12 | - | - | PENDING |
-| CHK-847 | 04-ARC-RFC8617.md:185 | checkbox | Within each set, header order: AAR → AMS → AS | 12 | - | - | PENDING |
-| CHK-848 | 04-ARC-RFC8617.md:186 | checkbox | Apply relaxed header canonicalization to each | 12 | - | - | PENDING |
-| CHK-849 | 04-ARC-RFC8617.md:187 | checkbox | Strip b= value from the AS being validated/signed (same b= stripping as DKIM) | 12 | - | - | PENDING |
-| CHK-850 | 04-ARC-RFC8617.md:188 | checkbox | **NO body content** in AS signature input | 12 | - | - | PENDING |
-| CHK-851 | 04-ARC-RFC8617.md:189 | checkbox | Last header (the AS being validated) WITHOUT trailing CRLF | 12 | - | - | PENDING |
+| CHK-774 | 04-ARC-RFC8617.md:19 | checkbox | `ArcAuthenticationResults` (AAR) — authentication snapshot on arrival | 12 | - | - | DONE |
+| CHK-775 | 04-ARC-RFC8617.md:20 | checkbox | `ArcMessageSignature` (AMS) — DKIM-like signature over message headers+body | 12 | - | - | DONE |
+| CHK-776 | 04-ARC-RFC8617.md:21 | checkbox | `ArcSeal` (AS) — signature over ARC headers only, seals the chain | 12 | - | - | DONE |
+| CHK-777 | 04-ARC-RFC8617.md:34 | checkbox | `instance: u32` — i= tag (required, 1-50) | 12 | - | - | DONE |
+| CHK-778 | 04-ARC-RFC8617.md:35 | checkbox | `payload: String` — RFC 8601 Authentication-Results content | 12 | - | - | DONE |
+| CHK-779 | 04-ARC-RFC8617.md:36 | checkbox | Format: `ARC-Authentication-Results: i=<N>; <authres-payload>` | 12 | - | - | DONE |
+| CHK-780 | 04-ARC-RFC8617.md:40 | checkbox | `instance: u32` — i= tag (required, NOT the DKIM AUID) | 12 | - | - | DONE |
+| CHK-781 | 04-ARC-RFC8617.md:41 | checkbox | `algorithm: Algorithm` — a= tag (rsa-sha256 primary) | 12 | - | - | DONE |
+| CHK-782 | 04-ARC-RFC8617.md:42 | checkbox | `signature: Vec<u8>` — b= tag (base64) | 12 | - | - | DONE |
+| CHK-783 | 04-ARC-RFC8617.md:43 | checkbox | `body_hash: Vec<u8>` — bh= tag (base64) | 12 | - | - | DONE |
+| CHK-784 | 04-ARC-RFC8617.md:44 | checkbox | `domain: String` — d= tag | 12 | - | - | DONE |
+| CHK-785 | 04-ARC-RFC8617.md:45 | checkbox | `selector: String` — s= tag | 12 | - | - | DONE |
+| CHK-786 | 04-ARC-RFC8617.md:46 | checkbox | `signed_headers: Vec<String>` — h= tag (colon-separated) | 12 | - | - | DONE |
+| CHK-787 | 04-ARC-RFC8617.md:47 | checkbox | `canonicalization: (CanonicalizationMethod, CanonicalizationMethod)` — c= tag | 12 | - | - | DONE |
+| CHK-788 | 04-ARC-RFC8617.md:48 | checkbox | `timestamp: Option<u64>` — t= tag | 12 | - | - | DONE |
+| CHK-789 | 04-ARC-RFC8617.md:49 | checkbox | `body_length: Option<u64>` — l= tag | 12 | - | - | DONE |
+| CHK-790 | 04-ARC-RFC8617.md:50 | checkbox | **NO v= tag** (unlike DKIM-Signature) | 12 | - | - | DONE |
+| CHK-791 | 04-ARC-RFC8617.md:51 | checkbox | h= MUST NOT include Authentication-Results or ARC-* headers | 12 | - | - | DONE |
+| CHK-792 | 04-ARC-RFC8617.md:52 | checkbox | h= SHOULD include existing DKIM-Signature headers | 12 | - | - | DONE |
+| CHK-793 | 04-ARC-RFC8617.md:56 | checkbox | `instance: u32` — i= tag (required) | 12 | - | - | DONE |
+| CHK-794 | 04-ARC-RFC8617.md:57 | checkbox | `cv: ChainValidationStatus` — cv= tag (required: "none", "pass", "fail") | 12 | - | - | DONE |
+| CHK-795 | 04-ARC-RFC8617.md:58 | checkbox | `algorithm: Algorithm` — a= tag | 12 | - | - | DONE |
+| CHK-796 | 04-ARC-RFC8617.md:59 | checkbox | `signature: Vec<u8>` — b= tag (base64) | 12 | - | - | DONE |
+| CHK-797 | 04-ARC-RFC8617.md:60 | checkbox | `domain: String` — d= tag | 12 | - | - | DONE |
+| CHK-798 | 04-ARC-RFC8617.md:61 | checkbox | `selector: String` — s= tag | 12 | - | - | DONE |
+| CHK-799 | 04-ARC-RFC8617.md:62 | checkbox | `timestamp: Option<u64>` — t= tag | 12 | - | - | DONE |
+| CHK-800 | 04-ARC-RFC8617.md:63 | checkbox | **Allowed tags ONLY: i, cv, a, b, d, s, t** | 12 | - | - | DONE |
+| CHK-801 | 04-ARC-RFC8617.md:64 | checkbox | h= tag present → MUST fail validation | 12 | - | - | DONE |
+| CHK-802 | 04-ARC-RFC8617.md:65 | checkbox | **NO body hash** — AS does not cover message body | 12 | - | - | DONE |
+| CHK-803 | 04-ARC-RFC8617.md:66 | checkbox | **ONLY relaxed header canonicalization** — no body canonicalization | 12 | - | - | DONE |
+| CHK-804 | 04-ARC-RFC8617.md:99 | checkbox | Collect all ARC-Authentication-Results, ARC-Message-Signature, ARC-Seal headers | 12 | - | - | DONE |
+| CHK-805 | 04-ARC-RFC8617.md:100 | checkbox | Group by instance number (i= tag) | 12 | - | - | DONE |
+| CHK-806 | 04-ARC-RFC8617.md:101 | checkbox | Each instance MUST have exactly one of each header type | 12 | - | - | DONE |
+| CHK-807 | 04-ARC-RFC8617.md:102 | checkbox | Maximum 50 ARC Sets (exceeding → Fail) | 12 | - | - | DONE |
+| CHK-808 | 04-ARC-RFC8617.md:103 | checkbox | Instance values MUST form continuous sequence 1..N (no gaps, no duplicates) | 12 | - | - | DONE |
+| CHK-809 | 04-ARC-RFC8617.md:107 | checkbox | AMS: same tag=value format as DKIM-Signature (reuse `parse_tags`) | 12 | - | - | DONE |
+| CHK-810 | 04-ARC-RFC8617.md:108 | checkbox | AS: same tag=value format but restricted tag set | 12 | - | - | DONE |
+| CHK-811 | 04-ARC-RFC8617.md:109 | checkbox | AAR: `i=<N>; <authres-payload>` — parse instance, rest is opaque | 12 | - | - | DONE |
+| CHK-812 | 04-ARC-RFC8617.md:113 | checkbox | AMS required: i, a, b, bh, d, s, h | 12 | - | - | DONE |
+| CHK-813 | 04-ARC-RFC8617.md:114 | checkbox | AMS optional: c, t, l | 12 | - | - | DONE |
+| CHK-814 | 04-ARC-RFC8617.md:115 | checkbox | AS required: i, cv, a, b, d, s | 12 | - | - | DONE |
+| CHK-815 | 04-ARC-RFC8617.md:116 | checkbox | AS optional: t | 12 | - | - | DONE |
+| CHK-816 | 04-ARC-RFC8617.md:117 | checkbox | AAR required: i | 12 | - | - | DONE |
+| CHK-817 | 04-ARC-RFC8617.md:121 | checkbox | Missing required tag | 12 | - | - | DONE |
+| CHK-818 | 04-ARC-RFC8617.md:122 | checkbox | Duplicate tag | 12 | - | - | DONE |
+| CHK-819 | 04-ARC-RFC8617.md:123 | checkbox | Instance number outside 1-50 | 12 | - | - | DONE |
+| CHK-820 | 04-ARC-RFC8617.md:124 | checkbox | Malformed base64 (b=, bh=) | 12 | - | - | DONE |
+| CHK-821 | 04-ARC-RFC8617.md:125 | checkbox | Unknown algorithm | 12 | - | - | DONE |
+| CHK-822 | 04-ARC-RFC8617.md:126 | checkbox | AS header with h= tag present | 12 | - | - | DONE |
+| CHK-823 | 04-ARC-RFC8617.md:127 | checkbox | Multiple headers with same instance and type | 12 | - | - | DONE |
+| CHK-824 | 04-ARC-RFC8617.md:128 | checkbox | Instance gaps (e.g., 1, 2, 4 — missing 3) | 12 | - | - | DONE |
+| CHK-825 | 04-ARC-RFC8617.md:138 | checkbox | If none exist → status="none", STOP | 12 | - | - | DONE |
+| CHK-826 | 04-ARC-RFC8617.md:139 | checkbox | If >50 sets → status="fail", STOP | 12 | - | - | DONE |
+| CHK-827 | 04-ARC-RFC8617.md:140 | checkbox | Let N = highest instance value | 12 | - | - | DONE |
+| CHK-828 | 04-ARC-RFC8617.md:144 | checkbox | If AS(N) has cv=fail → status="fail", STOP | 12 | - | - | DONE |
+| CHK-829 | 04-ARC-RFC8617.md:148 | checkbox | Each ARC Set has exactly one AAR, AMS, AS | 12 | - | - | DONE |
+| CHK-830 | 04-ARC-RFC8617.md:149 | checkbox | Instances form continuous 1..N | 12 | - | - | DONE |
+| CHK-831 | 04-ARC-RFC8617.md:150 | checkbox | Instance 1: cv=none | 12 | - | - | DONE |
+| CHK-832 | 04-ARC-RFC8617.md:151 | checkbox | Instance >1: cv=pass (not "fail" or "none") | 12 | - | - | DONE |
+| CHK-833 | 04-ARC-RFC8617.md:152 | checkbox | Any violation → status="fail", STOP | 12 | - | - | DONE |
+| CHK-834 | 04-ARC-RFC8617.md:156 | checkbox | Validate AMS(N) using DKIM verification algorithm (RFC 6376 Section 5) | 12 | - | - | DONE |
+| CHK-835 | 04-ARC-RFC8617.md:157 | checkbox | DNS key lookup at `<selector>._domainkey.<domain>` | 12 | - | - | DONE |
+| CHK-836 | 04-ARC-RFC8617.md:158 | checkbox | If fails → status="fail", STOP | 12 | - | - | DONE |
+| CHK-837 | 04-ARC-RFC8617.md:162 | checkbox | From instance N-1 down to 1: validate each AMS | 12 | - | - | DONE |
+| CHK-838 | 04-ARC-RFC8617.md:163 | checkbox | If instance M fails → oldest-pass = M+1, go to Step 6 | 12 | - | - | DONE |
+| CHK-839 | 04-ARC-RFC8617.md:164 | checkbox | If all pass → oldest-pass = 0 | 12 | - | - | DONE |
+| CHK-840 | 04-ARC-RFC8617.md:168 | checkbox | From instance N down to 1: validate each AS | 12 | - | - | DONE |
+| CHK-841 | 04-ARC-RFC8617.md:169 | checkbox | Build signature input: all ARC headers from instance 1 to i, in order (AAR, AMS, AS per set) | 12 | - | - | DONE |
+| CHK-842 | 04-ARC-RFC8617.md:170 | checkbox | Strip b= from AS being validated | 12 | - | - | DONE |
+| CHK-843 | 04-ARC-RFC8617.md:171 | checkbox | Use **relaxed header canonicalization only** | 12 | - | - | DONE |
+| CHK-844 | 04-ARC-RFC8617.md:172 | checkbox | If any fails → status="fail", STOP | 12 | - | - | DONE |
+| CHK-845 | 04-ARC-RFC8617.md:176 | checkbox | status="pass" | 12 | - | - | DONE |
+| CHK-846 | 04-ARC-RFC8617.md:184 | checkbox | Include ARC Sets 1 through i in increasing order | 12 | - | - | DONE |
+| CHK-847 | 04-ARC-RFC8617.md:185 | checkbox | Within each set, header order: AAR → AMS → AS | 12 | - | - | DONE |
+| CHK-848 | 04-ARC-RFC8617.md:186 | checkbox | Apply relaxed header canonicalization to each | 12 | - | - | DONE |
+| CHK-849 | 04-ARC-RFC8617.md:187 | checkbox | Strip b= value from the AS being validated/signed (same b= stripping as DKIM) | 12 | - | - | DONE |
+| CHK-850 | 04-ARC-RFC8617.md:188 | checkbox | **NO body content** in AS signature input | 12 | - | - | DONE |
+| CHK-851 | 04-ARC-RFC8617.md:189 | checkbox | Last header (the AS being validated) WITHOUT trailing CRLF | 12 | - | - | DONE |
 | CHK-852 | 04-ARC-RFC8617.md:197 | checkbox | Perform ALL message modifications (including DKIM signing) BEFORE sealing | 13 | - | - | PENDING |
 | CHK-853 | 04-ARC-RFC8617.md:198 | checkbox | ARC sealing is the LAST operation | 13 | - | - | PENDING |
 | CHK-854 | 04-ARC-RFC8617.md:202 | checkbox | If existing chain has highest AS with cv=fail → STOP, do NOT seal | 13 | - | - | PENDING |
@@ -877,23 +877,23 @@
 | CHK-872 | 04-ARC-RFC8617.md:238 | checkbox | Format: `ARC-Seal: i=<N>; cv=<cv>; a=rsa-sha256; d=<d>; s=<s>; b=<b>` | 13 | - | - | PENDING |
 | CHK-873 | 04-ARC-RFC8617.md:242 | checkbox | Add AAR, AMS, AS to message | 13 | - | - | PENDING |
 | CHK-874 | 04-ARC-RFC8617.md:243 | checkbox | Added at message exit (after all processing) | 13 | - | - | PENDING |
-| CHK-875 | 04-ARC-RFC8617.md:312 | checkbox | Valid AAR with instance 1 | 12 | - | - | PENDING |
-| CHK-876 | 04-ARC-RFC8617.md:313 | checkbox | Valid AMS with all required tags | 12 | - | - | PENDING |
-| CHK-877 | 04-ARC-RFC8617.md:314 | checkbox | Valid AS with cv=none, cv=pass, cv=fail | 12 | - | - | PENDING |
-| CHK-878 | 04-ARC-RFC8617.md:315 | checkbox | AS with h= tag → Fail | 12 | - | - | PENDING |
-| CHK-879 | 04-ARC-RFC8617.md:316 | checkbox | Missing required tag → Fail | 12 | - | - | PENDING |
-| CHK-880 | 04-ARC-RFC8617.md:317 | checkbox | Instance 0 or 51 → Fail | 12 | - | - | PENDING |
-| CHK-881 | 04-ARC-RFC8617.md:318 | checkbox | Duplicate tags → Fail | 12 | - | - | PENDING |
-| CHK-882 | 04-ARC-RFC8617.md:322 | checkbox | Single ARC Set (i=1, cv=none) → Pass | 12 | - | - | PENDING |
-| CHK-883 | 04-ARC-RFC8617.md:323 | checkbox | Three sets (i=1,2,3; cv=none,pass,pass) → Pass | 12 | - | - | PENDING |
-| CHK-884 | 04-ARC-RFC8617.md:324 | checkbox | Gap in instances (1,2,4) → Fail | 12 | - | - | PENDING |
-| CHK-885 | 04-ARC-RFC8617.md:325 | checkbox | Duplicate instances → Fail | 12 | - | - | PENDING |
-| CHK-886 | 04-ARC-RFC8617.md:326 | checkbox | Instance 1 with cv=pass → Fail | 12 | - | - | PENDING |
-| CHK-887 | 04-ARC-RFC8617.md:327 | checkbox | Instance 2 with cv=none → Fail | 12 | - | - | PENDING |
-| CHK-888 | 04-ARC-RFC8617.md:328 | checkbox | Highest instance cv=fail → Fail immediately | 12 | - | - | PENDING |
-| CHK-889 | 04-ARC-RFC8617.md:329 | checkbox | >50 sets → Fail | 12 | - | - | PENDING |
-| CHK-890 | 04-ARC-RFC8617.md:330 | checkbox | Most recent AMS fails → Fail | 12 | - | - | PENDING |
-| CHK-891 | 04-ARC-RFC8617.md:331 | checkbox | Any AS fails → Fail | 12 | - | - | PENDING |
+| CHK-875 | 04-ARC-RFC8617.md:312 | checkbox | Valid AAR with instance 1 | 12 | - | - | DONE |
+| CHK-876 | 04-ARC-RFC8617.md:313 | checkbox | Valid AMS with all required tags | 12 | - | - | DONE |
+| CHK-877 | 04-ARC-RFC8617.md:314 | checkbox | Valid AS with cv=none, cv=pass, cv=fail | 12 | - | - | DONE |
+| CHK-878 | 04-ARC-RFC8617.md:315 | checkbox | AS with h= tag → Fail | 12 | - | - | DONE |
+| CHK-879 | 04-ARC-RFC8617.md:316 | checkbox | Missing required tag → Fail | 12 | - | - | DONE |
+| CHK-880 | 04-ARC-RFC8617.md:317 | checkbox | Instance 0 or 51 → Fail | 12 | - | - | DONE |
+| CHK-881 | 04-ARC-RFC8617.md:318 | checkbox | Duplicate tags → Fail | 12 | - | - | DONE |
+| CHK-882 | 04-ARC-RFC8617.md:322 | checkbox | Single ARC Set (i=1, cv=none) → Pass | 12 | - | - | DONE |
+| CHK-883 | 04-ARC-RFC8617.md:323 | checkbox | Three sets (i=1,2,3; cv=none,pass,pass) → Pass | 12 | - | - | DONE |
+| CHK-884 | 04-ARC-RFC8617.md:324 | checkbox | Gap in instances (1,2,4) → Fail | 12 | - | - | DONE |
+| CHK-885 | 04-ARC-RFC8617.md:325 | checkbox | Duplicate instances → Fail | 12 | - | - | DONE |
+| CHK-886 | 04-ARC-RFC8617.md:326 | checkbox | Instance 1 with cv=pass → Fail | 12 | - | - | DONE |
+| CHK-887 | 04-ARC-RFC8617.md:327 | checkbox | Instance 2 with cv=none → Fail | 12 | - | - | DONE |
+| CHK-888 | 04-ARC-RFC8617.md:328 | checkbox | Highest instance cv=fail → Fail immediately | 12 | - | - | DONE |
+| CHK-889 | 04-ARC-RFC8617.md:329 | checkbox | >50 sets → Fail | 12 | - | - | DONE |
+| CHK-890 | 04-ARC-RFC8617.md:330 | checkbox | Most recent AMS fails → Fail | 12 | - | - | DONE |
+| CHK-891 | 04-ARC-RFC8617.md:331 | checkbox | Any AS fails → Fail | 12 | - | - | DONE |
 | CHK-892 | 04-ARC-RFC8617.md:335 | checkbox | Seal with no existing chain → i=1, cv=none | 13 | - | - | PENDING |
 | CHK-893 | 04-ARC-RFC8617.md:336 | checkbox | Seal with valid chain (i=2) → i=3, cv=pass | 13 | - | - | PENDING |
 | CHK-894 | 04-ARC-RFC8617.md:337 | checkbox | Incoming cv=fail → do not seal | 13 | - | - | PENDING |
@@ -904,19 +904,19 @@
 | CHK-899 | 04-ARC-RFC8617.md:345 | checkbox | Seal → tamper ARC header → validate AS fails | 13 | - | - | PENDING |
 | CHK-900 | 04-ARC-RFC8617.md:346 | checkbox | Multi-hop: 3 sealers each adding ARC set, final `ArcVerifier::validate_chain()` returns Pass with all 3 sets | 13 | - | - | PENDING |
 | CHK-901 | 04-ARC-RFC8617.md:347 | checkbox | Multi-hop body modification: sealer 1 signs, intermediary modifies body, sealer 2 re-signs → validate_chain returns Pass for set 2 AMS but oldest_pass > 1 | 13 | - | - | PENDING |
-| CHK-902 | 04-ARC-RFC8617.md:353 | checkbox | Up to 2*N DNS queries for N sets — implement timeouts | 12 | - | - | PENDING |
-| CHK-903 | 04-ARC-RFC8617.md:354 | checkbox | ARC conveys authentication assessment, NOT authorization — receivers must maintain trusted sealer lists | 12 | - | - | PENDING |
-| CHK-904 | 04-ARC-RFC8617.md:355 | checkbox | cv=fail propagates — once failed, subsequent handlers should not seal with cv=pass | 12 | - | - | PENDING |
-| CHK-905 | 04-ARC-RFC8617.md:356 | checkbox | Replay: intact ARC chains can be replayed; ARC does not prevent this | 12 | - | - | PENDING |
-| CHK-906 | 04-ARC-RFC8617.md:362 | checkbox | DKIM module (canonicalization, signing, verification, key parsing) | 12 | - | - | PENDING |
-| CHK-907 | 04-ARC-RFC8617.md:363 | checkbox | DNS resolver (shared DnsResolver trait) | 12 | - | - | PENDING |
-| CHK-908 | 04-ARC-RFC8617.md:364 | checkbox | Crypto: ring 0.17 (RSA-SHA256, same as DKIM) | 12 | - | - | PENDING |
-| CHK-909 | 04-ARC-RFC8617.md:365 | checkbox | Base64: base64 0.22 | 12 | - | - | PENDING |
-| CHK-910 | 04-ARC-RFC8617.md:409 | checkbox | All three ARC header types parsed (AAR, AMS, AS) | 12 | - | - | PENDING |
-| CHK-911 | 04-ARC-RFC8617.md:410 | checkbox | ARC Set grouping by instance with structure validation | 12 | - | - | PENDING |
-| CHK-912 | 04-ARC-RFC8617.md:411 | checkbox | Chain validation algorithm (steps 1-7) complete | 12 | - | - | PENDING |
-| CHK-913 | 04-ARC-RFC8617.md:412 | checkbox | AMS validation reuses DKIM verification | 12 | - | - | PENDING |
-| CHK-914 | 04-ARC-RFC8617.md:413 | checkbox | AS validation with correct signature input ordering | 12 | - | - | PENDING |
+| CHK-902 | 04-ARC-RFC8617.md:353 | checkbox | Up to 2*N DNS queries for N sets — implement timeouts | 12 | - | - | DONE |
+| CHK-903 | 04-ARC-RFC8617.md:354 | checkbox | ARC conveys authentication assessment, NOT authorization — receivers must maintain trusted sealer lists | 12 | - | - | DONE |
+| CHK-904 | 04-ARC-RFC8617.md:355 | checkbox | cv=fail propagates — once failed, subsequent handlers should not seal with cv=pass | 12 | - | - | DONE |
+| CHK-905 | 04-ARC-RFC8617.md:356 | checkbox | Replay: intact ARC chains can be replayed; ARC does not prevent this | 12 | - | - | DONE |
+| CHK-906 | 04-ARC-RFC8617.md:362 | checkbox | DKIM module (canonicalization, signing, verification, key parsing) | 12 | - | - | DONE |
+| CHK-907 | 04-ARC-RFC8617.md:363 | checkbox | DNS resolver (shared DnsResolver trait) | 12 | - | - | DONE |
+| CHK-908 | 04-ARC-RFC8617.md:364 | checkbox | Crypto: ring 0.17 (RSA-SHA256, same as DKIM) | 12 | - | - | DONE |
+| CHK-909 | 04-ARC-RFC8617.md:365 | checkbox | Base64: base64 0.22 | 12 | - | - | DONE |
+| CHK-910 | 04-ARC-RFC8617.md:409 | checkbox | All three ARC header types parsed (AAR, AMS, AS) | 12 | - | - | DONE |
+| CHK-911 | 04-ARC-RFC8617.md:410 | checkbox | ARC Set grouping by instance with structure validation | 12 | - | - | DONE |
+| CHK-912 | 04-ARC-RFC8617.md:411 | checkbox | Chain validation algorithm (steps 1-7) complete | 12 | - | - | DONE |
+| CHK-913 | 04-ARC-RFC8617.md:412 | checkbox | AMS validation reuses DKIM verification | 12 | - | - | DONE |
+| CHK-914 | 04-ARC-RFC8617.md:413 | checkbox | AS validation with correct signature input ordering | 12 | - | - | DONE |
 | CHK-915 | 04-ARC-RFC8617.md:414 | checkbox | Chain sealing (AAR + AMS + AS generation) | 13 | - | - | PENDING |
 | CHK-916 | 04-ARC-RFC8617.md:415 | checkbox | Seal uses DKIM signing primitives | 13 | - | - | PENDING |
 | CHK-917 | 04-ARC-RFC8617.md:416 | checkbox | cv= propagation rules enforced | 13 | - | - | PENDING |
