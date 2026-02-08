@@ -1,8 +1,8 @@
 cycle: 1
 phase: review
 max_cycles: 1
-current_lane: 2
-lane_attempt: 2
+current_lane: 3
+lane_attempt: 1
 max_lane_attempts: 3
 spec_path: /home/claude/code/email-auth/specs
 preserve_paths: []
