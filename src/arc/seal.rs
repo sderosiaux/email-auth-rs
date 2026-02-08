@@ -160,7 +160,19 @@ impl ArcSealer {
         let bh_b64 = BASE64.encode(&body_hash);
 
         let algo_str = algo_to_str(self.algorithm);
-        let h_value = self.headers_to_sign.join(":");
+
+        // Build h= list: start with configured headers, auto-add DKIM-Signature
+        // per spec §5.1: AMS h= MUST include existing DKIM-Signature headers
+        let mut h_names = self.headers_to_sign.clone();
+        let dkim_sig_count = headers
+            .iter()
+            .filter(|(name, _)| name.eq_ignore_ascii_case("dkim-signature"))
+            .count();
+        for _ in 0..dkim_sig_count {
+            h_names.push("dkim-signature".into());
+        }
+
+        let h_value = h_names.join(":");
 
         let now = SystemTime::now()
             .duration_since(UNIX_EPOCH)
@@ -174,6 +186,7 @@ impl ArcSealer {
         );
 
         // Compute AMS signature over selected headers + canonicalized AMS template
+        // Filter out ARC-* headers but keep DKIM-Signature for h= selection
         let non_arc_headers: Vec<(&str, &str)> = headers
             .iter()
             .filter(|(name, _)| {
@@ -187,7 +200,7 @@ impl ArcSealer {
 
         let selected = select_headers(
             CanonicalizationMethod::Relaxed,
-            &self.headers_to_sign,
+            &h_names,
             &non_arc_headers,
         );
 
@@ -897,5 +910,131 @@ mod tests {
             .unwrap();
 
         assert!(seal.contains("cv=none"));
+    }
+
+    // ─── CHK-865: AMS h= MUST include DKIM-Signature headers ────────
+
+    #[tokio::test]
+    async fn ams_h_includes_dkim_signature() {
+        let (pkcs8, pub_key) = gen_ed25519_keypair();
+        let sealer = ArcSealer::ed25519("sealer.com", "arc", &pkcs8).unwrap();
+        let resolver = setup_resolver(&pub_key);
+        let verifier = ArcVerifier::new(resolver);
+
+        // Message with DKIM-Signature headers
+        let mut headers = message_headers();
+        headers.push((
+            "DKIM-Signature",
+            " v=1; a=rsa-sha256; d=example.com; s=sel; h=from; bh=abc; b=xyz",
+        ));
+
+        let body = b"test\r\n";
+
+        let (_, ams, _) = sealer
+            .seal_message(&verifier, &headers, body, "dkim=pass")
+            .await
+            .unwrap();
+
+        // AMS h= must include dkim-signature
+        assert!(
+            ams.contains("dkim-signature"),
+            "AMS h= must include dkim-signature, got: {}",
+            ams
+        );
+    }
+
+    #[tokio::test]
+    async fn ams_h_includes_multiple_dkim_signatures() {
+        let (pkcs8, pub_key) = gen_ed25519_keypair();
+        let sealer = ArcSealer::ed25519("sealer.com", "arc", &pkcs8).unwrap();
+        let resolver = setup_resolver(&pub_key);
+        let verifier = ArcVerifier::new(resolver);
+
+        let mut headers = message_headers();
+        headers.push((
+            "DKIM-Signature",
+            " v=1; a=rsa-sha256; d=example.com; s=sel1; h=from; bh=abc; b=xyz",
+        ));
+        headers.push((
+            "DKIM-Signature",
+            " v=1; a=rsa-sha256; d=example.com; s=sel2; h=from; bh=abc; b=xyz",
+        ));
+
+        let body = b"test\r\n";
+
+        let (_, ams, _) = sealer
+            .seal_message(&verifier, &headers, body, "dkim=pass")
+            .await
+            .unwrap();
+
+        // h= should contain dkim-signature twice
+        let h_start = ams.find("h=").unwrap();
+        let h_end = ams[h_start..].find(';').map(|p| h_start + p).unwrap_or(ams.len());
+        let h_val = &ams[h_start + 2..h_end];
+        let dkim_count = h_val
+            .split(':')
+            .filter(|s| s.trim() == "dkim-signature")
+            .count();
+        assert_eq!(dkim_count, 2, "h= should have 2 dkim-signature entries, got: {}", h_val);
+    }
+
+    #[tokio::test]
+    async fn ams_h_no_dkim_sig_when_none_present() {
+        let (pkcs8, pub_key) = gen_ed25519_keypair();
+        let sealer = ArcSealer::ed25519("sealer.com", "arc", &pkcs8).unwrap();
+        let resolver = setup_resolver(&pub_key);
+        let verifier = ArcVerifier::new(resolver);
+
+        // No DKIM-Signature in message
+        let headers = message_headers();
+        let body = b"test\r\n";
+
+        let (_, ams, _) = sealer
+            .seal_message(&verifier, &headers, body, "spf=pass")
+            .await
+            .unwrap();
+
+        // h= should NOT contain dkim-signature
+        let h_start = ams.find("h=").unwrap();
+        let h_end = ams[h_start..].find(';').map(|p| h_start + p).unwrap_or(ams.len());
+        let h_val = &ams[h_start + 2..h_end];
+        assert!(
+            !h_val.contains("dkim-signature"),
+            "h= should not have dkim-signature when none in message"
+        );
+    }
+
+    // ─── CHK-865: Seal-then-validate roundtrip with DKIM-Signature ──
+
+    #[tokio::test]
+    async fn seal_validate_roundtrip_with_dkim_sig() {
+        let (pkcs8, pub_key) = gen_ed25519_keypair();
+        let sealer = ArcSealer::ed25519("sealer.com", "arc", &pkcs8).unwrap();
+        let resolver = setup_resolver(&pub_key);
+        let verifier = ArcVerifier::new(resolver.clone());
+
+        let mut headers = message_headers();
+        headers.push((
+            "DKIM-Signature",
+            " v=1; a=rsa-sha256; d=example.com; s=sel; h=from; bh=abc; b=xyz",
+        ));
+        let body = b"with dkim sig\r\n";
+
+        let (aar, ams, seal) = sealer
+            .seal_message(&verifier, &headers, body, "dkim=pass")
+            .await
+            .unwrap();
+
+        // Prepend ARC headers and validate
+        let mut all_headers: Vec<(&str, &str)> = vec![
+            ("ARC-Seal", &seal),
+            ("ARC-Message-Signature", &ams),
+            ("ARC-Authentication-Results", &aar),
+        ];
+        all_headers.extend(headers);
+
+        let verifier2 = ArcVerifier::new(resolver);
+        let result = verifier2.validate_chain(&all_headers, body).await;
+        assert_eq!(result.status, ArcResult::Pass);
     }
 }

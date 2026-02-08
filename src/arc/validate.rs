@@ -854,6 +854,164 @@ mod tests {
         assert!(matches!(result.status, ArcResult::Fail { .. }));
     }
 
+    // ─── CHK-901: Body modification → oldest_pass > 0 ─────────────
+
+    #[tokio::test]
+    async fn oldest_pass_after_body_modification() {
+        // Construct 2-hop chain where AMS(1) was signed over original body
+        // and AMS(2) over modified body. Both AS signatures valid.
+        // Validator should return Pass with oldest_pass = 2.
+        let (pkcs8, pub_key) = gen_ed25519_keypair();
+
+        let original_body = b"original body\r\n";
+        let modified_body = b"modified body\r\n";
+        let message_headers: Vec<(String, String)> = vec![
+            ("From".to_string(), "s@example.com".to_string()),
+            ("Subject".to_string(), "test".to_string()),
+        ];
+
+        // ─── Hop 1: AMS signed over original body ───
+        let normalized_orig = normalize_line_endings(original_body);
+        let canon_orig = canonicalize_body(CanonicalizationMethod::Relaxed, &normalized_orig);
+        let bh_orig = compute_hash(Algorithm::Ed25519Sha256, &canon_orig);
+
+        let ams1_raw_no_b = format!(
+            "i=1; a=ed25519-sha256; d=sealer.com; s=arc; c=relaxed/relaxed; h=from:subject; bh={}; b=",
+            b64(&bh_orig),
+        );
+
+        let non_arc: Vec<(&str, &str)> = message_headers
+            .iter()
+            .map(|(n, v)| (n.as_str(), v.as_str()))
+            .collect();
+        let selected = select_headers(
+            CanonicalizationMethod::Relaxed,
+            &["from".to_string(), "subject".to_string()],
+            &non_arc,
+        );
+        let mut ams1_input = Vec::new();
+        for h in &selected {
+            ams1_input.extend_from_slice(h.as_bytes());
+        }
+        let canon_ams1 = canonicalize_header(
+            CanonicalizationMethod::Relaxed,
+            "arc-message-signature",
+            &ams1_raw_no_b,
+        );
+        ams1_input.extend_from_slice(canon_ams1.as_bytes());
+        let ams1_sig = ed25519_sign(&pkcs8, &ams1_input);
+        let ams1_raw = format!(
+            "i=1; a=ed25519-sha256; d=sealer.com; s=arc; c=relaxed/relaxed; h=from:subject; bh={}; b={}",
+            b64(&bh_orig), b64(&ams1_sig),
+        );
+
+        let aar1_raw = "i=1; spf=pass".to_string();
+
+        // AS(1): cv=none
+        let seal1_raw_no_b = "i=1; cv=none; a=ed25519-sha256; d=sealer.com; s=arc; b=".to_string();
+        let mut seal1_input = Vec::new();
+        let c = canonicalize_header(CanonicalizationMethod::Relaxed, "arc-authentication-results", &aar1_raw);
+        seal1_input.extend_from_slice(c.as_bytes());
+        let c = canonicalize_header(CanonicalizationMethod::Relaxed, "arc-message-signature", &ams1_raw);
+        seal1_input.extend_from_slice(c.as_bytes());
+        let c = canonicalize_header(CanonicalizationMethod::Relaxed, "arc-seal", &seal1_raw_no_b);
+        let sb = c.as_bytes();
+        if sb.ends_with(b"\r\n") {
+            seal1_input.extend_from_slice(&sb[..sb.len() - 2]);
+        } else {
+            seal1_input.extend_from_slice(sb);
+        }
+        let seal1_sig = ed25519_sign(&pkcs8, &seal1_input);
+        let seal1_raw = format!(
+            "i=1; cv=none; a=ed25519-sha256; d=sealer.com; s=arc; b={}",
+            b64(&seal1_sig),
+        );
+
+        // ─── Hop 2: AMS signed over modified body ───
+        let normalized_mod = normalize_line_endings(modified_body);
+        let canon_mod = canonicalize_body(CanonicalizationMethod::Relaxed, &normalized_mod);
+        let bh_mod = compute_hash(Algorithm::Ed25519Sha256, &canon_mod);
+
+        let ams2_raw_no_b = format!(
+            "i=2; a=ed25519-sha256; d=sealer.com; s=arc; c=relaxed/relaxed; h=from:subject; bh={}; b=",
+            b64(&bh_mod),
+        );
+        let mut ams2_input = Vec::new();
+        for h in &selected {
+            ams2_input.extend_from_slice(h.as_bytes());
+        }
+        let canon_ams2 = canonicalize_header(
+            CanonicalizationMethod::Relaxed,
+            "arc-message-signature",
+            &ams2_raw_no_b,
+        );
+        ams2_input.extend_from_slice(canon_ams2.as_bytes());
+        let ams2_sig = ed25519_sign(&pkcs8, &ams2_input);
+        let ams2_raw = format!(
+            "i=2; a=ed25519-sha256; d=sealer.com; s=arc; c=relaxed/relaxed; h=from:subject; bh={}; b={}",
+            b64(&bh_mod), b64(&ams2_sig),
+        );
+
+        let aar2_raw = "i=2; arc=pass".to_string();
+
+        // AS(2): cv=pass, covers sets 1..2
+        let seal2_raw_no_b = "i=2; cv=pass; a=ed25519-sha256; d=sealer.com; s=arc; b=".to_string();
+        let mut seal2_input = Vec::new();
+        // Set 1
+        let c = canonicalize_header(CanonicalizationMethod::Relaxed, "arc-authentication-results", &aar1_raw);
+        seal2_input.extend_from_slice(c.as_bytes());
+        let c = canonicalize_header(CanonicalizationMethod::Relaxed, "arc-message-signature", &ams1_raw);
+        seal2_input.extend_from_slice(c.as_bytes());
+        let c = canonicalize_header(CanonicalizationMethod::Relaxed, "arc-seal", &seal1_raw);
+        seal2_input.extend_from_slice(c.as_bytes());
+        // Set 2
+        let c = canonicalize_header(CanonicalizationMethod::Relaxed, "arc-authentication-results", &aar2_raw);
+        seal2_input.extend_from_slice(c.as_bytes());
+        let c = canonicalize_header(CanonicalizationMethod::Relaxed, "arc-message-signature", &ams2_raw);
+        seal2_input.extend_from_slice(c.as_bytes());
+        let c = canonicalize_header(CanonicalizationMethod::Relaxed, "arc-seal", &seal2_raw_no_b);
+        let sb = c.as_bytes();
+        if sb.ends_with(b"\r\n") {
+            seal2_input.extend_from_slice(&sb[..sb.len() - 2]);
+        } else {
+            seal2_input.extend_from_slice(sb);
+        }
+        let seal2_sig = ed25519_sign(&pkcs8, &seal2_input);
+        let seal2_raw = format!(
+            "i=2; cv=pass; a=ed25519-sha256; d=sealer.com; s=arc; b={}",
+            b64(&seal2_sig),
+        );
+
+        // Build headers: newest first
+        let mut all_headers: Vec<(String, String)> = vec![
+            ("ARC-Seal".to_string(), seal2_raw),
+            ("ARC-Message-Signature".to_string(), ams2_raw),
+            ("ARC-Authentication-Results".to_string(), aar2_raw),
+            ("ARC-Seal".to_string(), seal1_raw),
+            ("ARC-Message-Signature".to_string(), ams1_raw),
+            ("ARC-Authentication-Results".to_string(), aar1_raw),
+        ];
+        all_headers.extend(message_headers);
+
+        let headers: Vec<(&str, &str)> = all_headers
+            .iter()
+            .map(|(n, v)| (n.as_str(), v.as_str()))
+            .collect();
+
+        let mut resolver = MockResolver::new();
+        resolver.add_txt(
+            "arc._domainkey.sealer.com",
+            vec![make_dns_key_record(&pub_key)],
+        );
+        let verifier = ArcVerifier::new(resolver);
+
+        // Validate with modified body: AMS(2) passes, AMS(1) body hash fails
+        let result = verifier.validate_chain(&headers, modified_body).await;
+        assert_eq!(result.status, ArcResult::Pass);
+        // oldest_pass should be 2 (AMS(1) at index 0 failed, so oldest passing is instance 2)
+        assert_eq!(result.oldest_pass, Some(2));
+    }
+
     // ─── Structure validation unit test ──────────────────────────────
 
     #[test]
