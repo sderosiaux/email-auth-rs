@@ -423,19 +423,19 @@
 | CHK-418 | 02-DKIM-RFC6376.md:286 | checkbox | Key revoked (empty p=) → PermFail { KeyRevoked } | 7 | src/dkim/verify.rs:570 | b1f9430 | DONE |
 | CHK-419 | 02-DKIM-RFC6376.md:287 | checkbox | DNS temp failure → TempFail | 7 | src/dkim/verify.rs:553 | b1f9430 | DONE |
 | CHK-420 | 02-DKIM-RFC6376.md:288 | checkbox | All other constraint violations → PermFail with specific kind | 7 | src/dkim/verify.rs:664 | b1f9430 | DONE |
-| CHK-421 | 02-DKIM-RFC6376.md:311 | checkbox | Load private key: PEM format (PKCS8) | 8 | - | - | PENDING |
-| CHK-422 | 02-DKIM-RFC6376.md:312 | checkbox | Support RSA keys (minimum 1024-bit for verify, recommend 2048+ for signing) | 8 | - | - | PENDING |
-| CHK-423 | 02-DKIM-RFC6376.md:313 | checkbox | Support Ed25519 keys (PKCS8 format) | 8 | - | - | PENDING |
-| CHK-424 | 02-DKIM-RFC6376.md:314 | checkbox | ring: `RsaKeyPair::from_pkcs8()` for RSA, `Ed25519KeyPair::from_pkcs8()` for Ed25519 | 8 | - | - | PENDING |
-| CHK-425 | 02-DKIM-RFC6376.md:315 | checkbox | Validate key loads successfully at signer creation time (fail fast) | 8 | - | - | PENDING |
-| CHK-426 | 02-DKIM-RFC6376.md:319 | checkbox | MUST include From | 8 | - | - | PENDING |
-| CHK-427 | 02-DKIM-RFC6376.md:320 | checkbox | Recommended: From, To, Subject, Date, MIME-Version, Content-Type, Message-ID | 8 | - | - | PENDING |
-| CHK-428 | 02-DKIM-RFC6376.md:321 | checkbox | Avoid signing: Received, Return-Path (change in transit) | 8 | - | - | PENDING |
-| CHK-429 | 02-DKIM-RFC6376.md:322 | checkbox | Over-signing recommended: include header names extra times to prevent injection | 8 | - | - | PENDING |
-| CHK-430 | 02-DKIM-RFC6376.md:336 | checkbox | Set `t=` to current Unix timestamp | 8 | - | - | PENDING |
-| CHK-431 | 02-DKIM-RFC6376.md:337 | checkbox | If `expiration_seconds` configured: set `x=` to `t + expiration_seconds` | 8 | - | - | PENDING |
-| CHK-432 | 02-DKIM-RFC6376.md:341 | checkbox | Sign-then-verify round-trip: `sign(message) → verify(message + signature)` must Pass | 8 | - | - | PENDING |
-| CHK-433 | 02-DKIM-RFC6376.md:342 | checkbox | ALSO test with ground-truth fixtures that bypass DkimSigner (use ring primitives directly) to catch self-consistent bugs | 8 | - | - | PENDING |
+| CHK-421 | 02-DKIM-RFC6376.md:311 | checkbox | Load private key: PEM format (PKCS8) | 8 | src/dkim/sign.rs:611 | 595c218 | DONE |
+| CHK-422 | 02-DKIM-RFC6376.md:312 | checkbox | Support RSA keys (minimum 1024-bit for verify, recommend 2048+ for signing) | 8 | src/dkim/sign.rs:408 | 595c218 | DONE |
+| CHK-423 | 02-DKIM-RFC6376.md:313 | checkbox | Support Ed25519 keys (PKCS8 format) | 8 | src/dkim/sign.rs:400 | 595c218 | DONE |
+| CHK-424 | 02-DKIM-RFC6376.md:314 | checkbox | ring: `RsaKeyPair::from_pkcs8()` for RSA, `Ed25519KeyPair::from_pkcs8()` for Ed25519 | 8 | src/dkim/sign.rs:400 | 595c218 | DONE |
+| CHK-425 | 02-DKIM-RFC6376.md:315 | checkbox | Validate key loads successfully at signer creation time (fail fast) | 8 | src/dkim/sign.rs:415 | 595c218 | DONE |
+| CHK-426 | 02-DKIM-RFC6376.md:319 | checkbox | MUST include From | 8 | src/dkim/sign.rs:442 | 595c218 | DONE |
+| CHK-427 | 02-DKIM-RFC6376.md:320 | checkbox | Recommended: From, To, Subject, Date, MIME-Version, Content-Type, Message-ID | 8 | src/dkim/sign.rs:701 | 595c218 | DONE |
+| CHK-428 | 02-DKIM-RFC6376.md:321 | checkbox | Avoid signing: Received, Return-Path (change in transit) | 8 | src/dkim/sign.rs:701 | 595c218 | DONE |
+| CHK-429 | 02-DKIM-RFC6376.md:322 | checkbox | Over-signing recommended: include header names extra times to prevent injection | 8 | src/dkim/sign.rs:633 | 595c218 | DONE |
+| CHK-430 | 02-DKIM-RFC6376.md:336 | checkbox | Set `t=` to current Unix timestamp | 8 | src/dkim/sign.rs:716 | 595c218 | DONE |
+| CHK-431 | 02-DKIM-RFC6376.md:337 | checkbox | If `expiration_seconds` configured: set `x=` to `t + expiration_seconds` | 8 | src/dkim/sign.rs:582 | 595c218 | DONE |
+| CHK-432 | 02-DKIM-RFC6376.md:341 | checkbox | Sign-then-verify round-trip: `sign(message) → verify(message + signature)` must Pass | 8 | src/dkim/sign.rs:461 | 595c218 | DONE |
+| CHK-433 | 02-DKIM-RFC6376.md:342 | checkbox | ALSO test with ground-truth fixtures that bypass DkimSigner (use ring primitives directly) to catch self-consistent bugs | 8 | src/dkim/verify.rs:1014 | 595c218 | DONE |
 | CHK-434 | 02-DKIM-RFC6376.md:350 | checkbox | Query: `<selector>._domainkey.<domain>` TXT record | 5 | src/dkim/key.rs:212 | 77373aa | DONE |
 | CHK-435 | 02-DKIM-RFC6376.md:351 | checkbox | Selector allows multiple keys per domain | 5 | src/dkim/key.rs:221 | 77373aa | DONE |
 | CHK-436 | 02-DKIM-RFC6376.md:352 | checkbox | Multiple TXT strings in one record: concatenate before parsing | 5 | src/dkim/key.rs:230 | 77373aa | DONE |
@@ -504,14 +504,14 @@
 | CHK-499 | 02-DKIM-RFC6376.md:482 | checkbox | Verify through the full DkimVerifier pipeline | 7 | src/dkim/verify.rs:1014 | b1f9430 | DONE |
 | CHK-500 | 02-DKIM-RFC6376.md:483 | checkbox | This catches self-consistent bugs where signer and verifier agree but both are wrong | 7 | src/dkim/verify.rs:1014 | b1f9430 | DONE |
 | CHK-501 | 02-DKIM-RFC6376.md:484 | checkbox | Include at minimum: Ed25519 relaxed/relaxed, Ed25519 simple/simple, tampered body, tampered headers | 7 | src/dkim/verify.rs:1077 | b1f9430 | DONE |
-| CHK-502 | 02-DKIM-RFC6376.md:488 | checkbox | Sign and verify round-trip (Ed25519) | 8 | - | - | PENDING |
-| CHK-503 | 02-DKIM-RFC6376.md:489 | checkbox | Sign and verify round-trip (RSA-SHA256) — generate RSA 2048 key, sign message, verify through DkimVerifier with MockResolver serving the public key | 8 | - | - | PENDING |
-| CHK-504 | 02-DKIM-RFC6376.md:490 | checkbox | Different canonicalization modes | 8 | - | - | PENDING |
-| CHK-505 | 02-DKIM-RFC6376.md:491 | checkbox | From header enforced in signed headers | 8 | - | - | PENDING |
-| CHK-506 | 02-DKIM-RFC6376.md:492 | checkbox | Timestamp and expiration set correctly | 8 | - | - | PENDING |
-| CHK-507 | 02-DKIM-RFC6376.md:493 | checkbox | PEM key loading: RSA 2048, Ed25519 | 8 | - | - | PENDING |
-| CHK-508 | 02-DKIM-RFC6376.md:494 | checkbox | RSA-SHA1 signing prevention: `DkimSigner` API MUST NOT allow constructing a signer with `Algorithm::RsaSha1`. Either no constructor exists, or `sign_message()` returns error. Test that no code path produces an `a=rsa-sha1` signature. | 8 | - | - | PENDING |
-| CHK-509 | 02-DKIM-RFC6376.md:495 | checkbox | Over-sign round-trip: sign with "from" in h= twice (over-sign), verify through DkimVerifier → Pass. This validates signer and verifier agree on empty-header hash contribution. A bug where signer skips the empty header but verifier includes it (or vice versa) causes Fail. | 8 | - | - | PENDING |
+| CHK-502 | 02-DKIM-RFC6376.md:488 | checkbox | Sign and verify round-trip (Ed25519) | 8 | src/dkim/sign.rs:461 | 595c218 | DONE |
+| CHK-503 | 02-DKIM-RFC6376.md:489 | checkbox | Sign and verify round-trip (RSA-SHA256) — generate RSA 2048 key, sign message, verify through DkimVerifier with MockResolver serving the public key | 8 | src/dkim/sign.rs:501 | 595c218 | DONE |
+| CHK-504 | 02-DKIM-RFC6376.md:490 | checkbox | Different canonicalization modes | 8 | src/dkim/sign.rs:540 | 595c218 | DONE |
+| CHK-505 | 02-DKIM-RFC6376.md:491 | checkbox | From header enforced in signed headers | 8 | src/dkim/sign.rs:442 | 595c218 | DONE |
+| CHK-506 | 02-DKIM-RFC6376.md:492 | checkbox | Timestamp and expiration set correctly | 8 | src/dkim/sign.rs:582 | 595c218 | DONE |
+| CHK-507 | 02-DKIM-RFC6376.md:493 | checkbox | PEM key loading: RSA 2048, Ed25519 | 8 | src/dkim/sign.rs:611 | 595c218 | DONE |
+| CHK-508 | 02-DKIM-RFC6376.md:494 | checkbox | RSA-SHA1 signing prevention: `DkimSigner` API MUST NOT allow constructing a signer with `Algorithm::RsaSha1`. Either no constructor exists, or `sign_message()` returns error. Test that no code path produces an `a=rsa-sha1` signature. | 8 | src/dkim/sign.rs:429 | 595c218 | DONE |
+| CHK-509 | 02-DKIM-RFC6376.md:495 | checkbox | Over-sign round-trip: sign with "from" in h= twice (over-sign), verify through DkimVerifier → Pass. This validates signer and verifier agree on empty-header hash contribution. A bug where signer skips the empty header but verifier includes it (or vice versa) causes Fail. | 8 | src/dkim/sign.rs:633 | 595c218 | DONE |
 | CHK-510 | 02-DKIM-RFC6376.md:501 | checkbox | Minimum RSA key size: 1024 bits for verification (ring handles this via algorithm selection) | 7 | src/dkim/verify.rs:389 | b1f9430 | DONE |
 | CHK-511 | 02-DKIM-RFC6376.md:502 | checkbox | Recommended RSA key size for signing: 2048+ bits | 7 | src/dkim/verify.rs:387 | b1f9430 | DONE |
 | CHK-512 | 02-DKIM-RFC6376.md:503 | checkbox | RSA-SHA1: accept for verification only, NEVER use for signing | 7 | src/dkim/verify.rs:393 | b1f9430 | DONE |
@@ -532,7 +532,7 @@
 | CHK-527 | 02-DKIM-RFC6376.md:598 | checkbox | b= tag stripping (safe against bh=) | 6 | src/dkim/canon.rs:579 | ea0fa9f | DONE |
 | CHK-528 | 02-DKIM-RFC6376.md:599 | checkbox | Verification algorithm complete with all constraint checks | 7 | src/dkim/verify.rs:1014 | b1f9430 | DONE |
 | CHK-529 | 02-DKIM-RFC6376.md:600 | checkbox | RSA-SHA256 + RSA-SHA1 + Ed25519 verification working | 7 | src/dkim/verify.rs:1142 | a390668 | DONE |
-| CHK-530 | 02-DKIM-RFC6376.md:601 | checkbox | Signing algorithm complete (RSA-SHA256 + Ed25519) | 8 | - | - | PENDING |
+| CHK-530 | 02-DKIM-RFC6376.md:601 | checkbox | Signing algorithm complete (RSA-SHA256 + Ed25519) | 8 | src/dkim/sign.rs:461 | 595c218 | DONE |
 | CHK-531 | 02-DKIM-RFC6376.md:602 | checkbox | Ground-truth tests (bypass signer, construct signatures manually) | 7 | src/dkim/verify.rs:1014 | b1f9430 | DONE |
 | CHK-532 | 02-DKIM-RFC6376.md:603 | checkbox | RSA-SHA1 verification tested | 7 | src/dkim/verify.rs:1184 | a390668 | DONE |
 | CHK-533 | 02-DKIM-RFC6376.md:604 | checkbox | DNS key lookup working with TXT string concatenation | 7 | src/dkim/verify.rs:149 | b1f9430 | DONE |

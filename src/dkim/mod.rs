@@ -3,6 +3,7 @@ pub(crate) mod parser;
 pub mod key;
 pub mod canon;
 pub mod verify;
+pub mod sign;
 
 pub use types::{
     Algorithm, CanonicalizationMethod, DkimResult, DkimSignature, FailureKind, HashAlgorithm,
@@ -10,3 +11,4 @@ pub use types::{
 };
 pub use key::DkimPublicKey;
 pub use verify::DkimVerifier;
+pub use sign::DkimSigner;
