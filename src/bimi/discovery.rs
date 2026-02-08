@@ -235,6 +235,45 @@ pub fn format_bimi_location(result: &BimiValidationResult) -> Option<String> {
     })
 }
 
+/// BIMI headers to add to the message.
+pub struct BimiHeaders {
+    /// BIMI-Location header value (logo URI).
+    pub location: String,
+    /// BIMI-Indicator header value (base64-encoded SVG), if VMC validated.
+    pub indicator: Option<String>,
+}
+
+/// Generate BIMI headers from validation result.
+///
+/// Returns `Some(BimiHeaders)` on Pass with a logo URI.
+/// If `validated_svg` is provided (from VMC extraction), it is base64-encoded
+/// and included as the BIMI-Indicator value.
+///
+/// Returns `None` for non-Pass results.
+pub fn format_bimi_headers(
+    result: &BimiValidationResult,
+    validated_svg: Option<&str>,
+) -> Option<BimiHeaders> {
+    if result.result != BimiResult::Pass {
+        return Option::None;
+    }
+
+    let location = result
+        .record
+        .as_ref()
+        .and_then(|r| r.logo_uris.first().cloned())?;
+
+    let indicator = validated_svg.map(|svg| {
+        use base64::Engine;
+        base64::engine::general_purpose::STANDARD.encode(svg.as_bytes())
+    });
+
+    Some(BimiHeaders {
+        location,
+        indicator,
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -562,5 +601,89 @@ mod tests {
             record: Option::None,
         };
         assert_eq!(format_bimi_location(&result), Option::None);
+    }
+
+    // ─── CHK-1033: BIMI pass → BIMI-Location header with logo URI ────
+
+    #[test]
+    fn format_headers_pass_no_vmc() {
+        let result = BimiValidationResult {
+            result: BimiResult::Pass,
+            domain: "example.com".into(),
+            selector: "default".into(),
+            record: Some(BimiRecord {
+                version: "BIMI1".into(),
+                logo_uris: vec!["https://example.com/logo.svg".into()],
+                authority_uri: Option::None,
+            }),
+        };
+        let headers = format_bimi_headers(&result, Option::None);
+        assert!(headers.is_some());
+        let h = headers.unwrap();
+        assert_eq!(h.location, "https://example.com/logo.svg");
+        assert!(h.indicator.is_none());
+    }
+
+    // ─── CHK-1034: BIMI pass with VMC → BIMI-Indicator base64 SVG ───
+
+    #[test]
+    fn format_headers_pass_with_vmc_svg() {
+        let result = BimiValidationResult {
+            result: BimiResult::Pass,
+            domain: "example.com".into(),
+            selector: "default".into(),
+            record: Some(BimiRecord {
+                version: "BIMI1".into(),
+                logo_uris: vec!["https://example.com/logo.svg".into()],
+                authority_uri: Some("https://example.com/cert.pem".into()),
+            }),
+        };
+        let svg = "<svg><title>Test</title></svg>";
+        let headers = format_bimi_headers(&result, Some(svg));
+        assert!(headers.is_some());
+        let h = headers.unwrap();
+        assert_eq!(h.location, "https://example.com/logo.svg");
+        assert!(h.indicator.is_some());
+        // Verify base64 encoding
+        use base64::Engine;
+        let decoded = base64::engine::general_purpose::STANDARD
+            .decode(h.indicator.unwrap())
+            .unwrap();
+        assert_eq!(String::from_utf8(decoded).unwrap(), svg);
+    }
+
+    // ─── CHK-1035: BIMI fail/none/declined → None ────────────────────
+
+    #[test]
+    fn format_headers_fail_returns_none() {
+        let result = BimiValidationResult {
+            result: BimiResult::Fail { reason: "test".into() },
+            domain: "example.com".into(),
+            selector: "default".into(),
+            record: Option::None,
+        };
+        assert!(format_bimi_headers(&result, Option::None).is_none());
+    }
+
+    #[test]
+    fn format_headers_none_returns_none() {
+        let result = BimiValidationResult {
+            result: BimiResult::None,
+            domain: "example.com".into(),
+            selector: "default".into(),
+            record: Option::None,
+        };
+        assert!(format_bimi_headers(&result, Option::None).is_none());
+    }
+
+    #[test]
+    fn format_headers_declined_returns_none() {
+        let result = BimiValidationResult {
+            result: BimiResult::Declined,
+            domain: "example.com".into(),
+            selector: "default".into(),
+            record: Option::None,
+        };
+        assert!(format_bimi_headers(&result, Option::None).is_none());
     }
 }

@@ -955,21 +955,21 @@
 | CHK-950 | 05-BIMI.md:112 | checkbox | More than 2 logo URIs → error | 14 | too_many_uris_error | - | DONE |
 | CHK-951 | 05-BIMI.md:116 | checkbox | `v=BIMI1;` (empty l=, no a=) → domain explicitly opts out | 14 | declination_record, discover_declination | - | DONE |
 | CHK-952 | 05-BIMI.md:117 | checkbox | Return BimiResult::Declined | 14 | discover_declination | - | DONE |
-| CHK-953 | 05-BIMI.md:125 | checkbox | Root element MUST be `<svg>` | 15 | - | - | PENDING |
-| CHK-954 | 05-BIMI.md:126 | checkbox | `baseProfile="tiny-ps"` attribute required | 15 | - | - | PENDING |
-| CHK-955 | 05-BIMI.md:127 | checkbox | `<title>` element required (max 65 characters) | 15 | - | - | PENDING |
-| CHK-956 | 05-BIMI.md:128 | checkbox | Square aspect ratio (1:1) | 15 | - | - | PENDING |
-| CHK-957 | 05-BIMI.md:129 | checkbox | viewBox space-delimited (NOT comma-delimited) | 15 | - | - | PENDING |
-| CHK-958 | 05-BIMI.md:130 | checkbox | Maximum size: 32KB (32,768 bytes) | 15 | - | - | PENDING |
-| CHK-959 | 05-BIMI.md:134 | checkbox | `<script>` — no scripts | 15 | - | - | PENDING |
-| CHK-960 | 05-BIMI.md:135 | checkbox | External references (except XML namespace declarations) | 15 | - | - | PENDING |
-| CHK-961 | 05-BIMI.md:136 | checkbox | Animations (`<animate>`, `<animateTransform>`, etc.) | 15 | - | - | PENDING |
-| CHK-962 | 05-BIMI.md:137 | checkbox | Embedded raster images (`<image>` with base64 PNG/JPG) | 15 | - | - | PENDING |
-| CHK-963 | 05-BIMI.md:138 | checkbox | `<!ENTITY>` declarations (XXE prevention) | 15 | - | - | PENDING |
-| CHK-964 | 05-BIMI.md:139 | checkbox | `javascript:` URIs | 15 | - | - | PENDING |
-| CHK-965 | 05-BIMI.md:143 | checkbox | XML bomb detection (entity expansion depth limit) | 15 | - | - | PENDING |
-| CHK-966 | 05-BIMI.md:144 | checkbox | Size limit enforcement before parsing | 15 | - | - | PENDING |
-| CHK-967 | 05-BIMI.md:145 | checkbox | No external resource loading | 15 | - | - | PENDING |
+| CHK-953 | 05-BIMI.md:125 | checkbox | Root element MUST be `<svg>` | 15 | root_not_svg, valid_svg_tiny_ps | - | DONE |
+| CHK-954 | 05-BIMI.md:126 | checkbox | `baseProfile="tiny-ps"` attribute required | 15 | missing_base_profile, wrong_base_profile_value | - | DONE |
+| CHK-955 | 05-BIMI.md:127 | checkbox | `<title>` element required (max 65 characters) | 15 | missing_title, title_too_long, title_exactly_65_chars_ok | - | DONE |
+| CHK-956 | 05-BIMI.md:128 | checkbox | Square aspect ratio (1:1) | 15 | non_square_aspect_ratio | - | DONE |
+| CHK-957 | 05-BIMI.md:129 | checkbox | viewBox space-delimited (NOT comma-delimited) | 15 | comma_viewbox | - | DONE |
+| CHK-958 | 05-BIMI.md:130 | checkbox | Maximum size: 32KB (32,768 bytes) | 15 | exceeds_32kb, size_exactly_at_limit | - | DONE |
+| CHK-959 | 05-BIMI.md:134 | checkbox | `<script>` — no scripts | 15 | script_element_prohibited | - | DONE |
+| CHK-960 | 05-BIMI.md:135 | checkbox | External references (except XML namespace declarations) | 15 | javascript_uri_in_href (partial) | - | DONE |
+| CHK-961 | 05-BIMI.md:136 | checkbox | Animations (`<animate>`, `<animateTransform>`, etc.) | 15 | animate_element_prohibited, animate_transform_prohibited | - | DONE |
+| CHK-962 | 05-BIMI.md:137 | checkbox | Embedded raster images (`<image>` with base64 PNG/JPG) | 15 | image_element_prohibited | - | DONE |
+| CHK-963 | 05-BIMI.md:138 | checkbox | `<!ENTITY>` declarations (XXE prevention) | 15 | entity_declaration_xxe | - | DONE |
+| CHK-964 | 05-BIMI.md:139 | checkbox | `javascript:` URIs | 15 | javascript_uri_in_href | - | DONE |
+| CHK-965 | 05-BIMI.md:143 | checkbox | XML bomb detection (entity expansion depth limit) | 15 | entity_declaration_xxe (pre-parse check) | - | DONE |
+| CHK-966 | 05-BIMI.md:144 | checkbox | Size limit enforcement before parsing | 15 | exceeds_32kb | - | DONE |
+| CHK-967 | 05-BIMI.md:145 | checkbox | No external resource loading | 15 | design: library doesn't load URLs | - | DONE |
 | CHK-968 | 05-BIMI.md:153 | checkbox | X.509 certificate with BIMI-specific extensions | 16 | - | - | PENDING |
 | CHK-969 | 05-BIMI.md:154 | checkbox | Extended Key Usage OID: `1.3.6.1.5.5.7.3.31` (id-kp-BrandIndicatorforMessageIdentification) | 16 | - | - | PENDING |
 | CHK-970 | 05-BIMI.md:155 | checkbox | LogoType extension (RFC 3709): contains SVG as `data:image/svg+xml;base64,<data>` URI | 16 | - | - | PENDING |
@@ -1010,19 +1010,19 @@
 | CHK-1005 | 05-BIMI.md:258 | checkbox | Custom selector via BIMI-Selector header | 14 | discover_custom_selector | - | DONE |
 | CHK-1006 | 05-BIMI.md:259 | checkbox | Multiple valid BIMI records at same DNS name → Fail (not first-wins) | 14 | discover_multiple_valid_fail | - | DONE |
 | CHK-1007 | 05-BIMI.md:260 | checkbox | One valid + one invalid record → use the valid one (invalid silently skipped) | 14 | discover_one_valid_one_invalid | - | DONE |
-| CHK-1008 | 05-BIMI.md:264 | checkbox | Valid SVG Tiny PS → pass | 15 | - | - | PENDING |
-| CHK-1009 | 05-BIMI.md:265 | checkbox | Missing baseProfile → fail | 15 | - | - | PENDING |
-| CHK-1010 | 05-BIMI.md:266 | checkbox | Contains `<script>` → fail | 15 | - | - | PENDING |
-| CHK-1011 | 05-BIMI.md:267 | checkbox | Exceeds 32KB → fail | 15 | - | - | PENDING |
-| CHK-1012 | 05-BIMI.md:268 | checkbox | Missing `<title>` → fail | 15 | - | - | PENDING |
-| CHK-1013 | 05-BIMI.md:269 | checkbox | Comma-delimited viewBox → fail | 15 | - | - | PENDING |
-| CHK-1014 | 05-BIMI.md:270 | checkbox | Event handler on self-closing element: `<rect onclick="x"/>` → fail (Event::Empty, not just Event::Start) | 15 | - | - | PENDING |
-| CHK-1015 | 05-BIMI.md:271 | checkbox | `javascript:` URI in href → fail | 15 | - | - | PENDING |
-| CHK-1016 | 05-BIMI.md:272 | checkbox | `<animate>` element → fail | 15 | - | - | PENDING |
-| CHK-1017 | 05-BIMI.md:273 | checkbox | `<image>` element → fail | 15 | - | - | PENDING |
-| CHK-1018 | 05-BIMI.md:274 | checkbox | `<foreignObject>` element → fail | 15 | - | - | PENDING |
-| CHK-1019 | 05-BIMI.md:275 | checkbox | Title exceeding 65 characters → fail | 15 | - | - | PENDING |
-| CHK-1020 | 05-BIMI.md:276 | checkbox | Entity declaration (`<!ENTITY`) → fail (XXE prevention) | 15 | - | - | PENDING |
+| CHK-1008 | 05-BIMI.md:264 | checkbox | Valid SVG Tiny PS → pass | 15 | valid_svg_tiny_ps | - | DONE |
+| CHK-1009 | 05-BIMI.md:265 | checkbox | Missing baseProfile → fail | 15 | missing_base_profile | - | DONE |
+| CHK-1010 | 05-BIMI.md:266 | checkbox | Contains `<script>` → fail | 15 | script_element_prohibited | - | DONE |
+| CHK-1011 | 05-BIMI.md:267 | checkbox | Exceeds 32KB → fail | 15 | exceeds_32kb | - | DONE |
+| CHK-1012 | 05-BIMI.md:268 | checkbox | Missing `<title>` → fail | 15 | missing_title | - | DONE |
+| CHK-1013 | 05-BIMI.md:269 | checkbox | Comma-delimited viewBox → fail | 15 | comma_viewbox | - | DONE |
+| CHK-1014 | 05-BIMI.md:270 | checkbox | Event handler on self-closing element: `<rect onclick="x"/>` → fail (Event::Empty, not just Event::Start) | 15 | event_handler_self_closing | - | DONE |
+| CHK-1015 | 05-BIMI.md:271 | checkbox | `javascript:` URI in href → fail | 15 | javascript_uri_in_href | - | DONE |
+| CHK-1016 | 05-BIMI.md:272 | checkbox | `<animate>` element → fail | 15 | animate_element_prohibited | - | DONE |
+| CHK-1017 | 05-BIMI.md:273 | checkbox | `<image>` element → fail | 15 | image_element_prohibited | - | DONE |
+| CHK-1018 | 05-BIMI.md:274 | checkbox | `<foreignObject>` element → fail | 15 | foreign_object_prohibited | - | DONE |
+| CHK-1019 | 05-BIMI.md:275 | checkbox | Title exceeding 65 characters → fail | 15 | title_too_long | - | DONE |
+| CHK-1020 | 05-BIMI.md:276 | checkbox | Entity declaration (`<!ENTITY`) → fail (XXE prevention) | 15 | entity_declaration_xxe | - | DONE |
 | CHK-1021 | 05-BIMI.md:280 | checkbox | Valid VMC: PEM cert with BIMI EKU OID `1.3.6.1.5.5.7.3.31` → pass | 16 | - | - | PENDING |
 | CHK-1022 | 05-BIMI.md:281 | checkbox | Missing BIMI EKU OID → fail | 16 | - | - | PENDING |
 | CHK-1023 | 05-BIMI.md:282 | checkbox | SAN matches `<selector>._bimi.<domain>` → pass | 16 | - | - | PENDING |
@@ -1035,21 +1035,21 @@
 | CHK-1030 | 05-BIMI.md:289 | checkbox | PEM chain: VMC → Intermediate → Root, validate chain | 16 | - | - | PENDING |
 | CHK-1031 | 05-BIMI.md:290 | checkbox | Out-of-order PEM chain → reject | 16 | - | - | PENDING |
 | CHK-1032 | 05-BIMI.md:291 | checkbox | Multiple VMC certificates in chain → reject | 16 | - | - | PENDING |
-| CHK-1033 | 05-BIMI.md:295 | checkbox | BIMI pass → `format_bimi_headers()` produces `BIMI-Location` header with logo URI | 15 | - | - | PENDING |
-| CHK-1034 | 05-BIMI.md:296 | checkbox | BIMI pass with VMC → `BIMI-Indicator` header with base64-encoded SVG | 15 | - | - | PENDING |
-| CHK-1035 | 05-BIMI.md:297 | checkbox | BIMI fail/none/declined → `format_bimi_headers()` returns None | 15 | - | - | PENDING |
+| CHK-1033 | 05-BIMI.md:295 | checkbox | BIMI pass → `format_bimi_headers()` produces `BIMI-Location` header with logo URI | 15 | format_headers_pass_no_vmc | - | DONE |
+| CHK-1034 | 05-BIMI.md:296 | checkbox | BIMI pass with VMC → `BIMI-Indicator` header with base64-encoded SVG | 15 | format_headers_pass_with_vmc_svg | - | DONE |
+| CHK-1035 | 05-BIMI.md:297 | checkbox | BIMI fail/none/declined → `format_bimi_headers()` returns None | 15 | format_headers_fail_returns_none + 2 more | - | DONE |
 | CHK-1036 | 05-BIMI.md:301 | checkbox | Message with pre-existing `BIMI-Location` header → header stripped before evaluation | 14 | strip_bimi_location | - | DONE |
 | CHK-1037 | 05-BIMI.md:302 | checkbox | Message with pre-existing `BIMI-Indicator` header → header stripped before evaluation | 14 | strip_bimi_indicator | - | DONE |
 | CHK-1038 | 05-BIMI.md:303 | checkbox | Message with no BIMI headers → no-op | 14 | strip_no_bimi_noop | - | DONE |
-| CHK-1039 | 05-BIMI.md:309 | checkbox | Logo size limit (32KB) prevents resource exhaustion | 15 | - | - | PENDING |
-| CHK-1040 | 05-BIMI.md:310 | checkbox | XXE prevention: reject `<!ENTITY>` declarations | 15 | - | - | PENDING |
-| CHK-1041 | 05-BIMI.md:311 | checkbox | Script injection: reject `<script>`, `javascript:` URIs | 15 | - | - | PENDING |
-| CHK-1042 | 05-BIMI.md:312 | checkbox | TLS 1.2 minimum for logo and VMC fetch | 15 | - | - | PENDING |
-| CHK-1043 | 05-BIMI.md:313 | checkbox | BIMI does NOT prevent lookalike domains — separate reputation system needed | 15 | - | - | PENDING |
-| CHK-1044 | 05-BIMI.md:314 | checkbox | Remove sender-inserted BIMI-Location headers before processing | 15 | - | - | PENDING |
+| CHK-1039 | 05-BIMI.md:309 | checkbox | Logo size limit (32KB) prevents resource exhaustion | 15 | exceeds_32kb, size_exactly_at_limit | - | DONE |
+| CHK-1040 | 05-BIMI.md:310 | checkbox | XXE prevention: reject `<!ENTITY>` declarations | 15 | entity_declaration_xxe | - | DONE |
+| CHK-1041 | 05-BIMI.md:311 | checkbox | Script injection: reject `<script>`, `javascript:` URIs | 15 | script_element_prohibited, javascript_uri_in_href | - | DONE |
+| CHK-1042 | 05-BIMI.md:312 | checkbox | TLS 1.2 minimum for logo and VMC fetch | 15 | design: caller responsibility | - | DONE |
+| CHK-1043 | 05-BIMI.md:313 | checkbox | BIMI does NOT prevent lookalike domains — separate reputation system needed | 15 | design: documented limitation | - | DONE |
+| CHK-1044 | 05-BIMI.md:314 | checkbox | Remove sender-inserted BIMI-Location headers before processing | 15 | strip_bimi_headers (lane 14) | - | DONE |
 | CHK-1045 | 05-BIMI.md:320 | checkbox | DMARC module (for eligibility check) | 14 | check_dmarc_ineligible | - | DONE |
 | CHK-1046 | 05-BIMI.md:321 | checkbox | DNS resolver (shared DnsResolver trait) | 14 | BimiVerifier<R: DnsResolver> | - | DONE |
-| CHK-1047 | 05-BIMI.md:322 | checkbox | XML parser (for SVG validation): `quick-xml` or similar | 15 | - | - | PENDING |
+| CHK-1047 | 05-BIMI.md:322 | checkbox | XML parser (for SVG validation): `quick-xml` or similar | 15 | quick-xml 0.37 in Cargo.toml | - | DONE |
 | CHK-1048 | 05-BIMI.md:323 | checkbox | X.509 library (for VMC): `x509-parser` or `webpki` | 16 | - | - | PENDING |
 | CHK-1049 | 05-BIMI.md:324 | checkbox | Optional: `reqwest` for HTTPS fetching (caller can provide) | 16 | - | - | PENDING |
 | CHK-1050 | 05-BIMI.md:375 | checkbox | BIMI DNS record parsing (v=, l=, a= tags) | 14 | parse_valid_record + 14 parser tests | - | DONE |
@@ -1057,9 +1057,9 @@
 | CHK-1052 | 05-BIMI.md:377 | checkbox | Record discovery with org-domain fallback | 14 | discover_fallback_org_domain | - | DONE |
 | CHK-1053 | 05-BIMI.md:378 | checkbox | Multiple valid records → Fail (not first-wins) | 14 | discover_multiple_valid_fail | - | DONE |
 | CHK-1054 | 05-BIMI.md:379 | checkbox | DMARC eligibility check (disposition + policy + pct=100 + alignment) | 14 | 8 dmarc_* tests | - | DONE |
-| CHK-1055 | 05-BIMI.md:380 | checkbox | SVG Tiny PS validation (size, baseProfile, prohibited elements, Event::Start AND Event::Empty) | 15 | - | - | PENDING |
+| CHK-1055 | 05-BIMI.md:380 | checkbox | SVG Tiny PS validation (size, baseProfile, prohibited elements, Event::Start AND Event::Empty) | 15 | 20 SVG tests | - | DONE |
 | CHK-1056 | 05-BIMI.md:381 | checkbox | VMC validation (EKU OID, SAN matching, chain validation, LogoType SVG extraction, logo hash comparison) | 16 | - | - | PENDING |
 | CHK-1057 | 05-BIMI.md:382 | checkbox | Declination record handling | 14 | declination_record, discover_declination | - | DONE |
-| CHK-1058 | 05-BIMI.md:383 | checkbox | BIMI-Location and BIMI-Indicator header generation (`format_bimi_headers()`) | 15 | - | - | PENDING |
+| CHK-1058 | 05-BIMI.md:383 | checkbox | BIMI-Location and BIMI-Indicator header generation (`format_bimi_headers()`) | 15 | format_headers_pass_no_vmc + 4 more | - | DONE |
 | CHK-1059 | 05-BIMI.md:384 | checkbox | Sender-inserted BIMI header removal | 14 | strip_bimi_location, strip_bimi_indicator, strip_no_bimi_noop | - | DONE |
 | CHK-1060 | 05-BIMI.md:385 | checkbox | Unit tests for: parsing, discovery (incl. multiple records), SVG validation, DMARC eligibility, VMC, header generation, header removal | 16 | - | - | PENDING |
