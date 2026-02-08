@@ -922,39 +922,39 @@
 | CHK-917 | 04-ARC-RFC8617.md:416 | checkbox | cv= propagation rules enforced | 13 | - | - | DONE |
 | CHK-918 | 04-ARC-RFC8617.md:417 | checkbox | Instance limit (50) enforced | 13 | - | - | DONE |
 | CHK-919 | 04-ARC-RFC8617.md:418 | checkbox | Unit tests cover parsing, validation, sealing, roundtrip | 13 | - | - | DONE |
-| CHK-920 | 05-BIMI.md:27 | checkbox | `v=` — version, MUST be "BIMI1", MUST be first tag | 14 | - | - | PENDING |
-| CHK-921 | 05-BIMI.md:28 | checkbox | `l=` — logo URI(s), comma-separated, 1-2 URIs, MUST be HTTPS | 14 | - | - | PENDING |
-| CHK-922 | 05-BIMI.md:29 | checkbox | `a=` — authority evidence URI (VMC), MUST be HTTPS if present | 14 | - | - | PENDING |
-| CHK-923 | 05-BIMI.md:30 | checkbox | Empty `l=` with no `a=` → declination record (domain opts out) | 14 | - | - | PENDING |
-| CHK-924 | 05-BIMI.md:31 | checkbox | Unknown tags → ignored | 14 | - | - | PENDING |
-| CHK-925 | 05-BIMI.md:42 | checkbox | Optional header in email, SHOULD be DKIM-signed | 14 | - | - | PENDING |
-| CHK-926 | 05-BIMI.md:43 | checkbox | Format: `BIMI-Selector: v=BIMI1; s=<selector>;` | 14 | - | - | PENDING |
-| CHK-927 | 05-BIMI.md:73 | checkbox | Query: `<selector>._bimi.<author-domain>` TXT record | 14 | - | - | PENDING |
-| CHK-928 | 05-BIMI.md:74 | checkbox | Default selector: "default" | 14 | - | - | PENDING |
-| CHK-929 | 05-BIMI.md:75 | checkbox | Custom selector: from BIMI-Selector header s= tag | 14 | - | - | PENDING |
-| CHK-930 | 05-BIMI.md:76 | checkbox | If no record at author domain → fallback to `<selector>._bimi.<organizational-domain>` | 14 | - | - | PENDING |
-| CHK-931 | 05-BIMI.md:77 | checkbox | Filter: records starting with `v=` | 14 | - | - | PENDING |
-| CHK-932 | 05-BIMI.md:78 | checkbox | Exactly one valid record required: parse ALL TXT records, count valid BIMI records, multiple valid → Fail (do NOT silently pick first) | 14 | - | - | PENDING |
-| CHK-933 | 05-BIMI.md:82 | checkbox | DMARC result MUST be Pass (disposition == Pass) | 14 | - | - | PENDING |
-| CHK-934 | 05-BIMI.md:83 | checkbox | DMARC policy MUST be `quarantine` or `reject` (NOT `none`) | 14 | - | - | PENDING |
-| CHK-935 | 05-BIMI.md:84 | checkbox | DMARC pct MUST be 100: access `dmarc_result.record` and verify `record.percent == 100`. pct < 100 → NOT eligible. | 14 | - | - | PENDING |
-| CHK-936 | 05-BIMI.md:85 | checkbox | SPF or DKIM alignment: `dmarc_result.dkim_aligned || dmarc_result.spf_aligned` (redundant with Pass disposition but spec-mandated — check explicitly) | 14 | - | - | PENDING |
-| CHK-937 | 05-BIMI.md:89 | checkbox | Before BIMI processing, strip any pre-existing `BIMI-Location` and `BIMI-Indicator` headers from the message | 14 | - | - | PENDING |
-| CHK-938 | 05-BIMI.md:90 | checkbox | These headers are receiver-only; senders MUST NOT insert them | 14 | - | - | PENDING |
-| CHK-939 | 05-BIMI.md:91 | checkbox | If present, treat as potentially malicious and remove before evaluation | 14 | - | - | PENDING |
-| CHK-940 | 05-BIMI.md:99 | checkbox | Semicolon-separated tag=value pairs | 14 | - | - | PENDING |
-| CHK-941 | 05-BIMI.md:100 | checkbox | First tag MUST be `v=BIMI1` | 14 | - | - | PENDING |
-| CHK-942 | 05-BIMI.md:101 | checkbox | `l=` tag: comma-separated URIs, each MUST be HTTPS | 14 | - | - | PENDING |
-| CHK-943 | 05-BIMI.md:102 | checkbox | `a=` tag: single HTTPS URI | 14 | - | - | PENDING |
-| CHK-944 | 05-BIMI.md:103 | checkbox | Max 2 logo URIs in `l=` | 14 | - | - | PENDING |
-| CHK-945 | 05-BIMI.md:104 | checkbox | Unknown tags → ignored | 14 | - | - | PENDING |
-| CHK-946 | 05-BIMI.md:108 | checkbox | v= not first → error | 14 | - | - | PENDING |
-| CHK-947 | 05-BIMI.md:109 | checkbox | v= not "BIMI1" → error | 14 | - | - | PENDING |
-| CHK-948 | 05-BIMI.md:110 | checkbox | Missing l= → error (unless declination) | 14 | - | - | PENDING |
-| CHK-949 | 05-BIMI.md:111 | checkbox | Non-HTTPS URI → error | 14 | - | - | PENDING |
-| CHK-950 | 05-BIMI.md:112 | checkbox | More than 2 logo URIs → error | 14 | - | - | PENDING |
-| CHK-951 | 05-BIMI.md:116 | checkbox | `v=BIMI1;` (empty l=, no a=) → domain explicitly opts out | 14 | - | - | PENDING |
-| CHK-952 | 05-BIMI.md:117 | checkbox | Return BimiResult::Declined | 14 | - | - | PENDING |
+| CHK-920 | 05-BIMI.md:27 | checkbox | `v=` — version, MUST be "BIMI1", MUST be first tag | 14 | parse_valid_record, v_not_first_error, v_not_bimi1_error | - | DONE |
+| CHK-921 | 05-BIMI.md:28 | checkbox | `l=` — logo URI(s), comma-separated, 1-2 URIs, MUST be HTTPS | 14 | parse_valid_record, parse_multiple_logo_uris, non_https_l_error | - | DONE |
+| CHK-922 | 05-BIMI.md:29 | checkbox | `a=` — authority evidence URI (VMC), MUST be HTTPS if present | 14 | a_tag_valid, non_https_a_error | - | DONE |
+| CHK-923 | 05-BIMI.md:30 | checkbox | Empty `l=` with no `a=` → declination record (domain opts out) | 14 | declination_record, declination_with_empty_l | - | DONE |
+| CHK-924 | 05-BIMI.md:31 | checkbox | Unknown tags → ignored | 14 | unknown_tags_ignored | - | DONE |
+| CHK-925 | 05-BIMI.md:42 | checkbox | Optional header in email, SHOULD be DKIM-signed | 14 | parse_selector_valid (design) | - | DONE |
+| CHK-926 | 05-BIMI.md:43 | checkbox | Format: `BIMI-Selector: v=BIMI1; s=<selector>;` | 14 | parse_selector_valid | - | DONE |
+| CHK-927 | 05-BIMI.md:73 | checkbox | Query: `<selector>._bimi.<author-domain>` TXT record | 14 | discover_author_domain | - | DONE |
+| CHK-928 | 05-BIMI.md:74 | checkbox | Default selector: "default" | 14 | discover_author_domain, parse_selector_default | - | DONE |
+| CHK-929 | 05-BIMI.md:75 | checkbox | Custom selector: from BIMI-Selector header s= tag | 14 | discover_custom_selector | - | DONE |
+| CHK-930 | 05-BIMI.md:76 | checkbox | If no record at author domain → fallback to `<selector>._bimi.<organizational-domain>` | 14 | discover_fallback_org_domain | - | DONE |
+| CHK-931 | 05-BIMI.md:77 | checkbox | Filter: records starting with `v=` | 14 | discover_author_domain (code) | - | DONE |
+| CHK-932 | 05-BIMI.md:78 | checkbox | Exactly one valid record required: parse ALL TXT records, count valid BIMI records, multiple valid → Fail (do NOT silently pick first) | 14 | discover_multiple_valid_fail | - | DONE |
+| CHK-933 | 05-BIMI.md:82 | checkbox | DMARC result MUST be Pass (disposition == Pass) | 14 | dmarc_fail_not_eligible | - | DONE |
+| CHK-934 | 05-BIMI.md:83 | checkbox | DMARC policy MUST be `quarantine` or `reject` (NOT `none`) | 14 | dmarc_none_not_eligible, dmarc_quarantine_eligible, dmarc_reject_eligible | - | DONE |
+| CHK-935 | 05-BIMI.md:84 | checkbox | DMARC pct MUST be 100: access `dmarc_result.record` and verify `record.percent == 100`. pct < 100 → NOT eligible. | 14 | dmarc_pct_50_not_eligible, dmarc_pct_100_eligible | - | DONE |
+| CHK-936 | 05-BIMI.md:85 | checkbox | SPF or DKIM alignment: `dmarc_result.dkim_aligned || dmarc_result.spf_aligned` (redundant with Pass disposition but spec-mandated — check explicitly) | 14 | dmarc_dkim_aligned_eligible, dmarc_no_alignment_not_eligible | - | DONE |
+| CHK-937 | 05-BIMI.md:89 | checkbox | Before BIMI processing, strip any pre-existing `BIMI-Location` and `BIMI-Indicator` headers from the message | 14 | strip_bimi_location, strip_bimi_indicator | - | DONE |
+| CHK-938 | 05-BIMI.md:90 | checkbox | These headers are receiver-only; senders MUST NOT insert them | 14 | strip_bimi_location, strip_bimi_indicator | - | DONE |
+| CHK-939 | 05-BIMI.md:91 | checkbox | If present, treat as potentially malicious and remove before evaluation | 14 | strip_bimi_location, strip_bimi_indicator | - | DONE |
+| CHK-940 | 05-BIMI.md:99 | checkbox | Semicolon-separated tag=value pairs | 14 | parse_valid_record | - | DONE |
+| CHK-941 | 05-BIMI.md:100 | checkbox | First tag MUST be `v=BIMI1` | 14 | v_not_first_error | - | DONE |
+| CHK-942 | 05-BIMI.md:101 | checkbox | `l=` tag: comma-separated URIs, each MUST be HTTPS | 14 | parse_multiple_logo_uris, non_https_l_error | - | DONE |
+| CHK-943 | 05-BIMI.md:102 | checkbox | `a=` tag: single HTTPS URI | 14 | a_tag_valid, non_https_a_error | - | DONE |
+| CHK-944 | 05-BIMI.md:103 | checkbox | Max 2 logo URIs in `l=` | 14 | too_many_uris_error | - | DONE |
+| CHK-945 | 05-BIMI.md:104 | checkbox | Unknown tags → ignored | 14 | unknown_tags_ignored | - | DONE |
+| CHK-946 | 05-BIMI.md:108 | checkbox | v= not first → error | 14 | v_not_first_error | - | DONE |
+| CHK-947 | 05-BIMI.md:109 | checkbox | v= not "BIMI1" → error | 14 | v_not_bimi1_error | - | DONE |
+| CHK-948 | 05-BIMI.md:110 | checkbox | Missing l= → error (unless declination) | 14 | declination_record, missing_l_with_a_is_declination | - | DONE |
+| CHK-949 | 05-BIMI.md:111 | checkbox | Non-HTTPS URI → error | 14 | non_https_l_error, non_https_a_error | - | DONE |
+| CHK-950 | 05-BIMI.md:112 | checkbox | More than 2 logo URIs → error | 14 | too_many_uris_error | - | DONE |
+| CHK-951 | 05-BIMI.md:116 | checkbox | `v=BIMI1;` (empty l=, no a=) → domain explicitly opts out | 14 | declination_record, discover_declination | - | DONE |
+| CHK-952 | 05-BIMI.md:117 | checkbox | Return BimiResult::Declined | 14 | discover_declination | - | DONE |
 | CHK-953 | 05-BIMI.md:125 | checkbox | Root element MUST be `<svg>` | 15 | - | - | PENDING |
 | CHK-954 | 05-BIMI.md:126 | checkbox | `baseProfile="tiny-ps"` attribute required | 15 | - | - | PENDING |
 | CHK-955 | 05-BIMI.md:127 | checkbox | `<title>` element required (max 65 characters) | 15 | - | - | PENDING |
@@ -988,28 +988,28 @@
 | CHK-983 | 05-BIMI.md:174 | checkbox | Out-of-order → reject | 16 | - | - | PENDING |
 | CHK-984 | 05-BIMI.md:175 | checkbox | Duplicate certificates → reject | 16 | - | - | PENDING |
 | CHK-985 | 05-BIMI.md:176 | checkbox | Multiple VMCs → reject | 16 | - | - | PENDING |
-| CHK-986 | 05-BIMI.md:233 | checkbox | Valid: `v=BIMI1; l=https://example.com/logo.svg; a=https://example.com/cert.pem;` | 14 | - | - | PENDING |
-| CHK-987 | 05-BIMI.md:234 | checkbox | Multiple logo URIs: `l=https://a.com/1.svg,https://a.com/2.svg` | 14 | - | - | PENDING |
-| CHK-988 | 05-BIMI.md:235 | checkbox | v= not first → error | 14 | - | - | PENDING |
-| CHK-989 | 05-BIMI.md:236 | checkbox | Non-HTTPS URI → error | 14 | - | - | PENDING |
-| CHK-990 | 05-BIMI.md:237 | checkbox | Unknown tags → ignored | 14 | - | - | PENDING |
-| CHK-991 | 05-BIMI.md:238 | checkbox | Declination: `v=BIMI1;` → Declined | 14 | - | - | PENDING |
-| CHK-992 | 05-BIMI.md:239 | checkbox | More than 2 URIs → error | 14 | - | - | PENDING |
-| CHK-993 | 05-BIMI.md:243 | checkbox | DMARC pass + quarantine → eligible | 14 | - | - | PENDING |
-| CHK-994 | 05-BIMI.md:244 | checkbox | DMARC pass + reject → eligible | 14 | - | - | PENDING |
-| CHK-995 | 05-BIMI.md:245 | checkbox | DMARC pass + none → NOT eligible | 14 | - | - | PENDING |
-| CHK-996 | 05-BIMI.md:246 | checkbox | DMARC fail → NOT eligible | 14 | - | - | PENDING |
-| CHK-997 | 05-BIMI.md:247 | checkbox | pct < 100 → NOT eligible (construct DmarcResult with record.percent=50, verify rejection) | 14 | - | - | PENDING |
-| CHK-998 | 05-BIMI.md:248 | checkbox | pct=100 explicit → eligible | 14 | - | - | PENDING |
-| CHK-999 | 05-BIMI.md:249 | checkbox | Alignment check: dkim_aligned=true → eligible | 14 | - | - | PENDING |
-| CHK-1000 | 05-BIMI.md:250 | checkbox | Alignment check: both dkim_aligned=false and spf_aligned=false → NOT eligible (even if disposition=Pass, which shouldn't normally happen, but defensive) | 14 | - | - | PENDING |
-| CHK-1001 | 05-BIMI.md:254 | checkbox | Record at author domain → use it | 14 | - | - | PENDING |
-| CHK-1002 | 05-BIMI.md:255 | checkbox | No record at author domain, record at org domain → use fallback | 14 | - | - | PENDING |
-| CHK-1003 | 05-BIMI.md:256 | checkbox | No record anywhere → None | 14 | - | - | PENDING |
-| CHK-1004 | 05-BIMI.md:257 | checkbox | DNS TempFail → TempError | 14 | - | - | PENDING |
-| CHK-1005 | 05-BIMI.md:258 | checkbox | Custom selector via BIMI-Selector header | 14 | - | - | PENDING |
-| CHK-1006 | 05-BIMI.md:259 | checkbox | Multiple valid BIMI records at same DNS name → Fail (not first-wins) | 14 | - | - | PENDING |
-| CHK-1007 | 05-BIMI.md:260 | checkbox | One valid + one invalid record → use the valid one (invalid silently skipped) | 14 | - | - | PENDING |
+| CHK-986 | 05-BIMI.md:233 | checkbox | Valid: `v=BIMI1; l=https://example.com/logo.svg; a=https://example.com/cert.pem;` | 14 | parse_valid_record | - | DONE |
+| CHK-987 | 05-BIMI.md:234 | checkbox | Multiple logo URIs: `l=https://a.com/1.svg,https://a.com/2.svg` | 14 | parse_multiple_logo_uris | - | DONE |
+| CHK-988 | 05-BIMI.md:235 | checkbox | v= not first → error | 14 | v_not_first_error | - | DONE |
+| CHK-989 | 05-BIMI.md:236 | checkbox | Non-HTTPS URI → error | 14 | non_https_l_error, non_https_a_error | - | DONE |
+| CHK-990 | 05-BIMI.md:237 | checkbox | Unknown tags → ignored | 14 | unknown_tags_ignored | - | DONE |
+| CHK-991 | 05-BIMI.md:238 | checkbox | Declination: `v=BIMI1;` → Declined | 14 | declination_record, discover_declination | - | DONE |
+| CHK-992 | 05-BIMI.md:239 | checkbox | More than 2 URIs → error | 14 | too_many_uris_error | - | DONE |
+| CHK-993 | 05-BIMI.md:243 | checkbox | DMARC pass + quarantine → eligible | 14 | dmarc_quarantine_eligible | - | DONE |
+| CHK-994 | 05-BIMI.md:244 | checkbox | DMARC pass + reject → eligible | 14 | dmarc_reject_eligible | - | DONE |
+| CHK-995 | 05-BIMI.md:245 | checkbox | DMARC pass + none → NOT eligible | 14 | dmarc_none_not_eligible | - | DONE |
+| CHK-996 | 05-BIMI.md:246 | checkbox | DMARC fail → NOT eligible | 14 | dmarc_fail_not_eligible | - | DONE |
+| CHK-997 | 05-BIMI.md:247 | checkbox | pct < 100 → NOT eligible (construct DmarcResult with record.percent=50, verify rejection) | 14 | dmarc_pct_50_not_eligible | - | DONE |
+| CHK-998 | 05-BIMI.md:248 | checkbox | pct=100 explicit → eligible | 14 | dmarc_pct_100_eligible | - | DONE |
+| CHK-999 | 05-BIMI.md:249 | checkbox | Alignment check: dkim_aligned=true → eligible | 14 | dmarc_dkim_aligned_eligible | - | DONE |
+| CHK-1000 | 05-BIMI.md:250 | checkbox | Alignment check: both dkim_aligned=false and spf_aligned=false → NOT eligible (even if disposition=Pass, which shouldn't normally happen, but defensive) | 14 | dmarc_no_alignment_not_eligible | - | DONE |
+| CHK-1001 | 05-BIMI.md:254 | checkbox | Record at author domain → use it | 14 | discover_author_domain | - | DONE |
+| CHK-1002 | 05-BIMI.md:255 | checkbox | No record at author domain, record at org domain → use fallback | 14 | discover_fallback_org_domain | - | DONE |
+| CHK-1003 | 05-BIMI.md:256 | checkbox | No record anywhere → None | 14 | discover_no_record_none | - | DONE |
+| CHK-1004 | 05-BIMI.md:257 | checkbox | DNS TempFail → TempError | 14 | discover_dns_tempfail | - | DONE |
+| CHK-1005 | 05-BIMI.md:258 | checkbox | Custom selector via BIMI-Selector header | 14 | discover_custom_selector | - | DONE |
+| CHK-1006 | 05-BIMI.md:259 | checkbox | Multiple valid BIMI records at same DNS name → Fail (not first-wins) | 14 | discover_multiple_valid_fail | - | DONE |
+| CHK-1007 | 05-BIMI.md:260 | checkbox | One valid + one invalid record → use the valid one (invalid silently skipped) | 14 | discover_one_valid_one_invalid | - | DONE |
 | CHK-1008 | 05-BIMI.md:264 | checkbox | Valid SVG Tiny PS → pass | 15 | - | - | PENDING |
 | CHK-1009 | 05-BIMI.md:265 | checkbox | Missing baseProfile → fail | 15 | - | - | PENDING |
 | CHK-1010 | 05-BIMI.md:266 | checkbox | Contains `<script>` → fail | 15 | - | - | PENDING |
@@ -1038,28 +1038,28 @@
 | CHK-1033 | 05-BIMI.md:295 | checkbox | BIMI pass → `format_bimi_headers()` produces `BIMI-Location` header with logo URI | 15 | - | - | PENDING |
 | CHK-1034 | 05-BIMI.md:296 | checkbox | BIMI pass with VMC → `BIMI-Indicator` header with base64-encoded SVG | 15 | - | - | PENDING |
 | CHK-1035 | 05-BIMI.md:297 | checkbox | BIMI fail/none/declined → `format_bimi_headers()` returns None | 15 | - | - | PENDING |
-| CHK-1036 | 05-BIMI.md:301 | checkbox | Message with pre-existing `BIMI-Location` header → header stripped before evaluation | 14 | - | - | PENDING |
-| CHK-1037 | 05-BIMI.md:302 | checkbox | Message with pre-existing `BIMI-Indicator` header → header stripped before evaluation | 14 | - | - | PENDING |
-| CHK-1038 | 05-BIMI.md:303 | checkbox | Message with no BIMI headers → no-op | 14 | - | - | PENDING |
+| CHK-1036 | 05-BIMI.md:301 | checkbox | Message with pre-existing `BIMI-Location` header → header stripped before evaluation | 14 | strip_bimi_location | - | DONE |
+| CHK-1037 | 05-BIMI.md:302 | checkbox | Message with pre-existing `BIMI-Indicator` header → header stripped before evaluation | 14 | strip_bimi_indicator | - | DONE |
+| CHK-1038 | 05-BIMI.md:303 | checkbox | Message with no BIMI headers → no-op | 14 | strip_no_bimi_noop | - | DONE |
 | CHK-1039 | 05-BIMI.md:309 | checkbox | Logo size limit (32KB) prevents resource exhaustion | 15 | - | - | PENDING |
 | CHK-1040 | 05-BIMI.md:310 | checkbox | XXE prevention: reject `<!ENTITY>` declarations | 15 | - | - | PENDING |
 | CHK-1041 | 05-BIMI.md:311 | checkbox | Script injection: reject `<script>`, `javascript:` URIs | 15 | - | - | PENDING |
 | CHK-1042 | 05-BIMI.md:312 | checkbox | TLS 1.2 minimum for logo and VMC fetch | 15 | - | - | PENDING |
 | CHK-1043 | 05-BIMI.md:313 | checkbox | BIMI does NOT prevent lookalike domains — separate reputation system needed | 15 | - | - | PENDING |
 | CHK-1044 | 05-BIMI.md:314 | checkbox | Remove sender-inserted BIMI-Location headers before processing | 15 | - | - | PENDING |
-| CHK-1045 | 05-BIMI.md:320 | checkbox | DMARC module (for eligibility check) | 14 | - | - | PENDING |
-| CHK-1046 | 05-BIMI.md:321 | checkbox | DNS resolver (shared DnsResolver trait) | 14 | - | - | PENDING |
+| CHK-1045 | 05-BIMI.md:320 | checkbox | DMARC module (for eligibility check) | 14 | check_dmarc_ineligible | - | DONE |
+| CHK-1046 | 05-BIMI.md:321 | checkbox | DNS resolver (shared DnsResolver trait) | 14 | BimiVerifier<R: DnsResolver> | - | DONE |
 | CHK-1047 | 05-BIMI.md:322 | checkbox | XML parser (for SVG validation): `quick-xml` or similar | 15 | - | - | PENDING |
 | CHK-1048 | 05-BIMI.md:323 | checkbox | X.509 library (for VMC): `x509-parser` or `webpki` | 16 | - | - | PENDING |
 | CHK-1049 | 05-BIMI.md:324 | checkbox | Optional: `reqwest` for HTTPS fetching (caller can provide) | 16 | - | - | PENDING |
-| CHK-1050 | 05-BIMI.md:375 | checkbox | BIMI DNS record parsing (v=, l=, a= tags) | 14 | - | - | PENDING |
-| CHK-1051 | 05-BIMI.md:376 | checkbox | BIMI-Selector header parsing | 14 | - | - | PENDING |
-| CHK-1052 | 05-BIMI.md:377 | checkbox | Record discovery with org-domain fallback | 14 | - | - | PENDING |
-| CHK-1053 | 05-BIMI.md:378 | checkbox | Multiple valid records → Fail (not first-wins) | 14 | - | - | PENDING |
-| CHK-1054 | 05-BIMI.md:379 | checkbox | DMARC eligibility check (disposition + policy + pct=100 + alignment) | 14 | - | - | PENDING |
+| CHK-1050 | 05-BIMI.md:375 | checkbox | BIMI DNS record parsing (v=, l=, a= tags) | 14 | parse_valid_record + 14 parser tests | - | DONE |
+| CHK-1051 | 05-BIMI.md:376 | checkbox | BIMI-Selector header parsing | 14 | parse_selector_valid + 3 selector tests | - | DONE |
+| CHK-1052 | 05-BIMI.md:377 | checkbox | Record discovery with org-domain fallback | 14 | discover_fallback_org_domain | - | DONE |
+| CHK-1053 | 05-BIMI.md:378 | checkbox | Multiple valid records → Fail (not first-wins) | 14 | discover_multiple_valid_fail | - | DONE |
+| CHK-1054 | 05-BIMI.md:379 | checkbox | DMARC eligibility check (disposition + policy + pct=100 + alignment) | 14 | 8 dmarc_* tests | - | DONE |
 | CHK-1055 | 05-BIMI.md:380 | checkbox | SVG Tiny PS validation (size, baseProfile, prohibited elements, Event::Start AND Event::Empty) | 15 | - | - | PENDING |
 | CHK-1056 | 05-BIMI.md:381 | checkbox | VMC validation (EKU OID, SAN matching, chain validation, LogoType SVG extraction, logo hash comparison) | 16 | - | - | PENDING |
-| CHK-1057 | 05-BIMI.md:382 | checkbox | Declination record handling | 14 | - | - | PENDING |
+| CHK-1057 | 05-BIMI.md:382 | checkbox | Declination record handling | 14 | declination_record, discover_declination | - | DONE |
 | CHK-1058 | 05-BIMI.md:383 | checkbox | BIMI-Location and BIMI-Indicator header generation (`format_bimi_headers()`) | 15 | - | - | PENDING |
-| CHK-1059 | 05-BIMI.md:384 | checkbox | Sender-inserted BIMI header removal | 14 | - | - | PENDING |
+| CHK-1059 | 05-BIMI.md:384 | checkbox | Sender-inserted BIMI header removal | 14 | strip_bimi_location, strip_bimi_indicator, strip_no_bimi_noop | - | DONE |
 | CHK-1060 | 05-BIMI.md:385 | checkbox | Unit tests for: parsing, discovery (incl. multiple records), SVG validation, DMARC eligibility, VMC, header generation, header removal | 16 | - | - | PENDING |
