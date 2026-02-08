@@ -4,7 +4,7 @@ A Rust email authentication library implementing SPF, DKIM, DMARC, ARC, and BIMI
 
 ## Current Status
 
-**Cycle 1 — Lane 14: BIMI Types & Discovery Complete**
+**Cycle 1 — Lane 15: SVG Validation Complete**
 
 | Component | Status |
 |-----------|--------|
@@ -13,7 +13,7 @@ A Rust email authentication library implementing SPF, DKIM, DMARC, ARC, and BIMI
 | **DKIM** | ✅ Complete: types, parsing, canonicalization, verification, signing |
 | **DMARC** | ✅ Complete: evaluation, policy selection, alignment checks, sampling, aggregate/failure reporting |
 | **ARC** | ✅ Complete: types, parsing, validation, sealing with cv= logic, multi-hop roundtrips |
-| **BIMI** | ✅ In Progress: types, record parsing, DNS discovery with org-domain fallback, DMARC eligibility checks, header stripping |
+| **BIMI** | ✅ Complete: types, record parsing, DNS discovery with org-domain fallback, DMARC eligibility checks, header stripping, SVG Tiny PS validation |
 
 ## Getting Started
 
@@ -108,8 +108,9 @@ email-auth = "0.1.0"
 - **Discovery**: DNS TXT lookup at `<selector>._bimi.<domain>` with org-domain fallback, declination detection
 - **DMARC Eligibility**: Enforcement policy check (quarantine/reject), percent sampling (pct=100), alignment verification
 - **Header Processing**: BIMI-Selector extraction, sender-inserted header stripping (BIMI-Location, BIMI-Indicator)
+- **SVG Validation**: SVG Tiny PS profile enforcement (baseProfile="tiny-ps"), required elements (title), prohibited elements (script, animations, embedded images), XXE prevention, 32KB size limit
 - **Result Reporting**: Structured result types (Pass/None/Fail/TempError/Skipped/Declined)
-- **Planned**: VMC certificate validation, SVG Tiny PS validation, logo fetching (caller responsibility)
+- **Future**: VMC certificate chain validation, logo fetching (caller responsibility via HTTPS client)
 
 ## Development
 
@@ -140,7 +141,7 @@ src/
 - **DNS validation**: Implement DNS response validation at resolver layer
 - **RSA key size**: Library enforces minimum 1024-bit, recommends 2048+
 - **Clock skew**: Configurable expiration tolerance for DKIM/ARC timestamps
-- **BIMI SVG**: 32KB size limit, XXE prevention, script injection blocking
+- **SVG parsing**: 32KB size limit enforced before parsing, XXE entity expansion prevention, script injection detection via prohibited element checks
 - **PTR verification**: Forward confirmation required (expensive — cache aggressively)
 
 ## License
