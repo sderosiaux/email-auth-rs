@@ -1,0 +1,11 @@
+cycle: 1
+phase: implement
+max_cycles: 1
+current_lane: 1
+lane_attempt: 1
+max_lane_attempts: 3
+spec_path: /home/claude/code/email-auth/specs
+preserve_paths: []
+implement_session_id: ''
+resume_sessions: true
+reviewer: claude
