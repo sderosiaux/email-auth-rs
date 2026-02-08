@@ -854,29 +854,29 @@
 | CHK-849 | 04-ARC-RFC8617.md:187 | checkbox | Strip b= value from the AS being validated/signed (same b= stripping as DKIM) | 12 | - | - | DONE |
 | CHK-850 | 04-ARC-RFC8617.md:188 | checkbox | **NO body content** in AS signature input | 12 | - | - | DONE |
 | CHK-851 | 04-ARC-RFC8617.md:189 | checkbox | Last header (the AS being validated) WITHOUT trailing CRLF | 12 | - | - | DONE |
-| CHK-852 | 04-ARC-RFC8617.md:197 | checkbox | Perform ALL message modifications (including DKIM signing) BEFORE sealing | 13 | - | - | PENDING |
-| CHK-853 | 04-ARC-RFC8617.md:198 | checkbox | ARC sealing is the LAST operation | 13 | - | - | PENDING |
-| CHK-854 | 04-ARC-RFC8617.md:202 | checkbox | If existing chain has highest AS with cv=fail → STOP, do NOT seal | 13 | - | - | PENDING |
-| CHK-855 | 04-ARC-RFC8617.md:206 | checkbox | If chain exists: instance = max_existing + 1 | 13 | - | - | PENDING |
-| CHK-856 | 04-ARC-RFC8617.md:207 | checkbox | If no chain: instance = 1 | 13 | - | - | PENDING |
-| CHK-857 | 04-ARC-RFC8617.md:208 | checkbox | If instance > 50 → STOP, do NOT seal | 13 | - | - | PENDING |
-| CHK-858 | 04-ARC-RFC8617.md:212 | checkbox | Validate incoming chain | 13 | - | - | PENDING |
-| CHK-859 | 04-ARC-RFC8617.md:213 | checkbox | No chain → cv=none | 13 | - | - | PENDING |
-| CHK-860 | 04-ARC-RFC8617.md:214 | checkbox | Validation passed → cv=pass | 13 | - | - | PENDING |
-| CHK-861 | 04-ARC-RFC8617.md:215 | checkbox | Validation failed → cv=fail (but Step 2 should have stopped) | 13 | - | - | PENDING |
-| CHK-862 | 04-ARC-RFC8617.md:219 | checkbox | `ARC-Authentication-Results: i=<N>; <authservid>; <results>` | 13 | - | - | PENDING |
-| CHK-863 | 04-ARC-RFC8617.md:220 | checkbox | Include ALL authentication results from this ADMD (SPF, DKIM, DMARC, ARC) | 13 | - | - | PENDING |
-| CHK-864 | 04-ARC-RFC8617.md:224 | checkbox | Compute body hash (same as DKIM) | 13 | - | - | PENDING |
-| CHK-865 | 04-ARC-RFC8617.md:225 | checkbox | Select headers for h= tag: | 13 | - | - | PENDING |
-| CHK-866 | 04-ARC-RFC8617.md:229 | checkbox | Sign using DKIM algorithm | 13 | - | - | PENDING |
-| CHK-867 | 04-ARC-RFC8617.md:230 | checkbox | Format: `ARC-Message-Signature: i=<N>; a=rsa-sha256; c=relaxed/relaxed; d=<d>; s=<s>; h=<h>; bh=<bh>; b=<b>` | 13 | - | - | PENDING |
-| CHK-868 | 04-ARC-RFC8617.md:234 | checkbox | Build signature input: ALL ARC Sets (1..N) in order (AAR, AMS, AS per set) | 13 | - | - | PENDING |
-| CHK-869 | 04-ARC-RFC8617.md:235 | checkbox | Strip b= from this AS | 13 | - | - | PENDING |
-| CHK-870 | 04-ARC-RFC8617.md:236 | checkbox | **Relaxed header canonicalization only** | 13 | - | - | PENDING |
-| CHK-871 | 04-ARC-RFC8617.md:237 | checkbox | Sign | 13 | - | - | PENDING |
-| CHK-872 | 04-ARC-RFC8617.md:238 | checkbox | Format: `ARC-Seal: i=<N>; cv=<cv>; a=rsa-sha256; d=<d>; s=<s>; b=<b>` | 13 | - | - | PENDING |
-| CHK-873 | 04-ARC-RFC8617.md:242 | checkbox | Add AAR, AMS, AS to message | 13 | - | - | PENDING |
-| CHK-874 | 04-ARC-RFC8617.md:243 | checkbox | Added at message exit (after all processing) | 13 | - | - | PENDING |
+| CHK-852 | 04-ARC-RFC8617.md:197 | checkbox | Perform ALL message modifications (including DKIM signing) BEFORE sealing | 13 | - | - | DONE |
+| CHK-853 | 04-ARC-RFC8617.md:198 | checkbox | ARC sealing is the LAST operation | 13 | - | - | DONE |
+| CHK-854 | 04-ARC-RFC8617.md:202 | checkbox | If existing chain has highest AS with cv=fail → STOP, do NOT seal | 13 | - | - | DONE |
+| CHK-855 | 04-ARC-RFC8617.md:206 | checkbox | If chain exists: instance = max_existing + 1 | 13 | - | - | DONE |
+| CHK-856 | 04-ARC-RFC8617.md:207 | checkbox | If no chain: instance = 1 | 13 | - | - | DONE |
+| CHK-857 | 04-ARC-RFC8617.md:208 | checkbox | If instance > 50 → STOP, do NOT seal | 13 | - | - | DONE |
+| CHK-858 | 04-ARC-RFC8617.md:212 | checkbox | Validate incoming chain | 13 | - | - | DONE |
+| CHK-859 | 04-ARC-RFC8617.md:213 | checkbox | No chain → cv=none | 13 | - | - | DONE |
+| CHK-860 | 04-ARC-RFC8617.md:214 | checkbox | Validation passed → cv=pass | 13 | - | - | DONE |
+| CHK-861 | 04-ARC-RFC8617.md:215 | checkbox | Validation failed → cv=fail (but Step 2 should have stopped) | 13 | - | - | DONE |
+| CHK-862 | 04-ARC-RFC8617.md:219 | checkbox | `ARC-Authentication-Results: i=<N>; <authservid>; <results>` | 13 | - | - | DONE |
+| CHK-863 | 04-ARC-RFC8617.md:220 | checkbox | Include ALL authentication results from this ADMD (SPF, DKIM, DMARC, ARC) | 13 | - | - | DONE |
+| CHK-864 | 04-ARC-RFC8617.md:224 | checkbox | Compute body hash (same as DKIM) | 13 | - | - | DONE |
+| CHK-865 | 04-ARC-RFC8617.md:225 | checkbox | Select headers for h= tag: | 13 | - | - | DONE |
+| CHK-866 | 04-ARC-RFC8617.md:229 | checkbox | Sign using DKIM algorithm | 13 | - | - | DONE |
+| CHK-867 | 04-ARC-RFC8617.md:230 | checkbox | Format: `ARC-Message-Signature: i=<N>; a=rsa-sha256; c=relaxed/relaxed; d=<d>; s=<s>; h=<h>; bh=<bh>; b=<b>` | 13 | - | - | DONE |
+| CHK-868 | 04-ARC-RFC8617.md:234 | checkbox | Build signature input: ALL ARC Sets (1..N) in order (AAR, AMS, AS per set) | 13 | - | - | DONE |
+| CHK-869 | 04-ARC-RFC8617.md:235 | checkbox | Strip b= from this AS | 13 | - | - | DONE |
+| CHK-870 | 04-ARC-RFC8617.md:236 | checkbox | **Relaxed header canonicalization only** | 13 | - | - | DONE |
+| CHK-871 | 04-ARC-RFC8617.md:237 | checkbox | Sign | 13 | - | - | DONE |
+| CHK-872 | 04-ARC-RFC8617.md:238 | checkbox | Format: `ARC-Seal: i=<N>; cv=<cv>; a=rsa-sha256; d=<d>; s=<s>; b=<b>` | 13 | - | - | DONE |
+| CHK-873 | 04-ARC-RFC8617.md:242 | checkbox | Add AAR, AMS, AS to message | 13 | - | - | DONE |
+| CHK-874 | 04-ARC-RFC8617.md:243 | checkbox | Added at message exit (after all processing) | 13 | - | - | DONE |
 | CHK-875 | 04-ARC-RFC8617.md:312 | checkbox | Valid AAR with instance 1 | 12 | - | - | DONE |
 | CHK-876 | 04-ARC-RFC8617.md:313 | checkbox | Valid AMS with all required tags | 12 | - | - | DONE |
 | CHK-877 | 04-ARC-RFC8617.md:314 | checkbox | Valid AS with cv=none, cv=pass, cv=fail | 12 | - | - | DONE |
@@ -894,16 +894,16 @@
 | CHK-889 | 04-ARC-RFC8617.md:329 | checkbox | >50 sets → Fail | 12 | - | - | DONE |
 | CHK-890 | 04-ARC-RFC8617.md:330 | checkbox | Most recent AMS fails → Fail | 12 | - | - | DONE |
 | CHK-891 | 04-ARC-RFC8617.md:331 | checkbox | Any AS fails → Fail | 12 | - | - | DONE |
-| CHK-892 | 04-ARC-RFC8617.md:335 | checkbox | Seal with no existing chain → i=1, cv=none | 13 | - | - | PENDING |
-| CHK-893 | 04-ARC-RFC8617.md:336 | checkbox | Seal with valid chain (i=2) → i=3, cv=pass | 13 | - | - | PENDING |
-| CHK-894 | 04-ARC-RFC8617.md:337 | checkbox | Incoming cv=fail → do not seal | 13 | - | - | PENDING |
-| CHK-895 | 04-ARC-RFC8617.md:338 | checkbox | Instance would exceed 50 → do not seal | 13 | - | - | PENDING |
-| CHK-896 | 04-ARC-RFC8617.md:339 | checkbox | Verify AS covers all prior ARC Sets | 13 | - | - | PENDING |
-| CHK-897 | 04-ARC-RFC8617.md:343 | checkbox | Seal → validate → Pass: `ArcSealer::seal_message()` produces AAR/AMS/AS → prepend to message headers → `ArcVerifier::validate_chain()` returns Pass. **MUST NOT substitute manual ring verification** — the purpose is to test that sealer and verifier agree. | 13 | - | - | PENDING |
-| CHK-898 | 04-ARC-RFC8617.md:344 | checkbox | Seal → modify body → validate AMS fails | 13 | - | - | PENDING |
-| CHK-899 | 04-ARC-RFC8617.md:345 | checkbox | Seal → tamper ARC header → validate AS fails | 13 | - | - | PENDING |
-| CHK-900 | 04-ARC-RFC8617.md:346 | checkbox | Multi-hop: 3 sealers each adding ARC set, final `ArcVerifier::validate_chain()` returns Pass with all 3 sets | 13 | - | - | PENDING |
-| CHK-901 | 04-ARC-RFC8617.md:347 | checkbox | Multi-hop body modification: sealer 1 signs, intermediary modifies body, sealer 2 re-signs → validate_chain returns Pass for set 2 AMS but oldest_pass > 1 | 13 | - | - | PENDING |
+| CHK-892 | 04-ARC-RFC8617.md:335 | checkbox | Seal with no existing chain → i=1, cv=none | 13 | - | - | DONE |
+| CHK-893 | 04-ARC-RFC8617.md:336 | checkbox | Seal with valid chain (i=2) → i=3, cv=pass | 13 | - | - | DONE |
+| CHK-894 | 04-ARC-RFC8617.md:337 | checkbox | Incoming cv=fail → do not seal | 13 | - | - | DONE |
+| CHK-895 | 04-ARC-RFC8617.md:338 | checkbox | Instance would exceed 50 → do not seal | 13 | - | - | DONE |
+| CHK-896 | 04-ARC-RFC8617.md:339 | checkbox | Verify AS covers all prior ARC Sets | 13 | - | - | DONE |
+| CHK-897 | 04-ARC-RFC8617.md:343 | checkbox | Seal → validate → Pass: `ArcSealer::seal_message()` produces AAR/AMS/AS → prepend to message headers → `ArcVerifier::validate_chain()` returns Pass. **MUST NOT substitute manual ring verification** — the purpose is to test that sealer and verifier agree. | 13 | - | - | DONE |
+| CHK-898 | 04-ARC-RFC8617.md:344 | checkbox | Seal → modify body → validate AMS fails | 13 | - | - | DONE |
+| CHK-899 | 04-ARC-RFC8617.md:345 | checkbox | Seal → tamper ARC header → validate AS fails | 13 | - | - | DONE |
+| CHK-900 | 04-ARC-RFC8617.md:346 | checkbox | Multi-hop: 3 sealers each adding ARC set, final `ArcVerifier::validate_chain()` returns Pass with all 3 sets | 13 | - | - | DONE |
+| CHK-901 | 04-ARC-RFC8617.md:347 | checkbox | Multi-hop body modification: sealer 1 signs, intermediary modifies body, sealer 2 re-signs → validate_chain returns Pass for set 2 AMS but oldest_pass > 1 | 13 | - | - | DONE |
 | CHK-902 | 04-ARC-RFC8617.md:353 | checkbox | Up to 2*N DNS queries for N sets — implement timeouts | 12 | - | - | DONE |
 | CHK-903 | 04-ARC-RFC8617.md:354 | checkbox | ARC conveys authentication assessment, NOT authorization — receivers must maintain trusted sealer lists | 12 | - | - | DONE |
 | CHK-904 | 04-ARC-RFC8617.md:355 | checkbox | cv=fail propagates — once failed, subsequent handlers should not seal with cv=pass | 12 | - | - | DONE |
@@ -917,11 +917,11 @@
 | CHK-912 | 04-ARC-RFC8617.md:411 | checkbox | Chain validation algorithm (steps 1-7) complete | 12 | - | - | DONE |
 | CHK-913 | 04-ARC-RFC8617.md:412 | checkbox | AMS validation reuses DKIM verification | 12 | - | - | DONE |
 | CHK-914 | 04-ARC-RFC8617.md:413 | checkbox | AS validation with correct signature input ordering | 12 | - | - | DONE |
-| CHK-915 | 04-ARC-RFC8617.md:414 | checkbox | Chain sealing (AAR + AMS + AS generation) | 13 | - | - | PENDING |
-| CHK-916 | 04-ARC-RFC8617.md:415 | checkbox | Seal uses DKIM signing primitives | 13 | - | - | PENDING |
-| CHK-917 | 04-ARC-RFC8617.md:416 | checkbox | cv= propagation rules enforced | 13 | - | - | PENDING |
-| CHK-918 | 04-ARC-RFC8617.md:417 | checkbox | Instance limit (50) enforced | 13 | - | - | PENDING |
-| CHK-919 | 04-ARC-RFC8617.md:418 | checkbox | Unit tests cover parsing, validation, sealing, roundtrip | 13 | - | - | PENDING |
+| CHK-915 | 04-ARC-RFC8617.md:414 | checkbox | Chain sealing (AAR + AMS + AS generation) | 13 | - | - | DONE |
+| CHK-916 | 04-ARC-RFC8617.md:415 | checkbox | Seal uses DKIM signing primitives | 13 | - | - | DONE |
+| CHK-917 | 04-ARC-RFC8617.md:416 | checkbox | cv= propagation rules enforced | 13 | - | - | DONE |
+| CHK-918 | 04-ARC-RFC8617.md:417 | checkbox | Instance limit (50) enforced | 13 | - | - | DONE |
+| CHK-919 | 04-ARC-RFC8617.md:418 | checkbox | Unit tests cover parsing, validation, sealing, roundtrip | 13 | - | - | DONE |
 | CHK-920 | 05-BIMI.md:27 | checkbox | `v=` — version, MUST be "BIMI1", MUST be first tag | 14 | - | - | PENDING |
 | CHK-921 | 05-BIMI.md:28 | checkbox | `l=` — logo URI(s), comma-separated, 1-2 URIs, MUST be HTTPS | 14 | - | - | PENDING |
 | CHK-922 | 05-BIMI.md:29 | checkbox | `a=` — authority evidence URI (VMC), MUST be HTTPS if present | 14 | - | - | PENDING |
