@@ -1,9 +1,17 @@
 [package]
 name = "email-auth"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 description = "Email authentication library: SPF, DKIM, DMARC, ARC, BIMI"
 license = "MIT OR Apache-2.0"
+authors = ["Stéphane Derosiaux"]
+repository = "https://github.com/sderosiaux/email-auth-rs"
+homepage = "https://github.com/sderosiaux/email-auth-rs"
+documentation = "https://docs.rs/email-auth"
+readme = "README.md"
+keywords = ["email", "spf", "dkim", "dmarc", "authentication"]
+categories = ["email", "authentication"]
+exclude = [".forge/", "specs/", "rfc/", "CLAUDE.md", "REFERENCE.md"]
 
 [dependencies]
 # Async runtime
