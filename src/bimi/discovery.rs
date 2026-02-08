@@ -158,7 +158,13 @@ impl<R: DnsResolver> BimiVerifier<R> {
 
         match valid_records.len() {
             0 => Err(LookupError::NotFound),
-            1 => Ok(valid_records.into_iter().next().unwrap()),
+            1 => {
+                let mut iter = valid_records.into_iter();
+                match iter.next() {
+                    Some(record) => Ok(record),
+                    None => Err(LookupError::NotFound),
+                }
+            }
             n => Err(LookupError::Fail(format!(
                 "multiple valid BIMI records ({}) at {}",
                 n, query

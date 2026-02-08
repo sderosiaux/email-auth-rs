@@ -3,6 +3,7 @@
 ## FRICTION
 - **MockResolver::add_tempfail() doesn't exist**: MockResolver has `add_txt_err(domain, DnsError)` not a domain-specific `add_tempfail()`. Must use `resolver.add_txt_err("...", DnsError::TempFail)` with explicit import of `crate::common::dns::DnsError`.
 - **BIMI declination detection**: A declination record is `v=BIMI1;` with empty/missing `l=` and no `a=`. But `missing l= with a=` present is NOT a declination — it's a valid record with authority evidence only. The `is_declination()` check must verify BOTH conditions: `logo_uris.is_empty() && authority_uri.is_none()`.
+- **No unwrap() in library code (review fix)**: `valid_records.into_iter().next().unwrap()` in `lookup_bimi_record()` violated project rule even though logically safe inside `1 =>` match arm. Replaced with `match iter.next()` pattern (src/bimi/discovery.rs:161-165).
 
 ## GAP
 - **Multiple valid records → Fail, not first-wins**: BIMI spec explicitly mandates that multiple valid BIMI TXT records at the same DNS name produce Fail. This differs from DMARC's "first valid wins" approach. The discovery loop must parse ALL records, count valid ones, and fail if count > 1.
