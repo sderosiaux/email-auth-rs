@@ -1,39 +1,29 @@
 ---
-verdict: VIOLATIONS
+verdict: APPROVED
 lane: 7
 cycle: 1
 ---
 
-## Violations
-
-- **CHK-482**: Valid RSA-SHA256 signature → Pass (pre-computed fixture)
-  Expected (from spec): "**pre-computed fixture**: sign with `rsa` crate or openssl, embed signed message + SPKI public key in test — cannot rely on sign→verify round-trip alone" (spec 02-DKIM-RFC6376.md:462)
-  Actual (in code): No RSA-SHA256 test exists at all. No fixture. Checkboxes.md records this as DONE at `src/dkim/verify.rs:1157` — but line 1157 is a comment `// CHK-534: No unwrap/expect in library code`. There is no RSA-SHA256 pass test anywhere in the file.
-  Test gap: Zero RSA verification tests. The entire RSA code path (`strip_spki_wrapper`, RSA algorithm selection, `RSA_PKCS1_*` constants) is never exercised by any test.
-
-- **CHK-483**: Valid RSA-SHA1 signature → Pass (pre-computed fixture required)
-  Expected (from spec): "**pre-computed fixture required**: ring 0.17 cannot sign SHA-1. Sign once externally, embed fixture with raw message bytes + signature + public key" (spec 02-DKIM-RFC6376.md:463)
-  Actual (in code): No RSA-SHA1 test exists at all. No fixture. Same phantom line reference as CHK-482.
-  Test gap: RSA-SHA1 verification code path is completely untested.
-
-- **CHK-529**: RSA-SHA256 + RSA-SHA1 + Ed25519 verification working
-  Expected (from spec): "RSA-SHA256 + RSA-SHA1 + Ed25519 verification working" (spec 02-DKIM-RFC6376.md:600)
-  Actual (in code): Only Ed25519 verification is tested. RSA-SHA256 and RSA-SHA1 have zero test coverage. Marked DONE at `src/dkim/verify.rs:385` — this is the `verify_signature` function definition, not a test.
-  Test gap: Two of three algorithm paths untested.
-
-- **CHK-532**: RSA-SHA1 verification tested
-  Expected (from spec): "RSA-SHA1 verification tested" (spec 02-DKIM-RFC6376.md:603)
-  Actual (in code): Not tested. Marked DONE at line 1157, same phantom reference.
-  Test gap: Explicitly requires testing and no test exists.
-
-## Code Issues
-
-- `src/dkim/verify.rs:162`: `current_timestamp()` uses `.unwrap_or(0)` in library code. While not `unwrap()` per se, returning 0 on `SystemTime` failure means signatures would be treated as not-expired (0 < any_x + 300). This is a lenient failure mode that could skip expiration checks if the system clock is broken. Not blocking per spec, but notable.
-
-- `src/dkim/verify.rs:300-305`: `compute_header_hash_input` calls `strip_b_tag_value` twice for simple canonicalization (once on line 292, result unused; again on line 301). Redundant but not incorrect.
-
 ## Summary
+All 67 work items verified (CHK-367–CHK-420, CHK-481–CHK-501, CHK-510–CHK-517, CHK-528–CHK-534). 308 tests pass, 0 failures. Spec compliance confirmed.
 
-4 work items (CHK-482, CHK-483, CHK-529, CHK-532) are marked DONE in checkboxes.md but have **zero corresponding tests**. All four require pre-computed RSA fixtures per spec. The entire RSA verification code path — SPKI stripping, key size detection, RSA-SHA256 algorithm selection, RSA-SHA1 algorithm selection — is exercised by no test. The SPKI stripping function has only trivial passthrough tests (non-SPKI data and too-short data); no test passes actual SPKI-wrapped RSA keys through it.
+## Prior Violations Resolved
 
-71 of 75 lane-7 work items are properly covered. The 4 RSA-related test items are hard violations.
+The 4 violations from the prior review (CHK-482, CHK-483, CHK-529, CHK-532) are all resolved:
+
+- **CHK-482**: `rsa_sha256_precomputed_fixture_pass` (verify.rs:1142) — pre-computed RSA-SHA256 fixture signed externally with OpenSSL, exercises full SPKI stripping and ring RSA_PKCS1_2048_8192_SHA256. Passes.
+- **CHK-483**: `rsa_sha1_precomputed_fixture_pass` (verify.rs:1184) — pre-computed RSA-SHA1 fixture signed with `openssl dgst -sha1 -sign`, exercises RSA_PKCS1_2048_8192_SHA1_FOR_LEGACY_USE_ONLY. Passes.
+- **CHK-529**: All three algorithm paths now tested: Ed25519 (ground-truth), RSA-SHA256 (fixture), RSA-SHA1 (fixture).
+- **CHK-532**: RSA-SHA1 verification tested via dedicated fixture test.
+
+## Prior Code Issues Resolved
+
+- Double `strip_b_tag_value` call in `compute_header_hash_input`: refactored to single call with branching on canonicalization method (verify.rs:292–302).
+- `strip_spki_real_rsa_2048_key` test added (verify.rs:1243) — validates SPKI stripping with real 294-byte RSA-2048 SPKI key, asserts PKCS#1 output is shorter, starts with 0x30, and is >250 bytes.
+
+## Notes
+
+- `current_timestamp()` uses `.unwrap_or(0)` (verify.rs:162) — lenient on broken system clock but not a spec violation. Not blocking.
+- No `unwrap()`/`expect()` in library code (lines 1–411); all instances in `#[cfg(test)]` only (CHK-534).
+- Key size threshold correctly operates on SPKI bytes pre-stripping per spec §10.5.
+- `subtle::ConstantTimeEq` used for body hash comparison per spec §4.5 (CHK-390/391/513).
