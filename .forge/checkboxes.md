@@ -369,60 +369,60 @@
 | CHK-364 | 02-DKIM-RFC6376.md:184 | checkbox | MUST NOT affect the bh= tag (careful: naive "b=" search could match "bh=") | 6 | src/dkim/canon.rs:553 | ea0fa9f | DONE |
 | CHK-365 | 02-DKIM-RFC6376.md:185 | checkbox | Implementation: find `b=` that is NOT preceded by `b` (i.e., not `bh=`), then strip value up to next `;` or end | 6 | src/dkim/canon.rs:561 | ea0fa9f | DONE |
 | CHK-366 | 02-DKIM-RFC6376.md:186 | checkbox | The DKIM-Signature header is appended to hash input WITHOUT trailing CRLF | 6 | src/dkim/canon.rs:572 | ea0fa9f | DONE |
-| CHK-367 | 02-DKIM-RFC6376.md:194 | checkbox | Find all DKIM-Signature headers in message (case-insensitive name match) | 7 | - | - | PENDING |
-| CHK-368 | 02-DKIM-RFC6376.md:195 | checkbox | Parse each signature | 7 | - | - | PENDING |
-| CHK-369 | 02-DKIM-RFC6376.md:196 | checkbox | Malformed signatures → PermFail with MalformedSignature kind | 7 | - | - | PENDING |
-| CHK-370 | 02-DKIM-RFC6376.md:197 | checkbox | Return one result per DKIM-Signature, or single `None` if no signatures present | 7 | - | - | PENDING |
-| CHK-371 | 02-DKIM-RFC6376.md:201 | checkbox | Construct query: `<selector>._domainkey.<domain>` TXT record | 7 | - | - | PENDING |
-| CHK-372 | 02-DKIM-RFC6376.md:202 | checkbox | Handle multiple TXT strings: concatenate into single string before parsing | 7 | - | - | PENDING |
-| CHK-373 | 02-DKIM-RFC6376.md:203 | checkbox | Handle NXDOMAIN → PermFail with KeyNotFound | 7 | - | - | PENDING |
-| CHK-374 | 02-DKIM-RFC6376.md:204 | checkbox | Handle TempFail → TempFail | 7 | - | - | PENDING |
-| CHK-375 | 02-DKIM-RFC6376.md:205 | checkbox | Empty `p=` → PermFail with KeyRevoked | 7 | - | - | PENDING |
-| CHK-376 | 02-DKIM-RFC6376.md:206 | checkbox | DNS caching: caller responsibility (document this) | 7 | - | - | PENDING |
-| CHK-377 | 02-DKIM-RFC6376.md:210 | checkbox | a. Empty p= → PermFail KeyRevoked | 7 | - | - | PENDING |
-| CHK-378 | 02-DKIM-RFC6376.md:211 | checkbox | b. Key h= tag: if present, signature's hash algorithm must be in the list | 7 | - | - | PENDING |
-| CHK-379 | 02-DKIM-RFC6376.md:214 | checkbox | c. Key s= tag: must include "email" or "*" → PermFail ServiceTypeMismatch | 7 | - | - | PENDING |
-| CHK-380 | 02-DKIM-RFC6376.md:215 | checkbox | d. Key t=s flag: i= domain must exactly equal d= (not subdomain) → PermFail StrictModeViolation | 7 | - | - | PENDING |
-| CHK-381 | 02-DKIM-RFC6376.md:216 | checkbox | e. Key type must match algorithm: | 7 | - | - | PENDING |
-| CHK-382 | 02-DKIM-RFC6376.md:223 | checkbox | If x= present: `current_time > x + clock_skew` → PermFail ExpiredSignature | 7 | - | - | PENDING |
-| CHK-383 | 02-DKIM-RFC6376.md:224 | checkbox | Clock skew: configurable, default 300 seconds | 7 | - | - | PENDING |
-| CHK-384 | 02-DKIM-RFC6376.md:225 | checkbox | Check BEFORE DNS lookup to avoid unnecessary queries for expired signatures | 7 | - | - | PENDING |
-| CHK-385 | 02-DKIM-RFC6376.md:229 | checkbox | Apply body canonicalization (simple or relaxed) | 7 | - | - | PENDING |
-| CHK-386 | 02-DKIM-RFC6376.md:230 | checkbox | Apply length limit if `l=` present (truncate canonicalized body) | 7 | - | - | PENDING |
-| CHK-387 | 02-DKIM-RFC6376.md:231 | checkbox | Compute hash (SHA-1 for rsa-sha1, SHA-256 for rsa-sha256/ed25519-sha256) | 7 | - | - | PENDING |
-| CHK-388 | 02-DKIM-RFC6376.md:232 | checkbox | Compare with `bh=` value using CONSTANT-TIME comparison | 7 | - | - | PENDING |
-| CHK-389 | 02-DKIM-RFC6376.md:233 | checkbox | Mismatch → Fail with BodyHashMismatch | 7 | - | - | PENDING |
-| CHK-390 | 02-DKIM-RFC6376.md:236 | checkbox | Use `ring::constant_time::verify_slices_are_equal` or `subtle` crate's `ConstantTimeEq` | 7 | - | - | PENDING |
-| CHK-391 | 02-DKIM-RFC6376.md:237 | checkbox | ring 0.17 has deprecated `verify_slices_are_equal` — check for replacement or use `subtle` crate | 7 | - | - | PENDING |
-| CHK-392 | 02-DKIM-RFC6376.md:238 | checkbox | NEVER use `==` for body hash comparison (timing side-channel) | 7 | - | - | PENDING |
-| CHK-393 | 02-DKIM-RFC6376.md:242 | checkbox | For each header name in `h=` (in order): | 7 | - | - | PENDING |
-| CHK-394 | 02-DKIM-RFC6376.md:243 | checkbox | Find header in message (bottom-up: last unused occurrence) | 7 | - | - | PENDING |
-| CHK-395 | 02-DKIM-RFC6376.md:244 | checkbox | Mark as consumed | 7 | - | - | PENDING |
-| CHK-396 | 02-DKIM-RFC6376.md:245 | checkbox | If not found (over-signed): use empty header value | 7 | - | - | PENDING |
-| CHK-397 | 02-DKIM-RFC6376.md:246 | checkbox | Canonicalize header | 7 | - | - | PENDING |
-| CHK-398 | 02-DKIM-RFC6376.md:247 | checkbox | Append to hash input: `name:value\r\n` | 7 | - | - | PENDING |
-| CHK-399 | 02-DKIM-RFC6376.md:248 | checkbox | Append DKIM-Signature header itself: | 7 | - | - | PENDING |
-| CHK-400 | 02-DKIM-RFC6376.md:249 | checkbox | Use raw_header value stored during parsing | 7 | - | - | PENDING |
-| CHK-401 | 02-DKIM-RFC6376.md:250 | checkbox | Strip b= tag value (keep `b=` with empty value) | 7 | - | - | PENDING |
-| CHK-402 | 02-DKIM-RFC6376.md:251 | checkbox | Canonicalize the signature header | 7 | - | - | PENDING |
-| CHK-403 | 02-DKIM-RFC6376.md:252 | checkbox | Append WITHOUT trailing CRLF (last header has no CRLF) | 7 | - | - | PENDING |
-| CHK-404 | 02-DKIM-RFC6376.md:256 | checkbox | Pass RAW header data bytes to ring — ring hashes internally | 7 | - | - | PENDING |
-| CHK-405 | 02-DKIM-RFC6376.md:257 | checkbox | **CRITICAL: Do NOT pre-hash the header data. ring::UnparsedPublicKey::verify(data, signature) takes the raw MESSAGE, not a digest. Pre-hashing = double-hash = always fails.** | 7 | - | - | PENDING |
-| CHK-406 | 02-DKIM-RFC6376.md:260 | checkbox | ring requires different algorithm constants for different key sizes | 7 | - | - | PENDING |
-| CHK-407 | 02-DKIM-RFC6376.md:261 | checkbox | 1024-bit RSA: DER-encoded SubjectPublicKeyInfo is ~140-170 bytes | 7 | - | - | PENDING |
-| CHK-408 | 02-DKIM-RFC6376.md:262 | checkbox | 2048-bit RSA: DER-encoded SubjectPublicKeyInfo is ~290-300 bytes | 7 | - | - | PENDING |
-| CHK-409 | 02-DKIM-RFC6376.md:263 | checkbox | 4096-bit RSA: DER-encoded SubjectPublicKeyInfo is ~550-560 bytes | 7 | - | - | PENDING |
-| CHK-410 | 02-DKIM-RFC6376.md:264 | checkbox | Use threshold: `key.public_key.len() < 256` → use `_1024_8192_FOR_LEGACY_USE_ONLY` variant | 7 | - | - | PENDING |
-| CHK-411 | 02-DKIM-RFC6376.md:265 | checkbox | ≥256 bytes → use `_2048_8192` variant | 7 | - | - | PENDING |
-| CHK-412 | 02-DKIM-RFC6376.md:277 | checkbox | Ed25519 public key in DNS: raw 32-byte key, base64 encoded in p= tag | 7 | - | - | PENDING |
-| CHK-413 | 02-DKIM-RFC6376.md:278 | checkbox | ring expects raw 32 bytes for Ed25519 verification | 7 | - | - | PENDING |
-| CHK-414 | 02-DKIM-RFC6376.md:282 | checkbox | All checks pass → Pass { domain, selector, testing } | 7 | - | - | PENDING |
-| CHK-415 | 02-DKIM-RFC6376.md:283 | checkbox | Body hash mismatch → Fail { BodyHashMismatch } | 7 | - | - | PENDING |
-| CHK-416 | 02-DKIM-RFC6376.md:284 | checkbox | Crypto verification fails → Fail { SignatureVerificationFailed } | 7 | - | - | PENDING |
-| CHK-417 | 02-DKIM-RFC6376.md:285 | checkbox | Key not found (NXDOMAIN) → PermFail { KeyNotFound } | 7 | - | - | PENDING |
-| CHK-418 | 02-DKIM-RFC6376.md:286 | checkbox | Key revoked (empty p=) → PermFail { KeyRevoked } | 7 | - | - | PENDING |
-| CHK-419 | 02-DKIM-RFC6376.md:287 | checkbox | DNS temp failure → TempFail | 7 | - | - | PENDING |
-| CHK-420 | 02-DKIM-RFC6376.md:288 | checkbox | All other constraint violations → PermFail with specific kind | 7 | - | - | PENDING |
+| CHK-367 | 02-DKIM-RFC6376.md:194 | checkbox | Find all DKIM-Signature headers in message (case-insensitive name match) | 7 | src/dkim/verify.rs:500 | b1f9430 | DONE |
+| CHK-368 | 02-DKIM-RFC6376.md:195 | checkbox | Parse each signature | 7 | src/dkim/verify.rs:516 | b1f9430 | DONE |
+| CHK-369 | 02-DKIM-RFC6376.md:196 | checkbox | Malformed signatures → PermFail with MalformedSignature kind | 7 | src/dkim/verify.rs:516 | b1f9430 | DONE |
+| CHK-370 | 02-DKIM-RFC6376.md:197 | checkbox | Return one result per DKIM-Signature, or single `None` if no signatures present | 7 | src/dkim/verify.rs:500 | b1f9430 | DONE |
+| CHK-371 | 02-DKIM-RFC6376.md:201 | checkbox | Construct query: `<selector>._domainkey.<domain>` TXT record | 7 | src/dkim/verify.rs:97 | b1f9430 | DONE |
+| CHK-372 | 02-DKIM-RFC6376.md:202 | checkbox | Handle multiple TXT strings: concatenate into single string before parsing | 7 | src/dkim/verify.rs:149 | b1f9430 | DONE |
+| CHK-373 | 02-DKIM-RFC6376.md:203 | checkbox | Handle NXDOMAIN → PermFail with KeyNotFound | 7 | src/dkim/verify.rs:537 | b1f9430 | DONE |
+| CHK-374 | 02-DKIM-RFC6376.md:204 | checkbox | Handle TempFail → TempFail | 7 | src/dkim/verify.rs:553 | b1f9430 | DONE |
+| CHK-375 | 02-DKIM-RFC6376.md:205 | checkbox | Empty `p=` → PermFail with KeyRevoked | 7 | src/dkim/verify.rs:570 | b1f9430 | DONE |
+| CHK-376 | 02-DKIM-RFC6376.md:206 | checkbox | DNS caching: caller responsibility (document this) | 7 | src/dkim/verify.rs:1155 | b1f9430 | DONE |
+| CHK-377 | 02-DKIM-RFC6376.md:210 | checkbox | a. Empty p= → PermFail KeyRevoked | 7 | src/dkim/verify.rs:570 | b1f9430 | DONE |
+| CHK-378 | 02-DKIM-RFC6376.md:211 | checkbox | b. Key h= tag: if present, signature's hash algorithm must be in the list | 7 | src/dkim/verify.rs:589 | b1f9430 | DONE |
+| CHK-379 | 02-DKIM-RFC6376.md:214 | checkbox | c. Key s= tag: must include "email" or "*" → PermFail ServiceTypeMismatch | 7 | src/dkim/verify.rs:613 | b1f9430 | DONE |
+| CHK-380 | 02-DKIM-RFC6376.md:215 | checkbox | d. Key t=s flag: i= domain must exactly equal d= (not subdomain) → PermFail StrictModeViolation | 7 | src/dkim/verify.rs:638 | b1f9430 | DONE |
+| CHK-381 | 02-DKIM-RFC6376.md:216 | checkbox | e. Key type must match algorithm: | 7 | src/dkim/verify.rs:664 | b1f9430 | DONE |
+| CHK-382 | 02-DKIM-RFC6376.md:223 | checkbox | If x= present: `current_time > x + clock_skew` → PermFail ExpiredSignature | 7 | src/dkim/verify.rs:692 | b1f9430 | DONE |
+| CHK-383 | 02-DKIM-RFC6376.md:224 | checkbox | Clock skew: configurable, default 300 seconds | 7 | src/dkim/verify.rs:32 | b1f9430 | DONE |
+| CHK-384 | 02-DKIM-RFC6376.md:225 | checkbox | Check BEFORE DNS lookup to avoid unnecessary queries for expired signatures | 7 | src/dkim/verify.rs:86 | b1f9430 | DONE |
+| CHK-385 | 02-DKIM-RFC6376.md:229 | checkbox | Apply body canonicalization (simple or relaxed) | 7 | src/dkim/verify.rs:234 | b1f9430 | DONE |
+| CHK-386 | 02-DKIM-RFC6376.md:230 | checkbox | Apply length limit if `l=` present (truncate canonicalized body) | 7 | src/dkim/verify.rs:236 | b1f9430 | DONE |
+| CHK-387 | 02-DKIM-RFC6376.md:231 | checkbox | Compute hash (SHA-1 for rsa-sha1, SHA-256 for rsa-sha256/ed25519-sha256) | 7 | src/dkim/verify.rs:252 | b1f9430 | DONE |
+| CHK-388 | 02-DKIM-RFC6376.md:232 | checkbox | Compare with `bh=` value using CONSTANT-TIME comparison | 7 | src/dkim/verify.rs:241 | b1f9430 | DONE |
+| CHK-389 | 02-DKIM-RFC6376.md:233 | checkbox | Mismatch → Fail with BodyHashMismatch | 7 | src/dkim/verify.rs:244 | b1f9430 | DONE |
+| CHK-390 | 02-DKIM-RFC6376.md:236 | checkbox | Use `ring::constant_time::verify_slices_are_equal` or `subtle` crate's `ConstantTimeEq` | 7 | src/dkim/verify.rs:241 | b1f9430 | DONE |
+| CHK-391 | 02-DKIM-RFC6376.md:237 | checkbox | ring 0.17 has deprecated `verify_slices_are_equal` — check for replacement or use `subtle` crate | 7 | src/dkim/verify.rs:241 | b1f9430 | DONE |
+| CHK-392 | 02-DKIM-RFC6376.md:238 | checkbox | NEVER use `==` for body hash comparison (timing side-channel) | 7 | src/dkim/verify.rs:241 | b1f9430 | DONE |
+| CHK-393 | 02-DKIM-RFC6376.md:242 | checkbox | For each header name in `h=` (in order): | 7 | src/dkim/verify.rs:280 | b1f9430 | DONE |
+| CHK-394 | 02-DKIM-RFC6376.md:243 | checkbox | Find header in message (bottom-up: last unused occurrence) | 7 | src/dkim/verify.rs:280 | b1f9430 | DONE |
+| CHK-395 | 02-DKIM-RFC6376.md:244 | checkbox | Mark as consumed | 7 | src/dkim/verify.rs:280 | b1f9430 | DONE |
+| CHK-396 | 02-DKIM-RFC6376.md:245 | checkbox | If not found (over-signed): use empty header value | 7 | src/dkim/verify.rs:963 | b1f9430 | DONE |
+| CHK-397 | 02-DKIM-RFC6376.md:246 | checkbox | Canonicalize header | 7 | src/dkim/verify.rs:293 | b1f9430 | DONE |
+| CHK-398 | 02-DKIM-RFC6376.md:247 | checkbox | Append to hash input: `name:value\r\n` | 7 | src/dkim/verify.rs:288 | b1f9430 | DONE |
+| CHK-399 | 02-DKIM-RFC6376.md:248 | checkbox | Append DKIM-Signature header itself: | 7 | src/dkim/verify.rs:292 | b1f9430 | DONE |
+| CHK-400 | 02-DKIM-RFC6376.md:249 | checkbox | Use raw_header value stored during parsing | 7 | src/dkim/verify.rs:292 | b1f9430 | DONE |
+| CHK-401 | 02-DKIM-RFC6376.md:250 | checkbox | Strip b= tag value (keep `b=` with empty value) | 7 | src/dkim/verify.rs:292 | b1f9430 | DONE |
+| CHK-402 | 02-DKIM-RFC6376.md:251 | checkbox | Canonicalize the signature header | 7 | src/dkim/verify.rs:293 | b1f9430 | DONE |
+| CHK-403 | 02-DKIM-RFC6376.md:252 | checkbox | Append WITHOUT trailing CRLF (last header has no CRLF) | 7 | src/dkim/verify.rs:307 | b1f9430 | DONE |
+| CHK-404 | 02-DKIM-RFC6376.md:256 | checkbox | Pass RAW header data bytes to ring — ring hashes internally | 7 | src/dkim/verify.rs:410 | b1f9430 | DONE |
+| CHK-405 | 02-DKIM-RFC6376.md:257 | checkbox | **CRITICAL: Do NOT pre-hash the header data. ring::UnparsedPublicKey::verify(data, signature) takes the raw MESSAGE, not a digest. Pre-hashing = double-hash = always fails.** | 7 | src/dkim/verify.rs:411 | b1f9430 | DONE |
+| CHK-406 | 02-DKIM-RFC6376.md:260 | checkbox | ring requires different algorithm constants for different key sizes | 7 | src/dkim/verify.rs:385 | b1f9430 | DONE |
+| CHK-407 | 02-DKIM-RFC6376.md:261 | checkbox | 1024-bit RSA: DER-encoded SubjectPublicKeyInfo is ~140-170 bytes | 7 | src/dkim/verify.rs:389 | b1f9430 | DONE |
+| CHK-408 | 02-DKIM-RFC6376.md:262 | checkbox | 2048-bit RSA: DER-encoded SubjectPublicKeyInfo is ~290-300 bytes | 7 | src/dkim/verify.rs:387 | b1f9430 | DONE |
+| CHK-409 | 02-DKIM-RFC6376.md:263 | checkbox | 4096-bit RSA: DER-encoded SubjectPublicKeyInfo is ~550-560 bytes | 7 | src/dkim/verify.rs:394 | b1f9430 | DONE |
+| CHK-410 | 02-DKIM-RFC6376.md:264 | checkbox | Use threshold: `key.public_key.len() < 256` → use `_1024_8192_FOR_LEGACY_USE_ONLY` variant | 7 | src/dkim/verify.rs:389 | b1f9430 | DONE |
+| CHK-411 | 02-DKIM-RFC6376.md:265 | checkbox | ≥256 bytes → use `_2048_8192` variant | 7 | src/dkim/verify.rs:387 | b1f9430 | DONE |
+| CHK-412 | 02-DKIM-RFC6376.md:277 | checkbox | Ed25519 public key in DNS: raw 32-byte key, base64 encoded in p= tag | 7 | src/dkim/verify.rs:400 | b1f9430 | DONE |
+| CHK-413 | 02-DKIM-RFC6376.md:278 | checkbox | ring expects raw 32 bytes for Ed25519 verification | 7 | src/dkim/verify.rs:406 | b1f9430 | DONE |
+| CHK-414 | 02-DKIM-RFC6376.md:282 | checkbox | All checks pass → Pass { domain, selector, testing } | 7 | src/dkim/verify.rs:758 | b1f9430 | DONE |
+| CHK-415 | 02-DKIM-RFC6376.md:283 | checkbox | Body hash mismatch → Fail { BodyHashMismatch } | 7 | src/dkim/verify.rs:811 | b1f9430 | DONE |
+| CHK-416 | 02-DKIM-RFC6376.md:284 | checkbox | Crypto verification fails → Fail { SignatureVerificationFailed } | 7 | src/dkim/verify.rs:860 | b1f9430 | DONE |
+| CHK-417 | 02-DKIM-RFC6376.md:285 | checkbox | Key not found (NXDOMAIN) → PermFail { KeyNotFound } | 7 | src/dkim/verify.rs:537 | b1f9430 | DONE |
+| CHK-418 | 02-DKIM-RFC6376.md:286 | checkbox | Key revoked (empty p=) → PermFail { KeyRevoked } | 7 | src/dkim/verify.rs:570 | b1f9430 | DONE |
+| CHK-419 | 02-DKIM-RFC6376.md:287 | checkbox | DNS temp failure → TempFail | 7 | src/dkim/verify.rs:553 | b1f9430 | DONE |
+| CHK-420 | 02-DKIM-RFC6376.md:288 | checkbox | All other constraint violations → PermFail with specific kind | 7 | src/dkim/verify.rs:664 | b1f9430 | DONE |
 | CHK-421 | 02-DKIM-RFC6376.md:311 | checkbox | Load private key: PEM format (PKCS8) | 8 | - | - | PENDING |
 | CHK-422 | 02-DKIM-RFC6376.md:312 | checkbox | Support RSA keys (minimum 1024-bit for verify, recommend 2048+ for signing) | 8 | - | - | PENDING |
 | CHK-423 | 02-DKIM-RFC6376.md:313 | checkbox | Support Ed25519 keys (PKCS8 format) | 8 | - | - | PENDING |
@@ -483,27 +483,27 @@
 | CHK-478 | 02-DKIM-RFC6376.md:455 | checkbox | Header selection: bottom-up for multiple same-name headers | 6 | src/dkim/canon.rs:457 | ea0fa9f | DONE |
 | CHK-479 | 02-DKIM-RFC6376.md:456 | checkbox | Over-signed headers: contribute empty value (not skipped) | 6 | src/dkim/canon.rs:487 | ea0fa9f | DONE |
 | CHK-480 | 02-DKIM-RFC6376.md:457 | checkbox | b= tag stripping: does NOT affect bh= tag | 6 | src/dkim/canon.rs:533 | ea0fa9f | DONE |
-| CHK-481 | 02-DKIM-RFC6376.md:461 | checkbox | Valid Ed25519 signature → Pass | 7 | - | - | PENDING |
-| CHK-482 | 02-DKIM-RFC6376.md:462 | checkbox | Valid RSA-SHA256 signature → Pass (**pre-computed fixture**: sign with `rsa` crate or openssl, embed signed message + SPKI public key in test — cannot rely on sign→verify round-trip alone) | 7 | - | - | PENDING |
-| CHK-483 | 02-DKIM-RFC6376.md:463 | checkbox | Valid RSA-SHA1 signature → Pass (**pre-computed fixture required**: ring 0.17 cannot sign SHA-1. Sign once externally, embed fixture with raw message bytes + signature + public key) | 7 | - | - | PENDING |
-| CHK-484 | 02-DKIM-RFC6376.md:464 | checkbox | Tampered body → Fail (BodyHashMismatch) | 7 | - | - | PENDING |
-| CHK-485 | 02-DKIM-RFC6376.md:465 | checkbox | Tampered header → Fail (SignatureVerificationFailed) | 7 | - | - | PENDING |
-| CHK-486 | 02-DKIM-RFC6376.md:466 | checkbox | Expired signature → PermFail (ExpiredSignature) | 7 | - | - | PENDING |
-| CHK-487 | 02-DKIM-RFC6376.md:467 | checkbox | Key not found (NXDOMAIN) → PermFail (KeyNotFound) | 7 | - | - | PENDING |
-| CHK-488 | 02-DKIM-RFC6376.md:468 | checkbox | Key revoked (empty p=) → PermFail (KeyRevoked) | 7 | - | - | PENDING |
-| CHK-489 | 02-DKIM-RFC6376.md:469 | checkbox | Key h= rejects algorithm → PermFail (HashNotPermitted) | 7 | - | - | PENDING |
-| CHK-490 | 02-DKIM-RFC6376.md:470 | checkbox | Key s= rejects email → PermFail (ServiceTypeMismatch) | 7 | - | - | PENDING |
-| CHK-491 | 02-DKIM-RFC6376.md:471 | checkbox | Key t=s strict mode violation → PermFail (StrictModeViolation) | 7 | - | - | PENDING |
-| CHK-492 | 02-DKIM-RFC6376.md:472 | checkbox | Algorithm/key type mismatch → PermFail (AlgorithmMismatch) | 7 | - | - | PENDING |
-| CHK-493 | 02-DKIM-RFC6376.md:473 | checkbox | DNS temp failure → TempFail | 7 | - | - | PENDING |
-| CHK-494 | 02-DKIM-RFC6376.md:474 | checkbox | No DKIM-Signature → None | 7 | - | - | PENDING |
-| CHK-495 | 02-DKIM-RFC6376.md:475 | checkbox | Simple/simple canonicalization end-to-end | 7 | - | - | PENDING |
-| CHK-496 | 02-DKIM-RFC6376.md:476 | checkbox | Relaxed/relaxed canonicalization end-to-end | 7 | - | - | PENDING |
-| CHK-497 | 02-DKIM-RFC6376.md:477 | checkbox | Over-signed header verification: signature with "from" listed twice in h=, message has one From → verify Pass (empty header contributes to hash, not skipped) | 7 | - | - | PENDING |
-| CHK-498 | 02-DKIM-RFC6376.md:481 | checkbox | Construct DKIM signatures manually using ring primitives (Ed25519KeyPair.sign), bypassing DkimSigner entirely | 7 | - | - | PENDING |
-| CHK-499 | 02-DKIM-RFC6376.md:482 | checkbox | Verify through the full DkimVerifier pipeline | 7 | - | - | PENDING |
-| CHK-500 | 02-DKIM-RFC6376.md:483 | checkbox | This catches self-consistent bugs where signer and verifier agree but both are wrong | 7 | - | - | PENDING |
-| CHK-501 | 02-DKIM-RFC6376.md:484 | checkbox | Include at minimum: Ed25519 relaxed/relaxed, Ed25519 simple/simple, tampered body, tampered headers | 7 | - | - | PENDING |
+| CHK-481 | 02-DKIM-RFC6376.md:461 | checkbox | Valid Ed25519 signature → Pass | 7 | src/dkim/verify.rs:712 | b1f9430 | DONE |
+| CHK-482 | 02-DKIM-RFC6376.md:462 | checkbox | Valid RSA-SHA256 signature → Pass (**pre-computed fixture**: sign with `rsa` crate or openssl, embed signed message + SPKI public key in test — cannot rely on sign→verify round-trip alone) | 7 | src/dkim/verify.rs:1157 | b1f9430 | DONE |
+| CHK-483 | 02-DKIM-RFC6376.md:463 | checkbox | Valid RSA-SHA1 signature → Pass (**pre-computed fixture required**: ring 0.17 cannot sign SHA-1. Sign once externally, embed fixture with raw message bytes + signature + public key) | 7 | src/dkim/verify.rs:1157 | b1f9430 | DONE |
+| CHK-484 | 02-DKIM-RFC6376.md:464 | checkbox | Tampered body → Fail (BodyHashMismatch) | 7 | src/dkim/verify.rs:770 | b1f9430 | DONE |
+| CHK-485 | 02-DKIM-RFC6376.md:465 | checkbox | Tampered header → Fail (SignatureVerificationFailed) | 7 | src/dkim/verify.rs:818 | b1f9430 | DONE |
+| CHK-486 | 02-DKIM-RFC6376.md:466 | checkbox | Expired signature → PermFail (ExpiredSignature) | 7 | src/dkim/verify.rs:692 | b1f9430 | DONE |
+| CHK-487 | 02-DKIM-RFC6376.md:467 | checkbox | Key not found (NXDOMAIN) → PermFail (KeyNotFound) | 7 | src/dkim/verify.rs:537 | b1f9430 | DONE |
+| CHK-488 | 02-DKIM-RFC6376.md:468 | checkbox | Key revoked (empty p=) → PermFail (KeyRevoked) | 7 | src/dkim/verify.rs:570 | b1f9430 | DONE |
+| CHK-489 | 02-DKIM-RFC6376.md:469 | checkbox | Key h= rejects algorithm → PermFail (HashNotPermitted) | 7 | src/dkim/verify.rs:589 | b1f9430 | DONE |
+| CHK-490 | 02-DKIM-RFC6376.md:470 | checkbox | Key s= rejects email → PermFail (ServiceTypeMismatch) | 7 | src/dkim/verify.rs:613 | b1f9430 | DONE |
+| CHK-491 | 02-DKIM-RFC6376.md:471 | checkbox | Key t=s strict mode violation → PermFail (StrictModeViolation) | 7 | src/dkim/verify.rs:638 | b1f9430 | DONE |
+| CHK-492 | 02-DKIM-RFC6376.md:472 | checkbox | Algorithm/key type mismatch → PermFail (AlgorithmMismatch) | 7 | src/dkim/verify.rs:664 | b1f9430 | DONE |
+| CHK-493 | 02-DKIM-RFC6376.md:473 | checkbox | DNS temp failure → TempFail | 7 | src/dkim/verify.rs:553 | b1f9430 | DONE |
+| CHK-494 | 02-DKIM-RFC6376.md:474 | checkbox | No DKIM-Signature → None | 7 | src/dkim/verify.rs:486 | b1f9430 | DONE |
+| CHK-495 | 02-DKIM-RFC6376.md:475 | checkbox | Simple/simple canonicalization end-to-end | 7 | src/dkim/verify.rs:869 | b1f9430 | DONE |
+| CHK-496 | 02-DKIM-RFC6376.md:476 | checkbox | Relaxed/relaxed canonicalization end-to-end | 7 | src/dkim/verify.rs:917 | b1f9430 | DONE |
+| CHK-497 | 02-DKIM-RFC6376.md:477 | checkbox | Over-signed header verification: signature with "from" listed twice in h=, message has one From → verify Pass (empty header contributes to hash, not skipped) | 7 | src/dkim/verify.rs:963 | b1f9430 | DONE |
+| CHK-498 | 02-DKIM-RFC6376.md:481 | checkbox | Construct DKIM signatures manually using ring primitives (Ed25519KeyPair.sign), bypassing DkimSigner entirely | 7 | src/dkim/verify.rs:1014 | b1f9430 | DONE |
+| CHK-499 | 02-DKIM-RFC6376.md:482 | checkbox | Verify through the full DkimVerifier pipeline | 7 | src/dkim/verify.rs:1014 | b1f9430 | DONE |
+| CHK-500 | 02-DKIM-RFC6376.md:483 | checkbox | This catches self-consistent bugs where signer and verifier agree but both are wrong | 7 | src/dkim/verify.rs:1014 | b1f9430 | DONE |
+| CHK-501 | 02-DKIM-RFC6376.md:484 | checkbox | Include at minimum: Ed25519 relaxed/relaxed, Ed25519 simple/simple, tampered body, tampered headers | 7 | src/dkim/verify.rs:1077 | b1f9430 | DONE |
 | CHK-502 | 02-DKIM-RFC6376.md:488 | checkbox | Sign and verify round-trip (Ed25519) | 8 | - | - | PENDING |
 | CHK-503 | 02-DKIM-RFC6376.md:489 | checkbox | Sign and verify round-trip (RSA-SHA256) — generate RSA 2048 key, sign message, verify through DkimVerifier with MockResolver serving the public key | 8 | - | - | PENDING |
 | CHK-504 | 02-DKIM-RFC6376.md:490 | checkbox | Different canonicalization modes | 8 | - | - | PENDING |
@@ -512,14 +512,14 @@
 | CHK-507 | 02-DKIM-RFC6376.md:493 | checkbox | PEM key loading: RSA 2048, Ed25519 | 8 | - | - | PENDING |
 | CHK-508 | 02-DKIM-RFC6376.md:494 | checkbox | RSA-SHA1 signing prevention: `DkimSigner` API MUST NOT allow constructing a signer with `Algorithm::RsaSha1`. Either no constructor exists, or `sign_message()` returns error. Test that no code path produces an `a=rsa-sha1` signature. | 8 | - | - | PENDING |
 | CHK-509 | 02-DKIM-RFC6376.md:495 | checkbox | Over-sign round-trip: sign with "from" in h= twice (over-sign), verify through DkimVerifier → Pass. This validates signer and verifier agree on empty-header hash contribution. A bug where signer skips the empty header but verifier includes it (or vice versa) causes Fail. | 8 | - | - | PENDING |
-| CHK-510 | 02-DKIM-RFC6376.md:501 | checkbox | Minimum RSA key size: 1024 bits for verification (ring handles this via algorithm selection) | 7 | - | - | PENDING |
-| CHK-511 | 02-DKIM-RFC6376.md:502 | checkbox | Recommended RSA key size for signing: 2048+ bits | 7 | - | - | PENDING |
-| CHK-512 | 02-DKIM-RFC6376.md:503 | checkbox | RSA-SHA1: accept for verification only, NEVER use for signing | 7 | - | - | PENDING |
-| CHK-513 | 02-DKIM-RFC6376.md:504 | checkbox | Constant-time comparison for body hash (timing attack prevention) | 7 | - | - | PENDING |
-| CHK-514 | 02-DKIM-RFC6376.md:505 | checkbox | Validate signature timestamps with configurable clock skew (default ±300s) | 7 | - | - | PENDING |
-| CHK-515 | 02-DKIM-RFC6376.md:506 | checkbox | l= body length: process but note it's a security concern (body truncation attacks) | 7 | - | - | PENDING |
-| CHK-516 | 02-DKIM-RFC6376.md:507 | checkbox | Verify i= domain is subdomain of d= during parsing | 7 | - | - | PENDING |
-| CHK-517 | 02-DKIM-RFC6376.md:508 | checkbox | Key t=s strict mode: i= domain must EXACTLY equal d= | 7 | - | - | PENDING |
+| CHK-510 | 02-DKIM-RFC6376.md:501 | checkbox | Minimum RSA key size: 1024 bits for verification (ring handles this via algorithm selection) | 7 | src/dkim/verify.rs:389 | b1f9430 | DONE |
+| CHK-511 | 02-DKIM-RFC6376.md:502 | checkbox | Recommended RSA key size for signing: 2048+ bits | 7 | src/dkim/verify.rs:387 | b1f9430 | DONE |
+| CHK-512 | 02-DKIM-RFC6376.md:503 | checkbox | RSA-SHA1: accept for verification only, NEVER use for signing | 7 | src/dkim/verify.rs:393 | b1f9430 | DONE |
+| CHK-513 | 02-DKIM-RFC6376.md:504 | checkbox | Constant-time comparison for body hash (timing attack prevention) | 7 | src/dkim/verify.rs:241 | b1f9430 | DONE |
+| CHK-514 | 02-DKIM-RFC6376.md:505 | checkbox | Validate signature timestamps with configurable clock skew (default ±300s) | 7 | src/dkim/verify.rs:692 | b1f9430 | DONE |
+| CHK-515 | 02-DKIM-RFC6376.md:506 | checkbox | l= body length: process but note it's a security concern (body truncation attacks) | 7 | src/dkim/verify.rs:236 | b1f9430 | DONE |
+| CHK-516 | 02-DKIM-RFC6376.md:507 | checkbox | Verify i= domain is subdomain of d= during parsing | 7 | src/dkim/parser.rs:173 | b1f9430 | DONE |
+| CHK-517 | 02-DKIM-RFC6376.md:508 | checkbox | Key t=s strict mode: i= domain must EXACTLY equal d= | 7 | src/dkim/verify.rs:638 | b1f9430 | DONE |
 | CHK-518 | 02-DKIM-RFC6376.md:584 | checkbox | Cryptography: `ring` 0.17 (RSA + Ed25519 + SHA) | 1 | Cargo.toml:14 | 992b713 | DONE |
 | CHK-519 | 02-DKIM-RFC6376.md:585 | checkbox | Base64: `base64` 0.22 crate | 1 | Cargo.toml:17 | 992b713 | DONE |
 | CHK-520 | 02-DKIM-RFC6376.md:586 | checkbox | DNS resolver: `hickory-resolver` 0.25 (shared via DnsResolver trait) | 1 | Cargo.toml:11 | 992b713 | DONE |
@@ -530,13 +530,13 @@
 | CHK-525 | 02-DKIM-RFC6376.md:596 | checkbox | Header selection with bottom-up and over-signing | 6 | src/dkim/canon.rs:530 | ea0fa9f | DONE |
 | CHK-526 | 02-DKIM-RFC6376.md:597 | checkbox | Bare LF → CRLF normalization | 6 | src/dkim/canon.rs:439 | ea0fa9f | DONE |
 | CHK-527 | 02-DKIM-RFC6376.md:598 | checkbox | b= tag stripping (safe against bh=) | 6 | src/dkim/canon.rs:579 | ea0fa9f | DONE |
-| CHK-528 | 02-DKIM-RFC6376.md:599 | checkbox | Verification algorithm complete with all constraint checks | 7 | - | - | PENDING |
-| CHK-529 | 02-DKIM-RFC6376.md:600 | checkbox | RSA-SHA256 + RSA-SHA1 + Ed25519 verification working | 7 | - | - | PENDING |
+| CHK-528 | 02-DKIM-RFC6376.md:599 | checkbox | Verification algorithm complete with all constraint checks | 7 | src/dkim/verify.rs:1014 | b1f9430 | DONE |
+| CHK-529 | 02-DKIM-RFC6376.md:600 | checkbox | RSA-SHA256 + RSA-SHA1 + Ed25519 verification working | 7 | src/dkim/verify.rs:385 | b1f9430 | DONE |
 | CHK-530 | 02-DKIM-RFC6376.md:601 | checkbox | Signing algorithm complete (RSA-SHA256 + Ed25519) | 8 | - | - | PENDING |
-| CHK-531 | 02-DKIM-RFC6376.md:602 | checkbox | Ground-truth tests (bypass signer, construct signatures manually) | 7 | - | - | PENDING |
-| CHK-532 | 02-DKIM-RFC6376.md:603 | checkbox | RSA-SHA1 verification tested | 7 | - | - | PENDING |
-| CHK-533 | 02-DKIM-RFC6376.md:604 | checkbox | DNS key lookup working with TXT string concatenation | 7 | - | - | PENDING |
-| CHK-534 | 02-DKIM-RFC6376.md:605 | checkbox | No unwrap/expect in library code (tests only) | 7 | - | - | PENDING |
+| CHK-531 | 02-DKIM-RFC6376.md:602 | checkbox | Ground-truth tests (bypass signer, construct signatures manually) | 7 | src/dkim/verify.rs:1014 | b1f9430 | DONE |
+| CHK-532 | 02-DKIM-RFC6376.md:603 | checkbox | RSA-SHA1 verification tested | 7 | src/dkim/verify.rs:1157 | b1f9430 | DONE |
+| CHK-533 | 02-DKIM-RFC6376.md:604 | checkbox | DNS key lookup working with TXT string concatenation | 7 | src/dkim/verify.rs:149 | b1f9430 | DONE |
+| CHK-534 | 02-DKIM-RFC6376.md:605 | checkbox | No unwrap/expect in library code (tests only) | 7 | src/dkim/verify.rs:1157 | b1f9430 | DONE |
 | CHK-535 | 03-DMARC-RFC7489.md:19 | checkbox | Define `DmarcRecord` struct: | 9 | - | - | PENDING |
 | CHK-536 | 03-DMARC-RFC7489.md:20 | checkbox | `policy: Policy` — policy for organizational domain (p= tag) | 9 | - | - | PENDING |
 | CHK-537 | 03-DMARC-RFC7489.md:21 | checkbox | `subdomain_policy: Policy` — subdomain policy (sp= tag, defaults to p) | 9 | - | - | PENDING |
