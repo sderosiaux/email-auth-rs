@@ -1,3 +1,4 @@
 {"type":"config","name":"find-bugs","metricName":"passed","metricUnit":"tests","bestDirection":"higher"}
 {"n":1,"commit":"ccd68eb","metric":604,"status":"keep","description":"baseline — 604 tests passing, 36 clippy warnings","metrics":{},"timestamp":1774218638}
 {"n":2,"commit":"16d83b1","metric":605,"status":"keep","description":"bug: eval_exists NxDomain not counting void lookup (RFC 7208 §4.6.4)","metrics":{},"timestamp":1774218843}
+{"n":3,"commit":"350af22","metric":605,"status":"keep","description":"bug: ARC oldest_pass=0 when all AMS pass — should be 1 per RFC 8617 §5.3","metrics":{},"timestamp":1774219115}
