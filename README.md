@@ -6,7 +6,7 @@ A Rust library implementing email authentication protocols: SPF, DKIM, DMARC, AR
 
 ```toml
 [dependencies]
-email-auth = "0.1.1"
+email-auth = "0.1.2"
 ```
 
 Requires Rust edition 2024 (Rust 1.85+) and Tokio.
