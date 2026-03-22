@@ -273,7 +273,13 @@ fn apply_pct_sampling(policy: Policy, pct: u8, roll: Option<u8>) -> Disposition 
                 if value < pct {
                     policy_to_disposition(policy)
                 } else {
-                    Disposition::None
+                    // RFC 7489 §6.6.4: outside pct sample:
+                    // - reject → treat as quarantine
+                    // - quarantine → apply local classification (= None here)
+                    match policy {
+                        Policy::Reject => Disposition::Quarantine,
+                        _ => Disposition::None,
+                    }
                 }
             }
         }
@@ -654,7 +660,7 @@ mod tests {
     async fn pct_50_monitoring_branch() {
         let resolver = mock_with_dmarc("example.com", "v=DMARC1; p=reject; pct=50");
         let eval = DmarcEvaluator::new(resolver);
-        // Roll >= 50 → monitoring
+        // Roll >= 50 → outside sample: RFC 7489 §6.6.4 says reject outside pct → quarantine
         let result = eval
             .evaluate_with_roll(
                 "example.com",
@@ -664,7 +670,29 @@ mod tests {
                 Some(75),
             )
             .await;
-        assert_eq!(result.disposition, Disposition::None);
+        assert_eq!(result.disposition, Disposition::Quarantine);
+    }
+
+    // ─── CHK-xxx: reject outside pct sample → quarantine (RFC 7489 §6.6.4) ──
+
+    #[tokio::test]
+    async fn reject_outside_pct_sample_downgrades_to_quarantine() {
+        // p=reject; pct=10 with roll=90 → outside sample → quarantine (NOT none)
+        let resolver = mock_with_dmarc("example.com", "v=DMARC1; p=reject; pct=10");
+        let eval = DmarcEvaluator::new(resolver);
+        let result = eval
+            .evaluate_with_roll(
+                "example.com",
+                &SpfResult::Fail { explanation: Option::None },
+                "other.com",
+                &[],
+                Some(90),
+            )
+            .await;
+        // RFC 7489 §6.6.4: "If the email is not subject to the 'reject' policy (due to
+        // the 'pct' tag), the Mail Receiver SHOULD treat the email as though the
+        // 'quarantine' policy applies."
+        assert_eq!(result.disposition, Disposition::Quarantine);
     }
 
     // ─── CHK-724: pct=0 → always monitoring ─────────────────────────
@@ -989,8 +1017,8 @@ mod tests {
     fn pct_sampling_boundary() {
         // pct=50, roll=49 → apply
         assert_eq!(apply_pct_sampling(Policy::Reject, 50, Some(49)), Disposition::Reject);
-        // pct=50, roll=50 → monitoring
-        assert_eq!(apply_pct_sampling(Policy::Reject, 50, Some(50)), Disposition::None);
+        // pct=50, roll=50 → outside sample: reject → quarantine (RFC 7489 §6.6.4)
+        assert_eq!(apply_pct_sampling(Policy::Reject, 50, Some(50)), Disposition::Quarantine);
     }
 
     #[test]
