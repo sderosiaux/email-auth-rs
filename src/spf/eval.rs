@@ -209,9 +209,9 @@ async fn eval_include<R: DnsResolver + Send + Sync>(
 
     match child_result {
         SpfResult::Pass => Ok(true),
-        SpfResult::Fail { .. } | SpfResult::SoftFail | SpfResult::Neutral | SpfResult::None => {
-            Ok(false)
-        }
+        SpfResult::Fail { .. } | SpfResult::SoftFail | SpfResult::Neutral => Ok(false),
+        // RFC 7208 §5.2 table: include→None MUST return permerror
+        SpfResult::None => Err(SpfResult::PermError),
         SpfResult::TempError => Err(SpfResult::TempError),
         SpfResult::PermError => Err(SpfResult::PermError),
     }
@@ -541,19 +541,33 @@ mod tests {
         assert_eq!(result, SpfResult::PermError);
     }
 
-    // CHK-201: Include None → no match (continue)
+    // CHK-201: Include None → PermError (RFC 7208 §5.2 table)
     #[tokio::test]
-    async fn include_none_no_match() {
+    async fn include_none_permerror() {
         let mut resolver = MockResolver::new();
         resolver.add_txt("example.com", vec!["v=spf1 include:_spf.example.com ip4:192.0.2.0/24 -all".into()]);
-        // _spf.example.com has no SPF record → None
+        // _spf.example.com has no valid SPF record → None
         resolver.add_txt("_spf.example.com", vec!["not-an-spf-record".into()]);
         let result = check_host(
             &resolver, "192.0.2.1".parse().unwrap(),
             "mail.example.com", "user@example.com", "example.com", "receiver.example",
         ).await;
-        // Include returns None → no match → continue → ip4 matches → Pass
-        assert_eq!(result, SpfResult::Pass);
+        // RFC 7208 §5.2: include→None MUST produce PermError (not "not match")
+        assert_eq!(result, SpfResult::PermError);
+    }
+
+    // CHK-201b: Include None → PermError even when later mechanism would match
+    #[tokio::test]
+    async fn include_none_permerror_overrides_later_match() {
+        let mut resolver = MockResolver::new();
+        resolver.add_txt("example.com", vec!["v=spf1 include:_spf.example.com ip4:192.0.2.0/24 -all".into()]);
+        // No record → NxDomain → None
+        let result = check_host(
+            &resolver, "192.0.2.1".parse().unwrap(),
+            "mail.example.com", "user@example.com", "example.com", "receiver.example",
+        ).await;
+        // include returns None → PermError, not Pass from ip4
+        assert_eq!(result, SpfResult::PermError);
     }
 
     // CHK-202: MX mechanism
