@@ -659,7 +659,7 @@ mod tests {
         let verifier2 = ArcVerifier::new(resolver);
         let result = verifier2.validate_chain(&all_headers, body).await;
         assert_eq!(result.status, ArcResult::Pass);
-        assert_eq!(result.oldest_pass, Some(1)); // RFC 8617 §5.3: all pass → 1
+        assert_eq!(result.oldest_pass, Some(0)); // RFC 8617 §5.2(5)(B): all pass → 0
     }
 
     // ─── CHK-898: Seal → modify body → AMS fails ────────────────────
@@ -776,7 +776,7 @@ mod tests {
 
         let result = verifier.validate_chain(&h_refs, body).await;
         assert_eq!(result.status, ArcResult::Pass);
-        assert_eq!(result.oldest_pass, Some(1)); // RFC 8617 §5.3: all pass → 1
+        assert_eq!(result.oldest_pass, Some(0)); // RFC 8617 §5.2(5)(B): all pass → 0
     }
 
     // ─── CHK-901: Multi-hop body modification → cv=fail propagation ─

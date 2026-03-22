@@ -82,6 +82,16 @@ impl<R: DnsResolver> DkimVerifier<R> {
             }
         };
 
+        // x= must be >= t= if both present (RFC 6376 §3.5)
+        if let (Some(t), Some(x)) = (sig.timestamp, sig.expiration) {
+            if x < t {
+                return DkimResult::PermFail {
+                    kind: PermFailKind::MalformedSignature,
+                    detail: format!("x= ({}) must be >= t= ({}) per RFC 6376 §3.5", x, t),
+                };
+            }
+        }
+
         // Expiration check (BEFORE DNS lookup)
         if let Some(expiration) = sig.expiration {
             let now = current_timestamp();
@@ -701,6 +711,25 @@ mod tests {
                 assert_eq!(*kind, PermFailKind::ExpiredSignature)
             }
             _ => panic!("expected PermFail ExpiredSignature"),
+        }
+    }
+
+    // CHK-XXX: x= expiration before t= timestamp → PermFail MalformedSignature
+    #[tokio::test]
+    async fn expiration_before_timestamp() {
+        let resolver = MockResolver::new();
+        let verifier = DkimVerifier::new(resolver);
+        // t=2000000, x=1000000: x < t → malformed per RFC 6376 §3.5
+        let headers: Vec<(&str, &str)> = vec![
+            ("From", " user@example.com"),
+            ("DKIM-Signature", " v=1; a=ed25519-sha256; b=dGVzdA==; bh=dGVzdA==; d=example.com; h=from; s=sel1; t=2000000; x=1000000"),
+        ];
+        let results = verifier.verify_message(&headers, b"body").await;
+        match &results[0] {
+            DkimResult::PermFail { kind, .. } => {
+                assert_eq!(*kind, PermFailKind::MalformedSignature)
+            }
+            other => panic!("expected PermFail MalformedSignature, got {:?}", other),
         }
     }
 
