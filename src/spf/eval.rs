@@ -390,7 +390,10 @@ async fn eval_exists<R: DnsResolver + Send + Sync>(
 
     match resolver.query_a(&expanded).await {
         Ok(addrs) => Ok(!addrs.is_empty()),
-        Err(DnsError::NxDomain) | Err(DnsError::NoRecords) => Ok(false),
+        Err(DnsError::NxDomain) | Err(DnsError::NoRecords) => {
+            ctx.increment_void()?;
+            Ok(false)
+        }
         Err(DnsError::TempFail) => Err(SpfResult::TempError),
     }
 }
@@ -795,6 +798,20 @@ mod tests {
             "mail.example.com", "user@example.com", "example.com", "receiver.example",
         ).await;
         assert_eq!(result, SpfResult::None);
+    }
+
+    // CHK: exists NxDomain counts as void lookup (RFC 7208 §4.6.4)
+    #[tokio::test]
+    async fn exists_nxdomain_counts_as_void_lookup() {
+        let mut resolver = MockResolver::new();
+        resolver.add_txt("example.com", vec!["v=spf1 exists:nope1.com exists:nope2.com exists:nope3.com -all".into()]);
+        // nope1/2/3.com not added → NxDomain → each should count as void lookup
+        // 3rd void lookup → PermError per RFC 7208 §4.6.4
+        let result = check_host(
+            &resolver, "192.0.2.1".parse().unwrap(),
+            "mail.example.com", "user@example.com", "example.com", "receiver.example",
+        ).await;
+        assert_eq!(result, SpfResult::PermError);
     }
 
     // Additional: empty redirect domain → PermError
