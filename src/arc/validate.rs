@@ -94,6 +94,7 @@ impl<R: DnsResolver> ArcVerifier<R> {
         }
 
         // Step 5: Determine oldest-pass (optional, validate remaining AMS)
+        // RFC 8617 §5.2(5)(B): if all AMS validations pass, oldest_pass = 0
         let mut oldest_pass: u32 = 0;
         for i in (0..n - 1).rev() {
             if let Err(_) = self.validate_ams(&sets[i].ams, headers, body).await {
@@ -528,7 +529,7 @@ mod tests {
         let verifier = ArcVerifier::new(resolver);
         let result = verifier.validate_chain(&headers, &body).await;
         assert_eq!(result.status, ArcResult::Pass);
-        assert_eq!(result.oldest_pass, Some(0));
+        assert_eq!(result.oldest_pass, Some(0)); // RFC 8617 §5.2(5)(B): all pass → 0
     }
 
     // ─── CHK-884: Gap in instances → Fail ────────────────────────────
@@ -800,7 +801,7 @@ mod tests {
         let verifier = ArcVerifier::new(resolver);
         let result = verifier.validate_chain(&headers, body).await;
         assert_eq!(result.status, ArcResult::Pass);
-        assert_eq!(result.oldest_pass, Some(0));
+        assert_eq!(result.oldest_pass, Some(0)); // RFC 8617 §5.2(5)(B): all pass → 0
     }
 
     // ─── CHK-887: Instance 2 cv=none → Fail ─────────────────────────

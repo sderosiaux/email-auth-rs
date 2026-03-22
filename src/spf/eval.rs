@@ -209,9 +209,9 @@ async fn eval_include<R: DnsResolver + Send + Sync>(
 
     match child_result {
         SpfResult::Pass => Ok(true),
-        SpfResult::Fail { .. } | SpfResult::SoftFail | SpfResult::Neutral | SpfResult::None => {
-            Ok(false)
-        }
+        SpfResult::Fail { .. } | SpfResult::SoftFail | SpfResult::Neutral => Ok(false),
+        // RFC 7208 §5.2 table: include→None MUST return permerror
+        SpfResult::None => Err(SpfResult::PermError),
         SpfResult::TempError => Err(SpfResult::TempError),
         SpfResult::PermError => Err(SpfResult::PermError),
     }
@@ -290,9 +290,11 @@ async fn eval_mx<R: DnsResolver + Send + Sync>(
         Err(DnsError::TempFail) => return Err(SpfResult::TempError),
     };
 
-    // Sort by preference, limit to 10
+    // RFC 7208 §4.6.4: >10 MX address records → permerror (not silent truncate)
+    if mx_records.len() > 10 {
+        return Err(SpfResult::PermError);
+    }
     mx_records.sort_by_key(|mx| mx.preference);
-    mx_records.truncate(10);
 
     for mx in &mx_records {
         match ip {
@@ -390,7 +392,10 @@ async fn eval_exists<R: DnsResolver + Send + Sync>(
 
     match resolver.query_a(&expanded).await {
         Ok(addrs) => Ok(!addrs.is_empty()),
-        Err(DnsError::NxDomain) | Err(DnsError::NoRecords) => Ok(false),
+        Err(DnsError::NxDomain) | Err(DnsError::NoRecords) => {
+            ctx.increment_void()?;
+            Ok(false)
+        }
         Err(DnsError::TempFail) => Err(SpfResult::TempError),
     }
 }
@@ -538,19 +543,33 @@ mod tests {
         assert_eq!(result, SpfResult::PermError);
     }
 
-    // CHK-201: Include None → no match (continue)
+    // CHK-201: Include None → PermError (RFC 7208 §5.2 table)
     #[tokio::test]
-    async fn include_none_no_match() {
+    async fn include_none_permerror() {
         let mut resolver = MockResolver::new();
         resolver.add_txt("example.com", vec!["v=spf1 include:_spf.example.com ip4:192.0.2.0/24 -all".into()]);
-        // _spf.example.com has no SPF record → None
+        // _spf.example.com has no valid SPF record → None
         resolver.add_txt("_spf.example.com", vec!["not-an-spf-record".into()]);
         let result = check_host(
             &resolver, "192.0.2.1".parse().unwrap(),
             "mail.example.com", "user@example.com", "example.com", "receiver.example",
         ).await;
-        // Include returns None → no match → continue → ip4 matches → Pass
-        assert_eq!(result, SpfResult::Pass);
+        // RFC 7208 §5.2: include→None MUST produce PermError (not "not match")
+        assert_eq!(result, SpfResult::PermError);
+    }
+
+    // CHK-201b: Include None → PermError even when later mechanism would match
+    #[tokio::test]
+    async fn include_none_permerror_overrides_later_match() {
+        let mut resolver = MockResolver::new();
+        resolver.add_txt("example.com", vec!["v=spf1 include:_spf.example.com ip4:192.0.2.0/24 -all".into()]);
+        // No record → NxDomain → None
+        let result = check_host(
+            &resolver, "192.0.2.1".parse().unwrap(),
+            "mail.example.com", "user@example.com", "example.com", "receiver.example",
+        ).await;
+        // include returns None → PermError, not Pass from ip4
+        assert_eq!(result, SpfResult::PermError);
     }
 
     // CHK-202: MX mechanism
@@ -567,6 +586,24 @@ mod tests {
             "mail.example.com", "user@example.com", "example.com", "receiver.example",
         ).await;
         assert_eq!(result, SpfResult::Pass);
+    }
+
+    // CHK-202b: MX with >10 records → PermError (RFC 7208 §4.6.4)
+    #[tokio::test]
+    async fn mx_more_than_10_records_permerror() {
+        let mut resolver = MockResolver::new();
+        resolver.add_txt("example.com", vec!["v=spf1 mx -all".into()]);
+        // 11 MX records exceeds the 10 A/AAAA address record limit → PermError
+        let mx_records: Vec<MxRecord> = (1..=11u32)
+            .map(|i| MxRecord { preference: i as u16, exchange: format!("mail{}.example.com", i) })
+            .collect();
+        resolver.add_mx("example.com", mx_records);
+        let result = check_host(
+            &resolver, "192.0.2.1".parse().unwrap(),
+            "mail.example.com", "user@example.com", "example.com", "receiver.example",
+        ).await;
+        // RFC 7208 §4.6.4: >10 MX address records → PermError
+        assert_eq!(result, SpfResult::PermError);
     }
 
     // CHK-203: A mechanism with CIDR
@@ -795,6 +832,20 @@ mod tests {
             "mail.example.com", "user@example.com", "example.com", "receiver.example",
         ).await;
         assert_eq!(result, SpfResult::None);
+    }
+
+    // CHK: exists NxDomain counts as void lookup (RFC 7208 §4.6.4)
+    #[tokio::test]
+    async fn exists_nxdomain_counts_as_void_lookup() {
+        let mut resolver = MockResolver::new();
+        resolver.add_txt("example.com", vec!["v=spf1 exists:nope1.com exists:nope2.com exists:nope3.com -all".into()]);
+        // nope1/2/3.com not added → NxDomain → each should count as void lookup
+        // 3rd void lookup → PermError per RFC 7208 §4.6.4
+        let result = check_host(
+            &resolver, "192.0.2.1".parse().unwrap(),
+            "mail.example.com", "user@example.com", "example.com", "receiver.example",
+        ).await;
+        assert_eq!(result, SpfResult::PermError);
     }
 
     // Additional: empty redirect domain → PermError
