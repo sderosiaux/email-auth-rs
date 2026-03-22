@@ -290,9 +290,11 @@ async fn eval_mx<R: DnsResolver + Send + Sync>(
         Err(DnsError::TempFail) => return Err(SpfResult::TempError),
     };
 
-    // Sort by preference, limit to 10
+    // RFC 7208 §4.6.4: >10 MX address records → permerror (not silent truncate)
+    if mx_records.len() > 10 {
+        return Err(SpfResult::PermError);
+    }
     mx_records.sort_by_key(|mx| mx.preference);
-    mx_records.truncate(10);
 
     for mx in &mx_records {
         match ip {
@@ -584,6 +586,24 @@ mod tests {
             "mail.example.com", "user@example.com", "example.com", "receiver.example",
         ).await;
         assert_eq!(result, SpfResult::Pass);
+    }
+
+    // CHK-202b: MX with >10 records → PermError (RFC 7208 §4.6.4)
+    #[tokio::test]
+    async fn mx_more_than_10_records_permerror() {
+        let mut resolver = MockResolver::new();
+        resolver.add_txt("example.com", vec!["v=spf1 mx -all".into()]);
+        // 11 MX records exceeds the 10 A/AAAA address record limit → PermError
+        let mx_records: Vec<MxRecord> = (1..=11u32)
+            .map(|i| MxRecord { preference: i as u16, exchange: format!("mail{}.example.com", i) })
+            .collect();
+        resolver.add_mx("example.com", mx_records);
+        let result = check_host(
+            &resolver, "192.0.2.1".parse().unwrap(),
+            "mail.example.com", "user@example.com", "example.com", "receiver.example",
+        ).await;
+        // RFC 7208 §4.6.4: >10 MX address records → PermError
+        assert_eq!(result, SpfResult::PermError);
     }
 
     // CHK-203: A mechanism with CIDR

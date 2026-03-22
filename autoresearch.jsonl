@@ -5,3 +5,4 @@
 {"n":4,"commit":"795061e","metric":606,"status":"keep","description":"bug: ARC oldest_pass=1 should be 0 per RFC 8617 §5.2(5)(B); DKIM x= must be >= t= per RFC 6376 §3.5","metrics":{},"timestamp":1774220135}
 {"n":5,"commit":"f40d567","metric":607,"status":"keep","description":"bug: DMARC p=reject outside pct sample must downgrade to quarantine per RFC 7489 §6.6.4","metrics":{},"timestamp":1774220559}
 {"n":6,"commit":"7446733","metric":608,"status":"keep","description":"bug: SPF include→None must return PermError per RFC 7208 §5.2 (was treating as no-match)","metrics":{},"timestamp":1774220715}
+{"n":7,"commit":"22b0ae3","metric":609,"status":"keep","description":"bug: SPF mx mechanism with >10 MX records must return PermError per RFC 7208 §4.6.4 (was silently truncating)","metrics":{},"timestamp":1774220879}
