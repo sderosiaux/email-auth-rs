@@ -689,4 +689,56 @@ mod tests {
 
         assert_eq!(result.from_domain, "example.com");
     }
+
+    // --- Interop: signatures produced by dkimpy (reference implementation) ---
+    //
+    // h= over-signs from/subject and lists cc/reply-to, which the message lacks.
+    // RFC 6376 §3.5 and §5.4: those entries are the null input (no name, no colon,
+    // no CRLF). Regression for github.com/sderosiaux/email-auth-rs/issues/1.
+    // Generated with dkimpy 1.x from tests/fixtures/rsa2048.pem, selector sel._domainkey.example.com.
+
+    const DKIMPY_KEY_TXT: &str = "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5eVP48aKiBXL7p7bNiFBSDOiku9PxuWG6+RilbvVl37VLt1i+tidTKUcofpvfKnW4A6Pvhru+nIM34esP+Dn+t622P0Wf93x/WzKQtJTHxbQoRx4u7+RwVbjEiVJwTvKHsRSi7qv4kTI6I7MjZjbH7YOkcoJYpQbN9wE6LvxlKuZZ3B4V3AanJmDXZzwJcA/zsq4GnAeE/MP8r9aGXSoGy7U99B/AlStP3ioxWVh8NEU+Enh+vEcYSCt6mNgLr+BDMWZePKPtscMakDxjHqMZcwt7QrGe13Fmhd81viQoejO7kneTCzP8L/PmDSX+zYZbjERZJWUbYVZPi/8NINONwIDAQAB";
+
+    const DKIMPY_MESSAGE: &str = "From: Alice <alice@example.com>\r\n\
+        To: bob@example.org\r\n\
+        Subject: Over-signed by dkimpy\r\n\
+        Date: Sat, 11 Oct 2026 12:00:00 +0000\r\n\
+        Message-ID: <oversign@example.com>\r\n\
+        \r\n\
+        Hello Bob.\r\n";
+
+    const DKIMPY_SIG_RELAXED: &str = "DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=example.com;\r\n i=@example.com; q=dns/txt; s=sel; t=1791771152; h=from : to : subject\r\n : date : message-id : from : subject : cc : reply-to;\r\n bh=DD3L33E64/RV0CUJdfGTtPGKU7OPJpo/2LxOdf3k0RI=;\r\n b=aSUe19NnQ/KR/igj5QhA9KNcaHuMdStnQOhaPoQLatJA/PwVu3/xyvYM0jWHNgt03Pqm2\r\n cTjTPELMQzSKvkPxfxzJmQDRzxOUMhc8L/9RxWGs+MyfDGuNgpVUKwqdYBSjqg+LJrqeMv5\r\n I+YXz9Fq5/BT/ezNcn6Jrgr2dOHp1+d5LdXhJtrnpliydtZhJCzuAppV4zyojXzIMambqAn\r\n wk+2kwzdtcm4EAi0KUuZFhET1oV1+wSp6ECGtVHRmlbLXw4Eq553mSB+CJO5Jte+tzO3ECa\r\n ftUDronx1M7KlZcZ0RUjQRpBoU1HKpwUXRIQ/O8bRQQa2bkLr6IC6GS28G2Q==\r\n";
+
+    const DKIMPY_SIG_SIMPLE: &str = "DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=example.com;\r\n i=@example.com; q=dns/txt; s=sel; t=1791771152; h=from : to : subject\r\n : date : message-id : from : subject : cc : reply-to;\r\n bh=DD3L33E64/RV0CUJdfGTtPGKU7OPJpo/2LxOdf3k0RI=;\r\n b=AEo1vuV/xlBBAjsIaw5Qu4v+qRGGQ6OP/l429S07x6HbgBtKmTbWX0jhzUz7edReSJPgp\r\n JAGQtWHOoVfgWi0P8BjgQLMYQtPqKbssOGHN4j3l/FAvI+yRonhDRBrtHcqfIiyWAE1ROuH\r\n nQBOS3vWZhvQvp29fiRrVH2BtX5UnkLNvzCLrOSGJrNRjMQof1RLccKfxKDQnFMXrdf2d3M\r\n LmnyEi6BZqE5//1V0MXVFF878asMPesr3KiXvrdz0eOn8gxt4QgZEBGN/ggxZ4ci1qF+0t+\r\n 6wsB5e/aYnWGUS38Y7J5Js4fQANPum5SBnrc2Gt6X7DAgoN7MzXPuAGViE2A==\r\n";
+
+    async fn verify_dkimpy_signed(signature: &str) -> Vec<DkimResult> {
+        let mut resolver = MockResolver::new();
+        resolver.add_txt("example.com", vec!["v=spf1 ip4:192.0.2.1 -all"]);
+        resolver.add_txt("_dmarc.example.com", vec!["v=DMARC1; p=none"]);
+        resolver.add_txt("sel._domainkey.example.com", vec![DKIMPY_KEY_TXT]);
+
+        let message = format!("{}{}", signature, DKIMPY_MESSAGE);
+        let auth = EmailAuthenticator::new(resolver, "mx.receiver.com");
+        auth.authenticate(
+            message.as_bytes(),
+            "192.0.2.1".parse().unwrap(),
+            "mail.example.com",
+            "alice@example.com",
+        )
+        .await
+        .unwrap()
+        .dkim
+    }
+
+    #[tokio::test]
+    async fn dkimpy_oversigned_relaxed_passes() {
+        let dkim = verify_dkimpy_signed(DKIMPY_SIG_RELAXED).await;
+        assert!(matches!(dkim[..], [DkimResult::Pass { .. }]), "{:?}", dkim);
+    }
+
+    #[tokio::test]
+    async fn dkimpy_oversigned_simple_passes() {
+        let dkim = verify_dkimpy_signed(DKIMPY_SIG_SIMPLE).await;
+        assert!(matches!(dkim[..], [DkimResult::Pass { .. }]), "{:?}", dkim);
+    }
 }

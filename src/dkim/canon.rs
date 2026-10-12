@@ -232,6 +232,7 @@ pub fn apply_body_length_limit(body: &[u8], limit: Option<u64>) -> &[u8] {
 /// `signed_headers`: the h= tag list (may contain duplicates for over-signing).
 /// `message_headers`: the message headers as (name, value) pairs, in order (first = top of message).
 /// Returns canonicalized header strings ready for hash input (each ending with \r\n).
+/// h= entries with no remaining occurrence contribute nothing (RFC 6376 §5.4).
 /// The last entry (DKIM-Signature itself) should be appended separately by the caller.
 pub fn select_headers(
     method: CanonicalizationMethod,
@@ -265,10 +266,10 @@ pub fn select_headers(
             let canon = canonicalize_header(method, name, value);
             result.push(format!("{}\r\n", canon));
             *count += 1;
-        } else {
-            // Over-signed: no more occurrences → empty header
-            result.push(format!("{}:\r\n", lower));
         }
+        // Over-signed or absent: RFC 6376 §3.5/§5.4 null input — no name, colon or CRLF.
+        // Injection protection holds: a header added after signing gets selected here
+        // on verify and changes the hash.
     }
 
     result
@@ -649,42 +650,46 @@ mod tests {
         assert_eq!(selected[1], "To: a@example.com\r\n"); // second-to-last
     }
 
-    // CHK-479: Over-signed empty
+    // CHK-479: Over-signed entry is null input (RFC 6376 §5.4)
     #[test]
-    fn header_selection_over_signed_empty() {
+    fn header_selection_over_signed_null_input() {
         let headers = vec![("From", " user@example.com")];
         let signed = vec!["from".to_string(), "from".to_string()];
+        for method in [CanonicalizationMethod::Simple, CanonicalizationMethod::Relaxed] {
+            let selected = select_headers(method, &signed, &headers);
+            assert_eq!(selected.len(), 1, "{:?}", method);
+        }
         let selected = select_headers(CanonicalizationMethod::Simple, &signed, &headers);
-        assert_eq!(selected.len(), 2);
         assert_eq!(selected[0], "From: user@example.com\r\n");
-        assert_eq!(selected[1], "from:\r\n"); // over-signed: empty
     }
 
-    // CHK-361: Over-signing contributes empty
+    // CHK-361: Extra over-signed entries add nothing, real ones still selected bottom-up
     #[test]
-    fn header_selection_over_signed_contributes_empty() {
+    fn header_selection_over_signed_adds_nothing() {
         let headers = vec![("Subject", " test")];
-        // h= lists subject 3 times, message has 1 → 1 real + 2 empty
+        // h= lists subject 3 times, message has 1 → 1 real, 2 null
         let signed = vec![
             "subject".to_string(),
             "subject".to_string(),
             "subject".to_string(),
         ];
         let selected = select_headers(CanonicalizationMethod::Simple, &signed, &headers);
-        assert_eq!(selected.len(), 3);
-        assert_eq!(selected[0], "Subject: test\r\n");
-        assert_eq!(selected[1], "subject:\r\n");
-        assert_eq!(selected[2], "subject:\r\n");
+        assert_eq!(selected, vec!["Subject: test\r\n".to_string()]);
     }
 
-    // CHK-362: Over-signed NOT skipped
+    // CHK-362: Absent header in h= is null input, neighbours keep their order
     #[test]
-    fn header_selection_over_signed_not_skipped() {
-        let headers: Vec<(&str, &str)> = vec![];
-        let signed = vec!["x-nonexistent".to_string()];
+    fn header_selection_absent_header_null_input() {
+        let headers = vec![("From", " a@example.com"), ("To", " b@example.com")];
+        let signed = vec!["from".to_string(), "cc".to_string(), "to".to_string()];
         let selected = select_headers(CanonicalizationMethod::Simple, &signed, &headers);
-        assert_eq!(selected.len(), 1);
-        assert_eq!(selected[0], "x-nonexistent:\r\n");
+        assert_eq!(
+            selected,
+            vec![
+                "From: a@example.com\r\n".to_string(),
+                "To: b@example.com\r\n".to_string(),
+            ]
+        );
     }
 
     // CHK-525: Header selection complete

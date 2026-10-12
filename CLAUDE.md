@@ -55,7 +55,7 @@ The `- [ ]` checkboxes are the contract. Every checkbox = one requirement = one 
 - ring `UnparsedPublicKey::verify(data, sig)` takes raw data, NOT a digest. Pre-hashing = double-hash = always fails.
 - DKIM `p=` tag stores SPKI format. ring expects PKCS#1 for RSA. Must strip SPKI wrapper.
 - DKIM `b=` stripping must not match `bh=`. Use structural parsing, not naive string search.
-- DKIM over-signed headers contribute empty canonicalized headers to hash. Never skip them.
+- DKIM over-signed or absent headers in `h=` are null input: nothing is hashed, not even `name:\r\n` (RFC 6376 §5.4). Earlier iterations got this wrong in a self-consistent way, so sign/verify round-trips can't catch it. Check against the dkimpy interop fixtures.
 - DMARC pct sampling applies to BOTH quarantine AND reject dispositions.
 - ARC-Seal has NO h= tag and NO body hash. Relaxed header canonicalization only.
 - SVG validation must check both `Event::Start` AND `Event::Empty` for prohibited attributes.

@@ -994,7 +994,7 @@ mod tests {
         let selector = "ed";
 
         let bh = compute_body_hash(body, Algorithm::Ed25519Sha256, CanonicalizationMethod::Relaxed);
-        // h= lists "from" twice (over-sign)
+        // h= lists "from" twice (over-sign); the second entry is null input
         let sig_header_template = format!(
             " v=1; a=ed25519-sha256; b=; bh={}; c=relaxed/relaxed; d={}; h=from:from; s={}",
             bh, domain, selector

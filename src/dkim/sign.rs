@@ -186,7 +186,7 @@ impl DkimSigner {
         }
 
         // Step 5: Compute header hash input
-        // Select headers using h= list (the actual header names, not over-signed duplicates)
+        // Select headers using the h= list, over-sign duplicates included
         let h_names: Vec<String> = self.build_h_names();
 
         let selected = select_headers(self.header_canon, &h_names, headers);
@@ -667,6 +667,16 @@ mod tests {
         match &results[0] {
             DkimResult::Pass { .. } => {}
             other => panic!("over-sign roundtrip: expected Pass, got {:?}", other),
+        }
+
+        // Over-signing must still block injection: a second Subject added in transit
+        // is picked up by the extra h= entry and breaks the signature.
+        let mut injected = all_headers.clone();
+        injected.insert(3, ("Subject", " Injected"));
+        let results = verifier.verify_message(&injected, body).await;
+        match &results[0] {
+            DkimResult::Fail { .. } => {}
+            other => panic!("over-sign injection: expected Fail, got {:?}", other),
         }
     }
 

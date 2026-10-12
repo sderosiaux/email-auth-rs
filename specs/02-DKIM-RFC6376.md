@@ -174,11 +174,8 @@ DKIM allows a domain to cryptographically sign email messages, enabling receiver
 - [ ] Headers in `h=` selected case-insensitively from message
 - [ ] Multiple same-name headers: bottom-up selection (last occurrence consumed first)
 - [ ] Track consumed instances per header name using a counter
-- [ ] Over-signing: if `h=` lists a header name more times than it exists in message, extra entries contribute an EMPTY canonicalized header to the hash input:
-  - Simple: `headername:\r\n`
-  - Relaxed: `headername:\r\n`
-- [ ] Over-signed headers MUST NOT be silently skipped — they are security-critical (prevent header injection)
-- [ ] Over-signed header format for BOTH simple and relaxed: `headername:\r\n` (relaxed lowercases the name). This is consistent across both canonicalization methods. <!-- forge:cycle-1 -->
+- [ ] Over-signing / absent headers: if `h=` lists a header name more times than it exists in the message (including zero times), each extra entry is the NULL INPUT: no bytes at all — no name, no colon, no value, no CRLF. Same for simple and relaxed. RFC 6376 §3.5 (`h=`) and §5.4: "the nonexisting header field MUST be treated as the null string (including the header field name, header field value, all punctuation, and the trailing CRLF)".
+- [ ] Injection protection comes from the h= entry, not from hashed bytes: if a header is added after signing, the verifier finds an occurrence for the extra h= entry, hashes it, and the signature fails. Null input keeps this property.
 
 ### 3.6 b= Tag Stripping
 
@@ -244,7 +241,7 @@ DKIM allows a domain to cryptographically sign email messages, enabling receiver
 - [ ] For each header name in `h=` (in order):
   - [ ] Find header in message (bottom-up: last unused occurrence)
   - [ ] Mark as consumed
-  - [ ] If not found (over-signed): use empty header value
+  - [ ] If not found (over-signed or absent): append nothing (null input), move to the next h= entry
   - [ ] Canonicalize header
   - [ ] Append to hash input: `name:value\r\n`
 - [ ] Append DKIM-Signature header itself:
@@ -455,7 +452,8 @@ DkimPublicKey::parse(txt_record: &str) -> Result<DkimPublicKey, KeyParseError>
 - [ ] Body length limit truncation
 - [ ] Bare LF → CRLF conversion
 - [ ] Header selection: bottom-up for multiple same-name headers
-- [ ] Over-signed headers: contribute empty value (not skipped)
+- [ ] Over-signed and absent headers: contribute nothing (null input), for simple and relaxed
+- [ ] Absent header between present ones (`h=from:cc:to`, no Cc): hash input is From then To, nothing in between
 - [ ] b= tag stripping: does NOT affect bh= tag
 
 ### 8.4 Verification Tests
@@ -476,7 +474,8 @@ DkimPublicKey::parse(txt_record: &str) -> Result<DkimPublicKey, KeyParseError>
 - [ ] No DKIM-Signature → None
 - [ ] Simple/simple canonicalization end-to-end
 - [ ] Relaxed/relaxed canonicalization end-to-end
-- [ ] Over-signed header verification: signature with "from" listed twice in h=, message has one From → verify Pass (empty header contributes to hash, not skipped)
+- [ ] Over-signed header verification: signature with "from" listed twice in h=, message has one From → verify Pass (second entry is null input)
+- [ ] Interop fixture: message signed by an independent implementation (dkimpy) with over-signed and absent headers in h= (`h=from : to : subject : date : message-id : from : subject : cc : reply-to`), simple/simple and relaxed/relaxed → verify Pass. Fixture is pre-computed and embedded; no Python at test time.
 
 ### 8.5 Ground-Truth Verification Tests
 
@@ -494,7 +493,7 @@ DkimPublicKey::parse(txt_record: &str) -> Result<DkimPublicKey, KeyParseError>
 - [ ] Timestamp and expiration set correctly
 - [ ] PEM key loading: RSA 2048, Ed25519
 - [ ] RSA-SHA1 signing prevention: `DkimSigner` API MUST NOT allow constructing a signer with `Algorithm::RsaSha1`. Either no constructor exists, or `sign_message()` returns error. Test that no code path produces an `a=rsa-sha1` signature.
-- [ ] Over-sign round-trip: sign with "from" in h= twice (over-sign), verify through DkimVerifier → Pass. This validates signer and verifier agree on empty-header hash contribution. A bug where signer skips the empty header but verifier includes it (or vice versa) causes Fail.
+- [ ] Over-sign round-trip: sign with "from" in h= twice (over-sign), verify through DkimVerifier → Pass. Then insert a second Subject into the signed message → Fail (over-signing still blocks injection).
 
 ---
 
@@ -591,7 +590,7 @@ DkimPublicKey::parse(txt_record: &str) -> Result<DkimPublicKey, KeyParseError>
 - b= stripping regex must NOT match "bh=" — use lookbehind or structural parsing
 - DKIM-Signature header appended to hash WITHOUT trailing CRLF (spec requirement)
 - Header selection is bottom-up: if h= lists "to" twice and message has 3 To headers, first "to" in h= selects the last To header, second "to" selects second-to-last
-- Over-signed headers produce empty canonicalized headers, NOT silently skipped
+- Over-signed and absent headers are null input (see §3.5). Earlier versions of this spec said `headername:\r\n`; that was wrong, see §10.9.3.
 
 ### 10.9 v3 Learnings
 
@@ -600,6 +599,10 @@ DkimPublicKey::parse(txt_record: &str) -> Result<DkimPublicKey, KeyParseError>
 - **Expired signature test**: No test verifies that `x=` timestamp in the past causes PermFail(ExpiredSignature). Add test with `x=1000000` (well in the past).
 - **Tampered header test**: No test verifies that modifying a signed header (e.g., Subject) causes Fail(SignatureVerificationFailed). Add test that signs, modifies Subject, then verifies.
 - **Ground-truth tests (spec §8.5)**: Tests only use sign-then-verify round-trips. This means a bug in both signer and verifier could be self-consistent. **MUST** add tests that construct DKIM signatures manually using ring primitives (Ed25519KeyPair.sign), bypassing DkimSigner entirely, then verify through DkimVerifier.
+
+#### 10.9.3 Self-Consistent Bug: Over-Signed Headers (fixed in 0.1.3)
+- Up to 0.1.2 this spec required over-signed entries to hash as `headername:\r\n`. RFC 6376 §3.5/§5.4 says null input. Signer and verifier shared `select_headers()`, so every round-trip and "ground-truth" test passed while real-world mail failed: verification of Gmail/Microsoft-style over-signed signatures failed, and `over_sign(true)` produced signatures other verifiers reject. Reported in github.com/sderosiaux/email-auth-rs/issues/1.
+- Ground-truth tests built with this crate's own canonicalization are not ground truth. An expected value MUST come from an independent implementation (dkimpy, OpenDKIM) or verbatim RFC text, never from a rule this spec wrote itself.
 
 #### 10.9.2 Patterns That Worked
 - SPKI→PKCS#1 ASN.1 stripping for RSA keys — robust across 1024/2048/4096-bit keys
